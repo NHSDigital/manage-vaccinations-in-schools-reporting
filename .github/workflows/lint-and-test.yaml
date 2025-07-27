@@ -7,6 +7,18 @@ on:
   pull_request:
 
 jobs:
+  scan-secrets:
+    name: Scan secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history is needed to scan all commits
+      - uses: jdx/mise-action@v2
+        with:
+          cache: true
+      - name: Check for secret leaks
+        run: gitleaks detect --verbose --redact
   test:
     name: "Run tests"
     runs-on: ubuntu-latest
