@@ -2,6 +2,7 @@
 
 DOCKER_IMAGE ?= mavis-reporting:latest
 HOST_PORT ?= 5000
+COVERAGE_THRESHOLD ?= 80
 
 .PHONY: clean
 clean:
@@ -38,10 +39,6 @@ dev: install
 	@echo "Press Ctrl+C to stop all processes"
 	@poetry run honcho start -f Procfile.dev
 
-.PHONY: test-coverage
-test-coverage:
-	@true
-
 .PHONY: copy-nhsuk-favicons
 copy-nhsuk-favicons:
 	mkdir -p mavis_reporting/static/favicons
@@ -62,7 +59,7 @@ test: install
 test-coverage: install
 	@echo "Checking coverage on all tests .."
 	@poetry run coverage run -m  pytest tests --verbose 
-	@poetry run coverage report --fail-under=${FAIL_IF_UNDER}
+	@poetry run coverage report --fail-under=${COVERAGE_THRESHOLD}
 	@poetry run coverage html
 	@poetry run coverage xml coverage.xml
 	@poetry run coverage-badge -o coverage.svg

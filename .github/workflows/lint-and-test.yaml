@@ -71,7 +71,7 @@ jobs:
       - name: "Run test coverage check"
         env:
             SECRET_KEY: "${{ secrets.SECRET_KEY_FOR_TESTS }}"
-            FAIL_IF_UNDER: 80
+            COVERAGE_THRESHOLD: 80
         run: |
           make test-coverage
       - name: "Save the coverage check result"
