@@ -12,7 +12,6 @@ from werkzeug.exceptions import Unauthorized
 
 import logging
 
-
 from mavis_reporting.helpers import mavis_helper
 from mavis_reporting.helpers import auth_helper
 

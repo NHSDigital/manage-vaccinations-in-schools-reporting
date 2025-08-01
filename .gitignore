@@ -27,3 +27,4 @@ sentinel
 .coverage
 htmlcov
 coverage.svg
+coverage.xml
