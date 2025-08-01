@@ -1,6 +1,6 @@
-# Mavis Reporting Prototype
+# Mavis Reporting
 
-A Flask-based web application prototype for the commissioner reporting component of Mavis.
+A Flask-based web application for the commissioner reporting component of Mavis.
 
 ## Prerequisites
 
@@ -39,7 +39,8 @@ A Flask-based web application prototype for the commissioner reporting component
    make dev
    ```
 
-   The application will be available at <http://localhost:5000>.
+   The application will be available at <http://localhost:5001>. 
+   You will need a version of Mavis running which supports the OAuth 2.0 token authentication method - please see [Runtime Dependencies](#runtime-dependencies)  below for details.
 
 ## Linting
 
@@ -59,7 +60,8 @@ To configure VSCode or variants thereof to use Ruff in your IDE, install the Ruf
 
 ## Building & Running a Docker container
 
-The application can be built and run via Docker, to support deployment.
+The application can be built and run via Docker, to support deployment to AWS. 
+By default, the docker container listens on port 5000, but as Mac OS typically has an existing system application (Control Center) listening on port 5000, we use Docker's port mapping to map port 5001 on the host (your laptop) to 5000 on the container.
 
 ### Build
 

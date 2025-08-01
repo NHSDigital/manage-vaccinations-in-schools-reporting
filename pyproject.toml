@@ -1,7 +1,7 @@
 [project]
-name = "mavis-reporting-prototype"
+name = "mavis-reporting"
 version = "0.1.0"
-description = "Prototype code for the commissioner reporting component of Mavis"
+description = "Python/Flask application for the commissioner reporting component of Mavis"
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.13"
