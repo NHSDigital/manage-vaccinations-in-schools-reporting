@@ -23,7 +23,7 @@ def random_token():
 
 
 def default_url():
-    return "/reporting/default"
+    return "/reporting/"
 
 
 def it_redirects_to_mavis_start(response):
