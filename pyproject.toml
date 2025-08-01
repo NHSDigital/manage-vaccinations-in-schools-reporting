@@ -1,5 +1,5 @@
 [project]
-name = "mavis-reporting"
+name = "manage-vaccinations-in-schools-reporting"
 version = "0.1.0"
 description = "Python/Flask application for the commissioner reporting component of Mavis"
 license = "MIT"
