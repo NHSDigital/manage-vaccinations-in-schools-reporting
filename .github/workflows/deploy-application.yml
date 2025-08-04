@@ -91,18 +91,37 @@ jobs:
         with:
           role-to-assume: ${{ env.aws-role }}
           aws-region: eu-west-2
-      - name: Install poetry
-        run: pipx install poetry
-      - name: Setup python
+      # - name: Setup python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: 3.13.0
+      #     cache: poetry
+      - name: Setup Poetry cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.HOME }}/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-store-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Use Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: 3.13.0
-          cache: poetry
-      - run: poetry install
+          python-version: "3.13"
+          
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install pip requirements
+        run: poetry install --no-interaction --no-root
+
+      - name: Force compatible venv version
+        run: poetry add "virtualenv (<=20.32.0)"
+      - name: Add missing dependencies
+        run: poetry add boto3
+
       - name: Populate task definition
         id: populate-task-definition
         run: |
-          poetry run python scripts/populate_task_definition.py ${{ inputs.environment }} \
+          poetry run python3 scripts/populate_task_definition.py ${{ inputs.environment }} \
             -i "${{ inputs.git_sha_to_deploy || github.sha }}" \
             -o task-definition.json
           cat task-definition.json
