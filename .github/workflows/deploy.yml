@@ -1,0 +1,156 @@
+name: Deploy
+run-name: Deploy ${{ inputs.git_ref_to_deploy || github.ref_name }} to ${{ inputs.environment }}
+
+concurrency:
+  group: deploy-${{ inputs.environment }}
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      server_types:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      git_ref_to_deploy:
+        description:
+          | # Use blank unicode character (U+2800) to force line-break
+          Use code from: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+          (Git ref to deploy, for example, a tag, branch name or commit SHA. Will use workflow ref if not provided.)
+        type: string
+      environment:
+        description: Deployment environment
+        required: true
+        type: choice
+        options:
+          - qa
+          - test
+          - preview
+          - training
+          - production
+          - sandbox-alpha
+          - sandbox-beta
+      server_types:
+        description: Server types to deploy
+        required: true
+        type: choice
+        options:
+          - all
+          - web
+          - none
+        default: all
+
+env:
+  account_id: ${{ inputs.environment == 'production' && '820242920762' || '393416225559' }}
+
+jobs:
+  validate-inputs:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Validate inputs
+        run: |
+          if [[ "${{ inputs.environment }}" == "preview" || "${{ inputs.environment }}" == "production" ]]; then
+            if [[ -z "${{ inputs.git_ref_to_deploy }}" ]]; then
+              echo "Error: git_ref_to_deploy is required for preview and production environments."
+              exit 1
+            fi
+          fi
+  determine-git-sha:
+    runs-on: ubuntu-latest
+    permissions: {}
+    needs: validate-inputs
+    outputs:
+      git-sha: ${{ steps.get-git-sha.outputs.git-sha }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.git_ref_to_deploy || github.sha }}
+      - name: Get git sha
+        id: get-git-sha
+        run: echo "git-sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+  build-and-push-image:
+    permissions:
+      id-token: write
+    needs: determine-git-sha
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      git-sha: ${{ needs.determine-git-sha.outputs.git-sha }}
+  validate-permissions:
+    needs: validate-inputs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ env.account_id }}:role/GithubDeployMavisAndInfrastructure
+          aws-region: eu-west-2
+      - name: Compare permissions
+        id: compare-permissions
+        run: |
+          source ./scripts/validate-github-actions-policy.sh
+          validate_policies arn:aws:iam::${{ env.account_id }}:policy/DeployMavisResources ./account/resources/iam_policy_DeployMavisResources.json
+          exit $?
+  update-permissions:
+    runs-on: ubuntu-latest
+    needs: validate-permissions
+    if: always() && (inputs.environment == 'production' || inputs.environment == 'preview') && needs.validate-permissions.result == 'failure'
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: ./terraform
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ env.account_id }}:role/GithubDeployMavisAndInfrastructure
+          aws-region: eu-west-2
+      - name: Update IAM policy
+        run: ./scripts/update-github-actions-policy.sh arn:aws:iam::${{ env.account_id }}:policy/DeployMavisResources ./account/resources/iam_policy_DeployMavisResources.json
+  deploy-infrastructure:
+    permissions:
+      id-token: write
+    needs:
+      [
+        build-and-push-image,
+        determine-git-sha,
+        validate-permissions,
+        update-permissions,
+      ]
+    if: always() &&
+      ((inputs.environment != 'production' && inputs.environment != 'preview') ||
+      needs.validate-permissions.result == 'success' || needs.update-permissions.result == 'success')
+    uses: ./.github/workflows/deploy-infrastructure.yml
+    with:
+      environment: ${{ inputs.environment }}
+      image_tag: ${{ needs.determine-git-sha.outputs.git-sha }}
+      git_ref_to_deploy: ${{ inputs.git_ref_to_deploy || github.ref_name }}
+  deploy-application:
+    permissions:
+      id-token: write
+    needs: [deploy-infrastructure, determine-git-sha]
+    if: always() && inputs.server_types != 'none' && needs.deploy-infrastructure.result == 'success'
+    uses: ./.github/workflows/deploy-application.yml
+    with:
+      environment: ${{ inputs.environment }}
+      server_types: ${{ inputs.server_types }}
+      git_sha_to_deploy: ${{ needs.determine-git-sha.outputs.git-sha }}
