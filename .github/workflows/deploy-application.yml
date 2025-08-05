@@ -127,7 +127,7 @@ jobs:
       - name: Make artifact for web task definition
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.environment }}-task-definition
+          name: ${{ inputs.environment }}-web-task-definition
           path: task-definition.json
 
   deploy:
