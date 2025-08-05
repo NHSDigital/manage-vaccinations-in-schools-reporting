@@ -164,10 +164,11 @@ jobs:
         with:
           task-definition: ${{ runner.temp }}/task-definition.json
           codedeploy-appspec: appspec.yaml
-          cluster: mavis-${{ inputs.environment }}
-          service: mavis-${{ inputs.environment }}-reporting
-          codedeploy-application: mavis-${{ inputs.environment }}
-          codedeploy-deployment-group: reporting-${{ inputs.environment }}
+          cluster: ${{ env.cluster_name }}
+          service: ${{ env.web_service }}
+          codedeploy-application: ${{ env.web_codedeploy_application }}
+          codedeploy-deployment-group: ${{ env.web_codedeploy_group }}
+          wait-for-service-stability: true
       - name: Wait for deployment to complete
         run: |
           echo "Waiting for CodeDeploy deployment ${{ steps.deploy-reporting-service.outputs.codedeploy-deployment-id }} to complete..."
