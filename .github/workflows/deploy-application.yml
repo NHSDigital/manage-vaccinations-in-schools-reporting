@@ -128,7 +128,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.environment }}-web-task-definition
-          path: task-definition.json
+          path: web-task-definition.json
 
   deploy:
     name: Deploy reporting service
