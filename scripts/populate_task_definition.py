@@ -61,9 +61,10 @@ def extract_config_env_vars(config: Dict[str, Any], environment: str) -> Dict[st
     if "environments" in config and environment in config["environments"]:
         env_config = config["environments"][environment]
         # Filter out non-string values and convert all values to strings
-        for key, value in env_config.items():
-            if isinstance(value, (str, int, float, bool)):
-                env_vars[key] = str(value)
+        if env_config and env_config.items():
+            for key, value in env_config.items():
+                if isinstance(value, (str, int, float, bool)):
+                    env_vars[key] = str(value)
 
     return env_vars
 
@@ -215,7 +216,8 @@ Examples:
     # Prepare all replacements
     replacements = {
         "ENV": cli_arguments.environment,
-        "SERVER_TYPE_NAME": "reporting",
+        "SERVER_TYPE": "web",
+        "SERVER_TYPE_NAME": "web",
         "TASK_ROLE_ARN": task_role_arn,
         "EXECUTION_ROLE_ARN": execution_role_arn,
         "HEALTH_CHECK": "curl http://localhost:5000/healthcheck || exit 1",
@@ -232,8 +234,8 @@ Examples:
 
     print(f"Task definition populated successfully: {cli_arguments.output}")
     print(f"Environment: {cli_arguments.environment}")
-    print(f"Server type: {cli_arguments.server_type}")
-    print(f"Server type name: {cli_arguments.server_type_name}")
+    # print(f"Server type: {cli_arguments.server_type}")
+    # print(f"Server type name: {cli_arguments.server_type_name}")
     print(f"Image URI: {image_uri}")
     print(f"CPU: {cli_arguments.cpu}")
     print(f"Memory: {cli_arguments.memory}")
