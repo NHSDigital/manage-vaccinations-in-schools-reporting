@@ -216,7 +216,8 @@ Examples:
     # Prepare all replacements
     replacements = {
         "ENV": cli_arguments.environment,
-        "SERVER_TYPE_NAME": "reporting",
+        "SERVER_TYPE": "web",
+        "SERVER_TYPE_NAME": "web",
         "TASK_ROLE_ARN": task_role_arn,
         "EXECUTION_ROLE_ARN": execution_role_arn,
         "HEALTH_CHECK": (
