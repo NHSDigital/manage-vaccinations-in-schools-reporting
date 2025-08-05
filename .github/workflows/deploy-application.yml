@@ -123,13 +123,13 @@ jobs:
         run: |
           poetry run python3 scripts/populate_task_definition.py ${{ inputs.environment }} \
             -i "${{ inputs.git_sha_to_deploy || github.sha }}" \
-            -o task-definition.json
-          cat task-definition.json
-      - name: Make artifact for task definition
+            -o web-task-definition.json
+          cat web-task-definition.json
+      - name: Make artifact for web task definition
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.environment }}-task-definition
-          path: task-definition.json
+          name: ${{ inputs.environment }}-web-task-definition
+          path: web-task-definition.json
 
   deploy:
     name: Deploy reporting service
