@@ -213,7 +213,7 @@ Examples:
         "SERVER_TYPE_NAME": "reporting",
         "TASK_ROLE_ARN": task_role_arn,
         "EXECUTION_ROLE_ARN": execution_role_arn,
-        "HEALTH_CHECK": "wget http://localhost:5000/healthcheck || exit 0",  # TODO: Update to exit 1 once healthcheck is fixed
+        "HEALTH_CHECK": "wget --no-cache --spider -S http://localhost:5000/reporting/healthcheck || exit 1",
         "CPU": cli_arguments.cpu,
         "MEMORY": cli_arguments.memory,
         "ENVIRONMENT_VARIABLES": merged_env_vars,
