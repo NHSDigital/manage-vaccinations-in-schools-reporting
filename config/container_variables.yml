@@ -14,5 +14,6 @@ environments:
   training:
 
   sandbox-alpha:
-
+    MAVIS_ROOT_URL: http://sandbox-alpha.mavistesting.com/
+    
   sandbox-beta:
