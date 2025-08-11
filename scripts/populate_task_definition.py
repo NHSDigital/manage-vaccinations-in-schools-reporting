@@ -227,7 +227,7 @@ Examples:
 
     print(f"Task definition populated successfully: {cli_arguments.output}")
     print(f"Environment: {cli_arguments.environment}")
-    print(f"Server type: reporting")
+    print("Server type: reporting")
     print(f"Image URI: {image_uri}")
     print(f"CPU: {cli_arguments.cpu}")
     print(f"Memory: {cli_arguments.memory}")
