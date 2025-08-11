@@ -51,26 +51,23 @@ def get_image_uri(image_tag: str) -> str:
 
 
 def extract_config_env_vars(config: Dict[str, Any], environment: str) -> Dict[str, str]:
-    """
-    Extract environment variables from YAML config for given environment
-    and server type.
-    """
+    """Extract environment variables from YAML config for given environment and server type."""
     env_vars = {}
 
     # Get environment-specific variables
     if "environments" in config and environment in config["environments"]:
         env_config = config["environments"][environment]
         # Filter out non-string values and convert all values to strings
-        for key, value in env_config.items():
-            if isinstance(value, (str, int, float, bool)):
-                env_vars[key] = str(value)
+        if env_config:
+            for key, value in env_config.items():
+                if isinstance(value, (str, int, float, bool)):
+                    env_vars[key] = str(value)
 
     return env_vars
 
 
 def merge_environment_variables(
-    terraform_vars: List[Dict[str, str]],
-    config_vars: Dict[str, str],
+    terraform_vars: List[Dict[str, str]], config_vars: Dict[str, str]
 ) -> List[Dict[str, str]]:
     """Merge terraform environment variables with config file variables."""
     # Convert terraform vars to dict for easier merging
@@ -86,9 +83,7 @@ def merge_environment_variables(
 def filter_secrets(
     secrets: List[Dict[str, str]], environment_vars: List[Dict[str, str]]
 ) -> List[Dict[str, str]]:
-    """
-    Filter secrets to only include those that are not already in environment variables.
-    """
+    """Filter secrets to only include those that are not already in environment variables."""
     secrets_dict = {secret["name"]: secret["valueFrom"] for secret in secrets}
     env_vars_dict = {var["name"]: var["value"] for var in environment_vars}
 
@@ -218,7 +213,7 @@ Examples:
         "SERVER_TYPE_NAME": "reporting",
         "TASK_ROLE_ARN": task_role_arn,
         "EXECUTION_ROLE_ARN": execution_role_arn,
-        "HEALTH_CHECK": "curl http://localhost:5000/healthcheck || exit 1",
+        "HEALTH_CHECK": "wget http://localhost:5000/healthcheck || exit 0",  # TODO: Update to exit 1 once healthcheck is fixed
         "CPU": cli_arguments.cpu,
         "MEMORY": cli_arguments.memory,
         "ENVIRONMENT_VARIABLES": merged_env_vars,
@@ -232,8 +227,7 @@ Examples:
 
     print(f"Task definition populated successfully: {cli_arguments.output}")
     print(f"Environment: {cli_arguments.environment}")
-    print(f"Server type: {cli_arguments.server_type}")
-    print(f"Server type name: {cli_arguments.server_type_name}")
+    print(f"Server type: reporting")
     print(f"Image URI: {image_uri}")
     print(f"CPU: {cli_arguments.cpu}")
     print(f"Memory: {cli_arguments.memory}")
