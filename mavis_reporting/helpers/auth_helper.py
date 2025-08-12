@@ -88,8 +88,8 @@ def minimal_jwt(data):
         "data": {
             "user": {
                 "id": data["user"]["id"],
-                "reporting_app_session_token": data["user"][
-                    "reporting_app_session_token"
+                "reporting_api_session_token": data["user"][
+                    "reporting_api_session_token"
                 ],
             },
             "cis2_info": data["cis2_info"],
@@ -117,7 +117,7 @@ def fake_user_session_info():
             "given_name": "Nurse",
             "family_name": "Joy",
             "session_token": None,
-            "reporting_app_session_token": None,
+            "reporting_api_session_token": None,
             "fallback_role": "nurse",
         },
         "cis2_info": {

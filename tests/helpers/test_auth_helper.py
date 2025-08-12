@@ -41,7 +41,7 @@ def mock_user_info():
         },
     }
     info["user"]["session_token"] = random_token()
-    info["user"]["reporting_app_session_token"] = random_token()
+    info["user"]["reporting_api_session_token"] = random_token()
     return info
 
 
@@ -87,7 +87,7 @@ def test_that_log_user_in_sets_minimal_jwt(
 
         assert jwt_payload["data"]["user"]["id"] == fake_data["user"]["id"]
         assert (
-            jwt_payload["data"]["user"]["reporting_app_session_token"]
-            == fake_data["user"]["reporting_app_session_token"]
+            jwt_payload["data"]["user"]["reporting_api_session_token"]
+            == fake_data["user"]["reporting_api_session_token"]
         )
         assert jwt_payload["data"]["cis2_info"] == fake_data["cis2_info"]
