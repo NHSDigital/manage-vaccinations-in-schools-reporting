@@ -32,6 +32,8 @@ class Config:
 
     ROOT_URL = os.environ.get("ROOT_URL")
 
+    SHOW_SESSION_DUMP = str2bool(os.environ.get("SHOW_SESSION_DUMP"))
+
 
 class DevelopmentConfig(Config):
     """Development configuration"""
@@ -39,6 +41,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = False
     LOG_LEVEL = "DEBUG"
+    SHOW_SESSION_DUMP = True
     # Uncomment this line to allow developing locally without having
     # the main Mavis running:
     # FAKE_LOGIN_ENABLED = True

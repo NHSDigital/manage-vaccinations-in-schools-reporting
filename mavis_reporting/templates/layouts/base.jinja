@@ -40,16 +40,18 @@
 {% endblock %}
 
 
-{% block session %}
-  <details>
-    <summary>session</summary>
-      <dl>
-      {% for key in session %}
-        <dt>{{ key }}</dt>
-          <dd>{{ session.get(key) }}</dd>
-      {% endfor %}
-      </dl>
-    </details>
-{% endblock %}
+{% if config["SHOW_SESSION_DUMP"] %}
+  {% block session %}
+    <details>
+      <summary>session</summary>
+        <dl>
+        {% for key in session %}
+          <dt>{{ key }}</dt>
+            <dd>{{ session.get(key) }}</dd>
+        {% endfor %}
+        </dl>
+      </details>
+  {% endblock %}
+{% endif %}
 
 {% endblock %}
