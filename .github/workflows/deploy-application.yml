@@ -128,7 +128,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Download task definition artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: ${{ runner.temp }}
           name: ${{ inputs.environment }}-task-definition
