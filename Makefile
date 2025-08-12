@@ -22,6 +22,10 @@ sentinel: package.json package-lock.json pyproject.toml poetry.lock
 	
 	@touch sentinel
 
+build-assets: sentinel
+	@npm run build:scss 
+	@npm run build:js
+	
 .PHONY: install
 install: sentinel
 	
