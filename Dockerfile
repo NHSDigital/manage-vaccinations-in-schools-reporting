@@ -4,7 +4,7 @@ WORKDIR /app
 
 ADD package.json package-lock.json pyproject.toml poetry.lock Makefile /app/
 
-RUN apk add build-base libffi-dev npm
+RUN apk add build-base libffi-dev npm bash curl
 
 RUN pip install poetry
 RUN make install
