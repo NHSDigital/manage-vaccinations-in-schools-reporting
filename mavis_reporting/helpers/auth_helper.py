@@ -27,16 +27,23 @@ def login_required(f):
             current_app.logger.info("NOT logged in")
             auth_code = request.args.get("code")
             if auth_code:
-                user_data = mavis_helper.verify_auth_code(auth_code, current_app)
-                log_user_in(user_data, session)
-                return redirect(url_helper.url_without_param(request.full_path, "code"))
-            else:
-                current_app.logger.info("no code given")
-                target_url = mavis_helper.mavis_url(
-                    current_app,
-                    "/start?redirect_uri=" + urllib.parse.quote(request.url),
-                )
-                return redirect(target_url)
+                try:
+                    user_data = mavis_helper.verify_auth_code(auth_code, current_app)
+                    log_user_in(user_data, session)
+                    return redirect(
+                        url_helper.url_without_param(request.full_path, "code")
+                    )
+                except KeyError:
+                    pass
+
+            # either they're not logged in, or gave an invalid response
+            current_app.logger.info("no code given")
+            return_url = url_helper.externalise_current_url(current_app, request)
+            target_url = mavis_helper.mavis_url(
+                current_app,
+                "/start?redirect_uri=" + urllib.parse.quote(return_url),
+            )
+            return redirect(target_url)
 
         return f(*args, **kwargs)
 

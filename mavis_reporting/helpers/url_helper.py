@@ -1,4 +1,4 @@
-from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urlunparse
+from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urlunparse, urljoin
 
 
 def url_without_param(url, param):
@@ -14,3 +14,9 @@ def url_without_param(url, param):
         return urlunparse(parsed_url)
     else:
         return url
+
+
+def externalise_current_url(current_app, request):
+    return urljoin(
+        current_app.config["ROOT_URL"] or request.host_url, request.full_path
+    )
