@@ -9,7 +9,7 @@ def create_app(config_name=None):
     if config_name is None:
         config_name = os.environ.get("FLASK_ENV", "development")
 
-    app = Flask(__name__, static_url_path="/assets")
+    app = Flask(__name__, static_url_path="/reporting/assets")
     app.config.from_object(config[config_name])
 
     configure_jinja2(app)
