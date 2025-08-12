@@ -30,6 +30,8 @@ class Config:
     # (the default user from db/seeds.rb on the main mavis app)
     FAKE_LOGIN_ENABLED = str2bool(os.environ.get("FAKE_LOGIN_ENABLED"))
 
+    ROOT_URL = os.environ.get("ROOT_URL")
+
 
 class DevelopmentConfig(Config):
     """Development configuration"""

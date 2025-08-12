@@ -113,6 +113,6 @@ To do this, it requires:
 1. A copy of the main Mavis app must be running and available at the URL given in the `MAVIS_ROOT_URL` env var
 2. That copy of Mavis must:
    - include [this corresponding PR](https://github.com/nhsuk/manage-vaccinations-in-schools/pull/3866/)
-   - have the `reporting_app` feature flag enabled
-   - have a value for `Settings.mavis_reporting_app.client_id` (..which can also be set via the `MAVIS_REPORTING_APP__CLIENT_ID` environment variable) which matches this application's `CLIENT_ID` value
-   - have a value for `Settings.mavis_reporting_app.client_secret` (..which can also be set via the `MAVIS_REPORTING_APP__CLIENT_SECRET` environment variable) which matches this application's `CLIENT_SECRET` value
+   - have the `reporting_api` feature flag enabled
+   - have a value for `Settings.mavis_reporting_api.client_app.client_id` (..which can also be set via the `MAVIS_REPORTING_API__CLIENT_ID` environment variable) which matches this application's `CLIENT_ID` value
+   - have a value for `Settings.mavis_reporting_api.client_app.client_secret` (..which can also be set via the `MAVIS_REPORTING_API__CLIENT_SECRET` environment variable) which matches this application's `CLIENT_SECRET` value
