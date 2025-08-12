@@ -21,7 +21,7 @@ class Config:
 
     # Flask config
     # Flask-internal secret
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "placeholder-secret-key-replace-this"
     TEMPLATES_AUTO_RELOAD = True
     SESSION_TTL_SECONDS = int(os.environ.get("SESSION_TTL_SECONDS") or "600")
 
