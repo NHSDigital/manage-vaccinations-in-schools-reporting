@@ -14,6 +14,7 @@ FROM builder
 WORKDIR /app
 
 ADD ./mavis_reporting /app/mavis_reporting
+RUN make build-assets
 
 # Create a new group `app` with Group ID `1000`.
 RUN addgroup --gid 1000 app
