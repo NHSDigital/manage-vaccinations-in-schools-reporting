@@ -12,8 +12,7 @@ from werkzeug.exceptions import Unauthorized
 
 import logging
 
-from mavis_reporting.helpers import mavis_helper
-from mavis_reporting.helpers import auth_helper
+from mavis_reporting.helpers import mavis_helper, auth_helper, url_helper
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +42,7 @@ def api_call():
     try:
         response = mavis_helper.api_call(current_app, session, "/api/reporting/totals")
     except Unauthorized:
-        return_url = urllib.parse.urljoin(
-            current_app.config["ROOT_URL"] or request.server, request.full_path
-        )
+        return_url = url_helper.externalise_current_url(current_app, request)
         return mavis_helper.login_and_return_after(current_app, return_url)
 
     data = response.json()
