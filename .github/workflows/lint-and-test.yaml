@@ -11,7 +11,7 @@ jobs:
     name: Scan secrets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Full history is needed to scan all commits
       - uses: jdx/mise-action@v2
@@ -25,7 +25,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: "Install dependencies"
         uses: jdx/mise-action@v2
         with:
@@ -44,7 +44,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: "Install dependencies"
         uses: jdx/mise-action@v2
         with:
@@ -63,7 +63,7 @@ jobs:
       html_report_url: ${{ steps.upload-html-report-artifact-step.outputs.artifact-url }}
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: "Install dependencies"
         uses: jdx/mise-action@v2
         with:
