@@ -53,7 +53,7 @@ build-docker:
 
 .PHONY: run-docker
 run-docker:
-	docker run --rm -p ${HOST_PORT}:5000 -e GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS} ${DOCKER_IMAGE}
+	docker run --rm --name mavis_reporting -p ${HOST_PORT}:5000 -e GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS} ${DOCKER_IMAGE}
 
 test: install
 	@echo "Running all tests .."

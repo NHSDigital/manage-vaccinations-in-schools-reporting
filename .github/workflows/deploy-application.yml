@@ -91,26 +91,45 @@ jobs:
         with:
           role-to-assume: ${{ env.aws-role }}
           aws-region: eu-west-2
-      - name: Install poetry
-        run: pipx install poetry
-      - name: Setup python
+      # - name: Setup python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: 3.13.0
+      #     cache: poetry
+      - name: Setup Poetry cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.HOME }}/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-store-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Use Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: 3.13.0
-          cache: poetry
-      - run: poetry install
+          python-version: "3.13"
+          
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install pip requirements
+        run: poetry install --no-interaction --no-root
+
+      - name: Force compatible venv version
+        run: poetry add "virtualenv (<=20.32.0)"
+      - name: Add missing dependencies
+        run: poetry add boto3
+
       - name: Populate task definition
         id: populate-task-definition
         run: |
-          poetry run python scripts/populate_task_definition.py ${{ inputs.environment }} \
+          poetry run python3 scripts/populate_task_definition.py ${{ inputs.environment }} \
             -i "${{ inputs.git_sha_to_deploy || github.sha }}" \
-            -o task-definition.json
-          cat task-definition.json
-      - name: Make artifact for task definition
+            -o web-task-definition.json
+          cat web-task-definition.json
+      - name: Make artifact for web task definition
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.environment }}-task-definition
-          path: task-definition.json
+          name: ${{ inputs.environment }}-web-task-definition
+          path: web-task-definition.json
 
   deploy:
     name: Deploy reporting service
@@ -145,10 +164,11 @@ jobs:
         with:
           task-definition: ${{ runner.temp }}/task-definition.json
           codedeploy-appspec: appspec.yaml
-          cluster: mavis-${{ inputs.environment }}
-          service: mavis-${{ inputs.environment }}-reporting
-          codedeploy-application: mavis-${{ inputs.environment }}
-          codedeploy-deployment-group: reporting-${{ inputs.environment }}
+          cluster: ${{ env.cluster_name }}
+          service: ${{ env.web_service }}
+          codedeploy-application: ${{ env.web_codedeploy_application }}
+          codedeploy-deployment-group: ${{ env.web_codedeploy_group }}
+          wait-for-service-stability: true
       - name: Wait for deployment to complete
         run: |
           echo "Waiting for CodeDeploy deployment ${{ steps.deploy-reporting-service.outputs.codedeploy-deployment-id }} to complete..."
