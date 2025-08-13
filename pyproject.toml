@@ -27,7 +27,7 @@ honcho = "^2.0.0"
 pytest = "^8.4.1"
 coverage = "^7.10.3"
 coverage-badge = "^1.1.2"
-boto3 = "==1.40.6"
+boto3 = "==1.40.8"
 pyyaml = "^6.0.2"
 
 [build-system]
