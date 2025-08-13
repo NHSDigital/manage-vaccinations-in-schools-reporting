@@ -53,6 +53,7 @@ class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     LOG_LEVEL = "INFO"
+    SHOW_SESSION_DUMP = False
 
 
 class TestingConfig(Config):
