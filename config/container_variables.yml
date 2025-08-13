@@ -16,5 +16,6 @@ environments:
   sandbox-alpha:
     ROOT_URL: https://sandbox-alpha.mavistesting.com/reporting/
     MAVIS_ROOT_URL: https://sandbox-alpha.mavistesting.com/
+    FLASK_ENV: staging
     
   sandbox-beta:
