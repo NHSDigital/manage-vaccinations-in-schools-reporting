@@ -9,7 +9,7 @@
     "build:js:dev": "esbuild mavis_reporting/javascript/app.js --bundle --outfile=mavis_reporting/static/js/app.js --sourcemap --minify --watch"
   },
   "dependencies": {
-    "nhsuk-frontend": "^9.6.4"
+    "nhsuk-frontend": "^10.0.0"
   },
   "devDependencies": {
     "esbuild": "^0.25.9",
