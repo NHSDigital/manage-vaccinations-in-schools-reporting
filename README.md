@@ -39,7 +39,7 @@ A Flask-based web application for the commissioner reporting component of Mavis.
    make dev
    ```
 
-   The application will be available at <http://localhost:5001>. 
+   The application will be available at <http://localhost:5001>.
    You will need a version of Mavis running which supports the OAuth 2.0 token authentication method - please see [Runtime Dependencies](#runtime-dependencies)  below for details.
 
 ## Linting
@@ -60,7 +60,7 @@ To configure VSCode or variants thereof to use Ruff in your IDE, install the Ruf
 
 ## Building & Running a Docker container
 
-The application can be built and run via Docker, to support deployment to AWS. 
+The application can be built and run via Docker, to support deployment to AWS.
 By default, the docker container listens on port 5000, but as Mac OS typically has an existing system application (Control Center) listening on port 5000, we use Docker's port mapping to map port 5001 on the host (your laptop) to 5000 on the container.
 
 ### Build
@@ -112,7 +112,6 @@ To do this, it requires:
 
 1. A copy of the main Mavis app must be running and available at the URL given in the `MAVIS_ROOT_URL` env var
 2. That copy of Mavis must:
-   - include [this corresponding PR](https://github.com/nhsuk/manage-vaccinations-in-schools/pull/3866/)
    - have the `reporting_api` feature flag enabled
-   - have a value for `Settings.mavis_reporting_api.client_app.client_id` (..which can also be set via the `MAVIS_REPORTING_API__CLIENT_ID` environment variable) which matches this application's `CLIENT_ID` value
-   - have a value for `Settings.mavis_reporting_api.client_app.client_secret` (..which can also be set via the `MAVIS_REPORTING_API__CLIENT_SECRET` environment variable) which matches this application's `CLIENT_SECRET` value
+   - have a value for `Settings.reporting_api.client_app.client_id` (..which can also be set via the `MAVIS__REPORTING_API__CLIENT_APP__CLIENT_ID` environment variable) which matches this application's `CLIENT_ID` value
+   - have a value for `Settings.reporting_api.client_app.secret` (..which can also be set via the `MAVIS__REPORTING_API__CLIENT_APP__SECRET` environment variable) which matches this application's `CLIENT_SECRET` value
