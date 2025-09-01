@@ -56,6 +56,15 @@ class ProductionConfig(Config):
     SHOW_SESSION_DUMP = False
 
 
+class StagingConfig(Config):
+    """Staging configuration - for sandbox-alpha/-beta"""
+
+    DEBUG = False
+    TESTING = False
+    LOG_LEVEL = "INFO"
+    SHOW_SESSION_DUMP = False
+
+
 class TestingConfig(Config):
     """Testing configuration"""
 
@@ -67,5 +76,6 @@ config = {
     "development": DevelopmentConfig,
     "production": ProductionConfig,
     "testing": TestingConfig,
+    "staging": StagingConfig,
     "default": DevelopmentConfig,
 }
