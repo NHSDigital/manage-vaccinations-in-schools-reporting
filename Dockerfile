@@ -25,5 +25,7 @@ RUN adduser app -h /app -u 1000 -G app -DH
 # `1000`.
 USER 1000
 
+VOLUME ["/tmp", "/var/tmp", "/usr/tmp"]
+
 # pass through additional arguments like --workers=5 via GUNICORN_CMD_ARGS
 CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:5000", "mavis_reporting:create_app()"]
