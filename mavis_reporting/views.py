@@ -21,6 +21,14 @@ logger = logging.getLogger(__name__)
 main = Blueprint("main", __name__)
 
 
+@main.context_processor
+def inject_mavis_data():
+    """Inject common data into the template context."""
+    return {
+        "site_title": "Manage vaccinations in schools",
+    }
+
+
 @main.route("/")
 @auth_helper.login_required
 def index():
