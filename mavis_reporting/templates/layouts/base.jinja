@@ -15,16 +15,12 @@
   "showNav": "true",
   "primaryLinks": [
       {
-        "url": config["MAVIS_ROOT_URL"],
-        "label": "Home",
-      },
-      {
-        "url": config["MAVIS_ROOT_URL"] + 'dashboard',
+        "url": url_for('main.index'),
         "label": "Dashboard",
       },
       {
-        "url": "/reporting/",
-        "label": "Reporting",
+        "url": url_for('main.download'),
+        "label": "Download data",
       },
       {
         "url": "/reporting/api-call/",
