@@ -1,0 +1,95 @@
+{% from "components/heading.jinja" import heading %}
+{% from "select/macro.jinja" import select %}
+{% from "checkboxes/macro.jinja" import checkboxes %}
+{% from "button/macro.jinja" import button %}
+
+{% extends 'layouts/base.jinja' %}
+
+{% block pageTitle %}Download data{% endblock %}
+
+{% block page_content %}
+
+{{ heading({
+  "text": "Download data",
+  "level": 1,
+  "size": "xl",
+}) }}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+    <p>Download data for the number of vaccinations given to children in schools by month for your organisation.</p>
+  </div>
+</div>
+
+<form action="{{ url_for('main.download') }}" method="post">
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+    {{ heading({
+      "text": "Choose a programme",
+      "level": 2,
+      "size": "s",
+    }) }}
+
+    {% set programme_items = [] %}
+    {% for programme in programmes %}
+      {% set _ = programme_items.append({
+        "text": programme["name"],
+        "value": programme["code"],
+        "selected": programme["code"] == "hpv",
+      }) %}
+    {% endfor %}
+
+    {{ select({
+      "label": {
+        "text": "Programme",
+        "classes": "nhsuk-u-visually-hidden",
+      },
+      "id": "programme",
+      "name": "programme",
+      "items": programme_items,
+    }) }}
+  </div>
+</div>
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+    {{ heading({
+      "text": "Choose other variables",
+      "level": 2,
+      "size": "s",
+    }) }}
+
+    {{ checkboxes({
+      "id": "variables",
+      "name": "variables",
+      "items": [
+        {
+          "text": "Local authority",
+          "value": "local_authority",
+        },
+        {
+          "text": "School",
+          "value": "school",
+        },
+        {
+          "text": "Year group",
+          "value": "year_group",
+        },
+        {
+          "text": "Gender",
+          "value": "gender",
+        }
+      ],
+    }) }}
+  </div>
+</div>
+
+{{ button({
+  "text": "Download data",
+  "type": "submit",
+}) }}
+
+</form>
+
+{% endblock %}

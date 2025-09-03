@@ -4,6 +4,8 @@ from flask import (
     request,
     session,
     current_app,
+    redirect,
+    url_for,
 )
 
 from healthcheck import HealthCheck
@@ -23,6 +25,21 @@ main = Blueprint("main", __name__)
 @auth_helper.login_required
 def index():
     return render_template("default.jinja")
+
+
+@main.route("/download", methods=["GET", "POST"])
+@auth_helper.login_required
+def download():
+    if request.method == "POST":
+        return redirect(url_for("main.download"))
+
+    programmes = [
+        {"code": "hpv", "name": "HPV"},
+        {"code": "flu", "name": "Flu"},
+        {"code": "menacwy", "name": "MenACWY"},
+        {"code": "td-ipv", "name": "Td/IPV"},
+    ]
+    return render_template("download.jinja", programmes=programmes)
 
 
 @main.errorhandler(404)
