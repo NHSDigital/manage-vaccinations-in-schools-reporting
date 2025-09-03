@@ -24,9 +24,8 @@ def load_yaml_config(file_path: str) -> Dict[str, Any]:
 def extract_cloud_variables(
     config: Dict[str, Any], environment: str, server_type: str
 ) -> List[str]:
-    """
-    Extract cloud variables from YAML config for the given environment and server type.
-    """
+    """Extract cloud variables from YAML config for the given
+    environment and server type."""
     cloud_vars = []
     env_config = config[environment]
     if not env_config:
@@ -97,10 +96,9 @@ Examples:
 
     ssm_parameter_path = f"/{args.environment}/envs/{args.server_type}"
     if cloud_vars.__len__() == 0:
-        print(
-            f"No cloud variables found for '{args.environment}' and "
-            f"'{args.server_type}', skipping update."
-        )
+        msg = f"No cloud variables found for '{args.environment}'"
+        msg += f" and '{args.server_type}', skipping update"
+        print(msg)
     else:
         update_ssm_parameter(ssm_parameter_path, cloud_vars, args.app_version)
         print("Cloud variables updated successfully")

@@ -20,7 +20,7 @@ def random_token():
 
 
 def mock_user_info():
-    info = {
+    jwt_data = {
         "user": {
             "id": 1,
             "email": "nurse.joy@example.com",
@@ -40,9 +40,17 @@ def mock_user_info():
             },
         },
     }
-    info["user"]["session_token"] = random_token()
-    info["user"]["reporting_api_session_token"] = random_token()
-    return info
+    jwt_data["user"]["session_token"] = random_token()
+    jwt_data["user"]["reporting_api_session_token"] = random_token()
+    return {
+        "jwt_data": jwt_data,
+        "user_nav": {
+            "items": [
+                {"text": "Test User", "icon": True},
+                {"href": "/logout", "text": "Log out"},
+            ]
+        },
+    }
 
 
 def test_that_log_user_in_sets_last_visit_to_now(app):
@@ -61,7 +69,7 @@ def test_that_log_user_in_copies_cis2_info_from_the_given_data(app):
     with app.app_context():
         configure_app(app)
         auth_helper.log_user_in(mock_user_info(), mock_session)
-        assert mock_session["cis2_info"] == mock_user_info()["cis2_info"]
+        assert mock_session["cis2_info"] == mock_user_info()["jwt_data"]["cis2_info"]
 
 
 def test_that_log_user_in_copies_user_from_the_given_data(app):
@@ -71,7 +79,7 @@ def test_that_log_user_in_copies_user_from_the_given_data(app):
     with app.app_context():
         configure_app(app)
         auth_helper.log_user_in(fake_data, mock_session)
-        assert mock_session["user"] == fake_data["user"]
+        assert mock_session["user"] == fake_data["jwt_data"]["user"]
 
 
 def test_that_log_user_in_sets_minimal_jwt(
@@ -85,9 +93,9 @@ def test_that_log_user_in_sets_minimal_jwt(
         assert mock_session["jwt"] is not None
         jwt_payload = auth_helper.decode_jwt(mock_session["jwt"])
 
-        assert jwt_payload["data"]["user"]["id"] == fake_data["user"]["id"]
+        assert jwt_payload["data"]["user"]["id"] == fake_data["jwt_data"]["user"]["id"]
         assert (
             jwt_payload["data"]["user"]["reporting_api_session_token"]
-            == fake_data["user"]["reporting_api_session_token"]
+            == fake_data["jwt_data"]["user"]["reporting_api_session_token"]
         )
-        assert jwt_payload["data"]["cis2_info"] == fake_data["cis2_info"]
+        assert jwt_payload["data"]["cis2_info"] == fake_data["jwt_data"]["cis2_info"]

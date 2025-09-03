@@ -35,7 +35,8 @@ def verify_auth_code(code, current_app):
 
     auth_code_response_data = r.json()
     jwt_data = auth_helper.decode_jwt(auth_code_response_data["jwt"], current_app)
-    return jwt_data["data"]
+    user_nav = auth_code_response_data.get("user_nav", "")
+    return {"jwt_data": jwt_data["data"], "user_nav": user_nav}
 
 
 def api_call(current_app, session, path, params={}):
