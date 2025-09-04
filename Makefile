@@ -11,11 +11,10 @@ clean:
 	@rm -rf .venv
 	@rm -rf __pycache__
 
-sentinel: package.json package-lock.json pyproject.toml poetry.lock
+sentinel: package.json package-lock.json pyproject.toml uv.lock
 	@echo "== Installing dependencies =="
 	@npm install || (echo "Failed to install npm dependencies"; exit 1)
-	@poetry config virtualenvs.in-project true
-	@poetry install || (echo "Failed to install Python dependencies"; exit 1)
+	@uv sync --all-extras || (echo "Failed to install Python dependencies"; exit 1)
 
 	@echo "== Copying NHSUK favicons =="
 	@make copy-nhsuk-favicons
@@ -31,17 +30,17 @@ install: sentinel
 
 .PHONY: lint
 lint: install
-	poetry run ruff check .
+	uv run ruff check .
 
 .PHONY: lint-fix
 lint-fix: install
-	poetry run ruff check --fix .
+	uv run ruff check --fix .
 
 .PHONY: dev
 dev: install
 	@echo "== Starting development servers =="
 	@echo "Press Ctrl+C to stop all processes"
-	@poetry run honcho start -f Procfile.dev
+	@uv run honcho start -f Procfile.dev
 
 .PHONY: copy-nhsuk-favicons
 copy-nhsuk-favicons:
@@ -57,13 +56,13 @@ run-docker:
 
 test: install
 	@echo "Running all tests .."
-	@poetry run pytest tests --verbose
+	@uv run pytest tests --verbose
 
 .PHONY: test-coverage
 test-coverage: install
 	@echo "Checking coverage on all tests .."
-	@poetry run coverage run -m  pytest tests --verbose
-	@poetry run coverage report --fail-under=${COVERAGE_THRESHOLD}
-	@poetry run coverage html
-	@poetry run coverage xml coverage.xml
-	@poetry run coverage-badge -o coverage.svg
+	@uv run coverage run -m  pytest tests --verbose
+	@uv run coverage report --fail-under=${COVERAGE_THRESHOLD}
+	@uv run coverage html
+	@uv run coverage xml coverage.xml
+	@uv run coverage-badge -o coverage.svg

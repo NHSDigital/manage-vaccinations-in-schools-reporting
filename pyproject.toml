@@ -2,34 +2,37 @@
 name = "manage-vaccinations-in-schools-reporting"
 version = "0.1.0"
 description = "Python/Flask application for the commissioner reporting component of Mavis"
-license = "MIT"
+license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "flask==3.1.2",
+    "python-dotenv==1.1.1",
+    "nhsuk-frontend-jinja==0.4.1",
+    "gunicorn>=23.0.0",
+    "py-healthcheck>=1.10.1",
+    "requests>=2.32.5",
+    "pyjwt>=2.10.1",
+]
 
-[tool.poetry]
-package-mode = false
-
-[tool.poetry.dependencies]
-flask = "==3.1.2"
-python-dotenv = "==1.1.1"
-nhsuk-frontend-jinja = "==0.4.1"
-gunicorn = "^23.0.0"
-py-healthcheck = "^1.10.1"
-requests = "^2.32.5"
-pyjwt = "^2.10.1"
+[project.optional-dependencies]
+dev = [
+    "ruff==0.12.11",
+    "honcho>=2.0.0",
+    "pytest>=8.4.1",
+    "coverage>=7.10.6",
+    "coverage-badge>=1.1.2",
+    "boto3==1.40.23",
+    "pyyaml>=6.0.2",
+]
 
 [tool.ruff.lint]
 select = ["ARG", "PL", "E", "W", "F"]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "==0.12.11"
-honcho = "^2.0.0"
-pytest = "^8.4.1"
-coverage = "^7.10.6"
-coverage-badge = "^1.1.2"
-boto3 = "==1.40.23"
-pyyaml = "^6.0.2"
+[tool.hatch.build.targets.wheel]
+packages = []
+only-include = ["mavis_reporting", "scripts"]
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
