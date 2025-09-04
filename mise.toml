@@ -1,0 +1,124 @@
+[tools]
+gitleaks = "latest"
+python = "3.13"
+uv = "latest"
+
+[env]
+DOCKER_IMAGE = "mavis-reporting:latest"
+HOST_PORT = "4001"
+FLASK_ENV = "development"
+SESSION_TTL_SECONDS = "600"
+MAVIS_ROOT_URL = "http://localhost:4000/"
+PYTHONPYCACHEPREFIX = "tmp/pycache"       # Output directory for Python bytecode cache
+
+[tasks."npm:install"]
+description = "Install Node.js dependencies"
+run = "npm install"
+
+[tasks."uv:sync"]
+description = "Sync Python dependencies with uv"
+run = "uv sync --all-extras"
+
+[tasks."build:favicons"]
+description = "Copy NHS UK frontend favicons"
+depends = ["npm:install"]
+sources = ["node_modules/nhsuk-frontend/dist/nhsuk/assets/images/*"]
+outputs = ["mavis/reporting/static/favicons/*"]
+run = [
+    "cp -r node_modules/nhsuk-frontend/dist/nhsuk/assets/images/* mavis/reporting/static/favicons/",
+]
+
+[tasks."build:css"]
+description = "Build CSS from SCSS"
+depends = ["npm:install"]
+sources = ["mavis/reporting/assets/scss/**/*.scss"]
+outputs = ["mavis/reporting/static/css/app.css"]
+run = "npm run build:scss"
+
+[tasks."build:js"]
+description = "Build JavaScript bundles"
+depends = ["npm:install"]
+sources = ["mavis/reporting/javascript/**/*.js"]
+outputs = ["mavis/reporting/static/js/app.js"]
+run = "npm run build:js"
+
+[tasks.bundle]
+description = "Install all dependencies"
+depends = ["npm:install", "uv:sync"]
+
+[tasks.build]
+description = "Build all assets"
+depends = ["bundle", "build:css", "build:js", "build:favicons"]
+
+[tasks.clean]
+description = "Clean build artifacts and dependencies"
+run = [
+    "rm -rf node_modules .venv .ruff_cache .pytest_cache htmlcov .coverage coverage* tmp/*",
+]
+
+[tasks.lint]
+description = "Run code linting"
+depends = ["uv:sync"]
+run = "uv run ruff check ."
+
+[tasks."lint:fix"]
+description = "Run code linting with autofix"
+depends = ["uv:sync"]
+run = "uv run ruff check --fix ."
+
+[tasks."dev:scss"]
+description = "Watch and build SCSS files"
+depends = ["npm:install"]
+run = "npm run build:scss:dev"
+
+[tasks."dev:js"]
+description = "Watch and build JS files"
+depends = ["npm:install"]
+run = "npm run build:js:dev"
+
+[tasks."dev:flask"]
+description = "Run Flask development server"
+depends = ["uv:sync"]
+run = "uv run flask run --debug -p $HOST_PORT"
+
+[tasks.dev]
+description = "Start development servers"
+depends = ["bundle"]
+run = "mise dev:scss ::: dev:js ::: dev:flask"
+
+[tasks.test]
+description = "Run all tests"
+depends = ["uv:sync"]
+run = ["uv run pytest tests"]
+
+[tasks."test:coverage"]
+description = "Run tests with coverage reporting"
+depends = ["uv:sync"]
+run = [
+    "uv run coverage run -m pytest tests",
+    "uv run coverage report --fail-under=80",
+    "uv run coverage html",
+    "uv run coverage xml coverage.xml",
+    "uv run coverage-badge -o coverage.svg -f",
+]
+
+[tasks.gitleaks]
+description = "Detect secrets with gitleaks"
+run = "gitleaks detect --verbose --redact"
+
+[tasks."docker:build"]
+description = "Build Docker image"
+run = "DOCKER_BUILDKIT=1 docker build -t ${DOCKER_IMAGE} ."
+
+[tasks."docker:run"]
+description = "Run Docker container"
+run = "docker run --rm -p ${HOST_PORT}:5000 -e GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS} ${DOCKER_IMAGE}"
+
+[tasks.docker]
+description = "Build and run Docker container"
+depends = ["docker:build"]
+run = "mise docker:run"
+
+[tasks.ci]
+description = "Run CI checks in parallel"
+depends = ["gitleaks", "lint", "test"]
