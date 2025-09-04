@@ -1,5 +1,6 @@
-.nhsuk-table--data {
+@use "config" as *;
 
+.nhsuk-table--data {
   th,
   td {
     padding: 12px;

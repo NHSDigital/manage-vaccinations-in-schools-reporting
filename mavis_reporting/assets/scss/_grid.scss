@@ -1,3 +1,5 @@
+@use "config" as *;
+
 .app-grid-column-filters {
   @include nhsuk-grid-column(one-quarter, $at: large-desktop);
 }
