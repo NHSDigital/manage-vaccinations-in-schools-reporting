@@ -6,7 +6,7 @@ import werkzeug
 from flask import current_app
 from unittest.mock import patch
 
-from mavis_reporting.helpers import mavis_helper
+from mavis.reporting.helpers import mavis_helper
 
 
 def test_mavis_url_with_just_path(app):
@@ -84,7 +84,7 @@ def test_that_verify_auth_code_is_called_correctly(
             status_code=200, json_obj={"jwt": "myjwt", "data": "mydata"}
         )
         with patch(
-            "mavis_reporting.helpers.mavis_helper.post_request",
+            "mavis.reporting.helpers.mavis_helper.post_request",
             return_value=mock_response,
         ) as mocked_request:
             with patch("jwt.decode", return_value={"data": "my data"}):
@@ -107,7 +107,7 @@ def test_that_api_call_is_called_correctly(
             status_code=200, json_obj={"jwt": "myjwt", "data": "mydata"}
         )
         with patch(
-            "mavis_reporting.helpers.mavis_helper.get_request",
+            "mavis.reporting.helpers.mavis_helper.get_request",
             return_value=mock_response,
         ) as mocked_request:
             mavis_helper.api_call(
@@ -143,7 +143,7 @@ def test_that_an_unauthorized_api_call_raises_an_exception_and_clears_the_sessio
                 status_code=code, json_obj={"jwt": "myjwt", "data": "mydata"}
             )
             with patch(
-                "mavis_reporting.helpers.mavis_helper.get_request",
+                "mavis.reporting.helpers.mavis_helper.get_request",
                 return_value=mock_response,
             ):
                 with pytest.raises(werkzeug.exceptions.Unauthorized):

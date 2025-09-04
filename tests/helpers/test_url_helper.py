@@ -1,4 +1,4 @@
-from mavis_reporting.helpers import url_helper
+from mavis.reporting.helpers import url_helper
 
 
 def test_url_without_param_with_a_single_param_removes_the_param():

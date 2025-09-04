@@ -31,7 +31,7 @@ select = ["ARG", "PL", "E", "W", "F"]
 
 [tool.hatch.build.targets.wheel]
 packages = []
-only-include = ["mavis_reporting", "scripts"]
+only-include = ["mavis", "scripts"]
 
 [build-system]
 requires = ["hatchling"]

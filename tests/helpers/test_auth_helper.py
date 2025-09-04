@@ -2,7 +2,7 @@ from os import urandom
 
 from datetime import datetime, timedelta, timezone
 
-from mavis_reporting.helpers import auth_helper
+from mavis.reporting.helpers import auth_helper
 
 
 def configure_app(app):

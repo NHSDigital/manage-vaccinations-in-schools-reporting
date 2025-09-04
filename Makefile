@@ -44,8 +44,8 @@ dev: install
 
 .PHONY: copy-nhsuk-favicons
 copy-nhsuk-favicons:
-	mkdir -p mavis_reporting/static/favicons
-	cp -r node_modules/nhsuk-frontend/dist/nhsuk/assets/images/* mavis_reporting/static/favicons/
+	mkdir -p mavis/reporting/static/favicons
+	cp -r node_modules/nhsuk-frontend/dist/nhsuk/assets/images/* mavis/reporting/static/favicons/
 
 build-docker:
 	docker build -t ${DOCKER_IMAGE} .

@@ -8,7 +8,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
-from mavis_reporting import create_app
+from mavis.reporting import create_app
 
 
 @pytest.fixture()

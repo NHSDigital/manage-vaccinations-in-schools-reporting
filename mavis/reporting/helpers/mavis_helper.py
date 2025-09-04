@@ -5,7 +5,7 @@ import werkzeug
 
 from flask import redirect
 
-from mavis_reporting.helpers import auth_helper
+from mavis.reporting.helpers import auth_helper
 
 
 def mavis_url(current_app, path, params={}):

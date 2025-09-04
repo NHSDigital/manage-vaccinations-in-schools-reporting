@@ -8,7 +8,7 @@ RUN apk add build-base libffi-dev npm bash curl
 
 RUN pip install uv
 
-ADD ./mavis_reporting /app/mavis_reporting
+ADD ./mavis/reporting /app/mavis/reporting
 ADD README.md /app/
 
 RUN uv sync --frozen --all-extras
@@ -30,4 +30,4 @@ USER 1000
 VOLUME ["/tmp", "/var/tmp", "/usr/tmp"]
 
 # pass through additional arguments like --workers=5 via GUNICORN_CMD_ARGS
-CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "mavis_reporting:create_app()"]
+CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "mavis.reporting:create_app()"]

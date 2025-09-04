@@ -11,7 +11,7 @@ from flask import (
 
 from functools import wraps
 
-from mavis_reporting.helpers import mavis_helper, url_helper
+from mavis.reporting.helpers import mavis_helper, url_helper
 
 
 def login_required(f):
