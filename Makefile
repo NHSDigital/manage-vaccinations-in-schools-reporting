@@ -30,11 +30,11 @@ install: sentinel
 
 .PHONY: lint
 lint: install
-	uv run ruff check .
+	uv run pre-commit run --all-files --hook-stage manual
 
 .PHONY: lint-fix
 lint-fix: install
-	uv run ruff check --fix .
+	uv run pre-commit run --all-files
 
 .PHONY: dev
 dev: install

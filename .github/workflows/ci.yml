@@ -25,7 +25,7 @@ jobs:
           SECRET_KEY: "${{ secrets.SECRET_KEY_FOR_TESTS }}"
         run: make test
 
-  ruff:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
