@@ -16,19 +16,19 @@ sentinel: package.json package-lock.json pyproject.toml poetry.lock
 	@npm install || (echo "Failed to install npm dependencies"; exit 1)
 	@poetry config virtualenvs.in-project true
 	@poetry install || (echo "Failed to install Python dependencies"; exit 1)
-	
+
 	@echo "== Copying NHSUK favicons =="
 	@make copy-nhsuk-favicons
-	
+
 	@touch sentinel
 
 build-assets: sentinel
-	@npm run build:scss 
+	@npm run build:scss
 	@npm run build:js
-	
+
 .PHONY: install
 install: sentinel
-	
+
 .PHONY: lint
 lint: install
 	poetry run ruff check .
@@ -46,7 +46,7 @@ dev: install
 .PHONY: copy-nhsuk-favicons
 copy-nhsuk-favicons:
 	mkdir -p mavis_reporting/static/favicons
-	cp -r node_modules/nhsuk-frontend/packages/assets/favicons/* mavis_reporting/static/favicons/
+	cp -r node_modules/nhsuk-frontend/dist/nhsuk/assets/images/* mavis_reporting/static/favicons/
 
 build-docker:
 	docker build -t ${DOCKER_IMAGE} .
@@ -57,14 +57,13 @@ run-docker:
 
 test: install
 	@echo "Running all tests .."
-	@poetry run pytest tests --verbose 
+	@poetry run pytest tests --verbose
 
 .PHONY: test-coverage
 test-coverage: install
 	@echo "Checking coverage on all tests .."
-	@poetry run coverage run -m  pytest tests --verbose 
+	@poetry run coverage run -m  pytest tests --verbose
 	@poetry run coverage report --fail-under=${COVERAGE_THRESHOLD}
 	@poetry run coverage html
 	@poetry run coverage xml coverage.xml
 	@poetry run coverage-badge -o coverage.svg
-	
