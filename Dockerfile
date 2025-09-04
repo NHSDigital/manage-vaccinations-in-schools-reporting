@@ -2,30 +2,32 @@ FROM python:3.13.7-alpine AS builder
 
 WORKDIR /app
 
-ADD package.json package-lock.json pyproject.toml poetry.lock Makefile /app/
+ADD package.json package-lock.json pyproject.toml uv.lock Makefile /app/
 
 RUN apk add build-base libffi-dev npm bash curl
 
-RUN pip install poetry
-RUN make install
+RUN pip install uv
 
+ADD ./mavis/reporting /app/mavis/reporting
+ADD README.md /app/
 
-FROM builder 
+RUN uv sync --frozen --all-extras
+RUN npm install
+
+FROM builder
+
 WORKDIR /app
 
-ADD ./mavis_reporting /app/mavis_reporting
 RUN make build-assets
 
-# Create a new group `app` with Group ID `1000`.
 RUN addgroup --gid 1000 app
-# Create a new user `app`, sets home directory to `/app`, User ID `1000`, in
-# the group `app`. The `-DH` option results in a system account.
 RUN adduser app -h /app -u 1000 -G app -DH
-# Change the user for subsequent commands in Dockerfile to the user with ID
-# `1000`.
+RUN mkdir -p /app/.cache/uv && chown -R app:app /app/.cache
+RUN chown -R app:app /app/.venv
+
 USER 1000
 
 VOLUME ["/tmp", "/var/tmp", "/usr/tmp"]
 
 # pass through additional arguments like --workers=5 via GUNICORN_CMD_ARGS
-CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:5000", "mavis_reporting:create_app()"]
+CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "mavis.reporting:create_app()"]

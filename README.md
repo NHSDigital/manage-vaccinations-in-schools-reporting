@@ -21,9 +21,9 @@ A Flask-based web application for the commissioner reporting component of Mavis.
 
 2. **Install project dependencies**
 
-   This will install the project dependencies using Poetry and NPM.
+   This will install the project dependencies using uv and NPM.
 
-   Note that the Poetry virtual environment will be created in the `.venv` directory to allow IDEs to use the correct Python interpreter.
+   Note that the uv virtual environment will be created in the `.venv` directory to allow IDEs to use the correct Python interpreter.
 
    ```bash
    make install

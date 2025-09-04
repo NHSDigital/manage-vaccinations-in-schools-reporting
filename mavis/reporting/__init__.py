@@ -1,6 +1,6 @@
 from flask import Flask, redirect
-from mavis_reporting.config import config
-from mavis_reporting.config.jinja2 import configure_jinja2
+from mavis.reporting.config import config
+from mavis.reporting.config.jinja2 import configure_jinja2
 
 import os
 
@@ -15,7 +15,7 @@ def create_app(config_name=None):
     configure_jinja2(app)
 
     # ruff: noqa: PLC0415
-    from mavis_reporting.views import main
+    from mavis.reporting.views import main
 
     app.register_blueprint(main, url_prefix="/reporting")
 

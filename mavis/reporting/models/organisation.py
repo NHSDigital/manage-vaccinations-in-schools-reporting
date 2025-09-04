@@ -1,4 +1,4 @@
-from mavis_reporting.helpers.measure_faker_helper import MeasureFaker
+from mavis.reporting.helpers.measure_faker_helper import MeasureFaker
 
 
 class Organisation:

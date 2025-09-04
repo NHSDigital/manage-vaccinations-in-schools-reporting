@@ -30,7 +30,7 @@ on:
         required: true
         type: string
 
-permissions: { }
+permissions: {}
 
 concurrency:
   group: deploy-mavis-${{ inputs.environment }}
@@ -95,14 +95,13 @@ jobs:
         with:
           role-to-assume: ${{ env.aws_role }}
           aws-region: eu-west-2
-      - name: Install poetry
-        run: pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
       - name: Setup python
         uses: actions/setup-python@v5
         with:
           python-version: 3.13.0
-          cache: poetry
-      - run: poetry install
+      - run: uv sync --dev
       - name: Get image digest
         id: get-image-digest
         run: |
@@ -133,7 +132,7 @@ jobs:
         run: mv ${{ steps.create-task-definition.outputs.task-definition }} ${{ runner.temp }}/reporting-task-definition.json
       - name: Populate SSM parameters for reporting service
         run: |
-          poetry run scripts/populate_ssm_parameters.py ${{ inputs.environment }} reporting
+          uv run scripts/populate_ssm_parameters.py ${{ inputs.environment }} reporting
       - name: Upload artifact for reporting task definition
         uses: actions/upload-artifact@v4
         with:
@@ -151,7 +150,7 @@ jobs:
   deploy:
     name: Deploy reporting service
     runs-on: ubuntu-latest
-    needs: [ prepare-deployment, approve-deployments ]
+    needs: [prepare-deployment, approve-deployments]
     permissions:
       id-token: write
     steps:

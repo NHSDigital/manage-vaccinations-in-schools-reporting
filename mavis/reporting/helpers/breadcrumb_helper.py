@@ -1,6 +1,6 @@
 from flask import url_for
 
-from mavis_reporting.models.organisation import Organisation
+from mavis.reporting.models.organisation import Organisation
 
 
 def generate_breadcrumb_items(organisations: list[Organisation]):

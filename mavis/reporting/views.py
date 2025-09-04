@@ -14,7 +14,7 @@ from werkzeug.exceptions import Unauthorized
 
 import logging
 
-from mavis_reporting.helpers import mavis_helper, auth_helper, url_helper
+from mavis.reporting.helpers import mavis_helper, auth_helper, url_helper
 
 logger = logging.getLogger(__name__)
 

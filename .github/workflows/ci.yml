@@ -1,0 +1,68 @@
+name: CI
+
+on: [push]
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Full history is needed to scan all commits
+      - uses: jdx/mise-action@v3
+        with:
+          cache: true
+      - run: gitleaks detect --verbose --redact
+
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+        with:
+          cache: true
+      - env:
+          SECRET_KEY: "${{ secrets.SECRET_KEY_FOR_TESTS }}"
+        run: make test
+
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+        with:
+          cache: true
+      - run: make lint
+
+  coverage:
+    needs: [pytest]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    outputs:
+      badge_url: ${{ steps.upload-coverage-badge-artifact-step.outputs.artifact-url }}
+      html_report_url: ${{ steps.upload-html-report-artifact-step.outputs.artifact-url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+        with:
+          cache: true
+      - env:
+          SECRET_KEY: "${{ secrets.SECRET_KEY_FOR_TESTS }}"
+          COVERAGE_THRESHOLD: 80
+        run: make test-coverage
+      - uses: actions/upload-artifact@v4
+        id: upload-html-report-artifact-step
+        if: always()
+        with:
+          name: coverage-html
+          path: htmlcov
+          retention-days: 10
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        id: upload-coverage-badge-artifact-step
+        if: always()
+        with:
+          name: coverage-badge
+          path: coverage.svg
+          retention-days: 10
+          compression-level: 0

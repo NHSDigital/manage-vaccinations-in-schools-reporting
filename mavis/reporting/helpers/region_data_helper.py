@@ -1,6 +1,6 @@
-from mavis_reporting.models.region import Region
-from mavis_reporting.models.provider import Provider
-from mavis_reporting.models.school import School
+from mavis.reporting.models.region import Region
+from mavis.reporting.models.provider import Provider
+from mavis.reporting.models.school import School
 
 
 def process_region_data(data: dict) -> Region:

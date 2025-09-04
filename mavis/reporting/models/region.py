@@ -2,11 +2,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from flask import url_for
 
-from mavis_reporting.models.organisation import Organisation
+from mavis.reporting.models.organisation import Organisation
 
 if TYPE_CHECKING:
-    from mavis_reporting.models.provider import Provider
-    from mavis_reporting.models.school import School
+    from mavis.reporting.models.provider import Provider
+    from mavis.reporting.models.school import School
 
 
 class Region(Organisation):

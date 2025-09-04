@@ -1,8 +1,8 @@
 import os
 
 from jinja2 import FileSystemLoader, ChoiceLoader, PackageLoader, ChainableUndefined
-from mavis_reporting.helpers.static_file_helper import static
-from mavis_reporting.helpers.number_helper import thousands, percentage
+from mavis.reporting.helpers.static_file_helper import static
+from mavis.reporting.helpers.number_helper import thousands, percentage
 
 
 def configure_jinja2(app):

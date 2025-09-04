@@ -13,14 +13,14 @@ __pycache__/
 .ruff_cache/
 node_modules/
 .idea/
-mavis_reporting/static/css/*
-!mavis_reporting/static/css/.keep
+mavis/reporting/static/css/*
+!mavis/reporting/static/css/.keep
 
-mavis_reporting/static/js/*
-!mavis_reporting/static/js/.keep
+mavis/reporting/static/js/*
+!mavis/reporting/static/js/.keep
 
-mavis_reporting/static/favicons/*
-!mavis_reporting/static/favicons/.keep
+mavis/reporting/static/favicons/*
+!mavis/reporting/static/favicons/.keep
 
 sentinel
 

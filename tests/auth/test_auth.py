@@ -76,7 +76,7 @@ def test_when_user_id_not_in_session_it_redirects_to_mavis_sign_in(client):
 
 
 @mock.patch(
-    "mavis_reporting.helpers.auth_helper.fake_login_enabled",
+    "mavis.reporting.helpers.auth_helper.fake_login_enabled",
     mock.MagicMock(return_value=True),
 )
 def test_when_fake_login_is_enabled_it_logs_in_as_nurse_joy_without_a_redirect(
