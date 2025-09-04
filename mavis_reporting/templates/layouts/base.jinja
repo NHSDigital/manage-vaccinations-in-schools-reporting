@@ -1,6 +1,6 @@
 
 {% from 'header/macro.jinja' import header %}
-{% extends 'template.jinja' %}
+{% extends 'nhsuk/template.jinja' %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ static('css/app.css') }}">
@@ -12,21 +12,22 @@
   "service": {
     "name": "Manage vaccinations in schools"
   },
-  "showNav": "true",
-  "primaryLinks": [
+  "navigation": {
+    "items": [
       {
-        "url": url_for('main.index'),
-        "label": "Dashboard",
+        "href": url_for('main.index'),
+        "text": "Dashboard",
       },
       {
-        "url": url_for('main.download'),
-        "label": "Download data",
+        "href": url_for('main.download'),
+        "text": "Download data",
       },
       {
-        "url": "/reporting/api-call/",
-        "label": "Test API call"
+        "href": "/reporting/api-call/",
+        "text": "Test API call"
       }
     ]
+  }
 }) }}
 {% endblock %}
 
