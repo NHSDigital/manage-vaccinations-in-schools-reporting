@@ -10,7 +10,8 @@
 {% block header %}
 {{ header({
   "service": {
-    "name": "Manage vaccinations in schools"
+    "text": "Manage vaccinations in schools",
+    "href": url_for('main.index')
   },
   "navigation": {
     "items": [
@@ -27,7 +28,8 @@
         "text": "Test API call"
       }
     ]
-  }
+  },
+  "account": session.user_nav if session.user_nav else None
 }) }}
 {% endblock %}
 

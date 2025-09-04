@@ -28,8 +28,11 @@ def login_required(f):
             auth_code = request.args.get("code")
             if auth_code:
                 try:
-                    user_data = mavis_helper.verify_auth_code(auth_code, current_app)
-                    log_user_in(user_data, session)
+                    verification_data = mavis_helper.verify_auth_code(
+                        auth_code, current_app
+                    )
+
+                    log_user_in(verification_data, session)
                     return redirect(
                         url_helper.url_without_param(request.full_path, "code")
                     )
@@ -83,11 +86,14 @@ def encode_jwt(payload, current_app=current_app):
 
 
 def log_user_in(data, session=session):
+    jwt_data = data["jwt_data"]
+
     session["last_visit"] = datetime.now().astimezone(timezone.utc)
-    session["cis2_info"] = data["cis2_info"]
-    session["user"] = data["user"]
-    session["user_id"] = data["user"]["id"]
-    session["jwt"] = minimal_jwt(data)
+    session["cis2_info"] = jwt_data["cis2_info"]
+    session["user"] = jwt_data["user"]
+    session["user_id"] = jwt_data["user"]["id"]
+    session["jwt"] = minimal_jwt(jwt_data)
+    session["user_nav"] = data["user_nav"]
 
 
 def minimal_jwt(data):
@@ -111,27 +117,39 @@ def fake_login_enabled(current_app):
 
 def fake_user_session_info():
     return {
-        "user_id": 1,
-        "created_at": datetime.now() - timedelta(minutes=5),
-        "last_visit": datetime.now() - timedelta(minutes=1),
-        "user": {
-            "id": 1,
-            "email": "nurse.joy@example.com",
-            "created_at": "2025-06-16T11:09:24.289+01:00",
-            "updated_at": "2025-07-04T10:11:36.100+01:00",
-            "provider": None,
-            "uid": None,
-            "given_name": "Nurse",
-            "family_name": "Joy",
-            "session_token": None,
-            "reporting_api_session_token": None,
-            "fallback_role": "nurse",
-        },
-        "cis2_info": {
-            "selected_org": {"code": "R1L", "name": "SAIS Organisation 1"},
-            "selected_role": {
-                "code": "S8000:G8000:R8001",
-                "workgroups": ["schoolagedimmunisations"],
+        "jwt_data": {
+            "user_id": 1,
+            "created_at": datetime.now() - timedelta(minutes=5),
+            "last_visit": datetime.now() - timedelta(minutes=1),
+            "user": {
+                "id": 1,
+                "email": "nurse.joy@example.com",
+                "created_at": "2025-06-16T11:09:24.289+01:00",
+                "updated_at": "2025-07-04T10:11:36.100+01:00",
+                "provider": None,
+                "uid": None,
+                "given_name": "Nurse",
+                "family_name": "Joy",
+                "session_token": None,
+                "reporting_api_session_token": None,
+                "fallback_role": "nurse",
+            },
+            "cis2_info": {
+                "selected_org": {"code": "R1L", "name": "SAIS Organisation 1"},
+                "selected_role": {
+                    "code": "S8000:G8000:R8001",
+                    "workgroups": ["schoolagedimmunisations"],
+                },
             },
         },
+        "user_nav": fake_user_nav(),
+    }
+
+
+def fake_user_nav():
+    return {
+        "items": [
+            {"text": "JOY, Nurse (Nurse)", "icon": True},
+            {"href": "/logout", "text": "Log out"},
+        ]
     }
