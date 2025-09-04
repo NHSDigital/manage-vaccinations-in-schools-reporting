@@ -15,16 +15,12 @@
   "showNav": "true",
   "primaryLinks": [
       {
-        "url": config["MAVIS_ROOT_URL"],
-        "label": "Home",
-      },
-      {
-        "url": config["MAVIS_ROOT_URL"] + 'dashboard',
+        "url": url_for('main.index'),
         "label": "Dashboard",
       },
       {
-        "url": "/reporting/",
-        "label": "Reporting",
+        "url": url_for('main.download'),
+        "label": "Download data",
       },
       {
         "url": "/reporting/api-call/",
@@ -38,20 +34,5 @@
 
 {% block page_content %}
 {% endblock %}
-
-
-{% if config["SHOW_SESSION_DUMP"] %}
-  {% block session %}
-    <details>
-      <summary>session</summary>
-        <dl>
-        {% for key in session %}
-          <dt>{{ key }}</dt>
-            <dd>{{ session.get(key) }}</dd>
-        {% endfor %}
-        </dl>
-      </details>
-  {% endblock %}
-{% endif %}
 
 {% endblock %}

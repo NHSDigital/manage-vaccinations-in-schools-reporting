@@ -4,6 +4,8 @@ from flask import (
     request,
     session,
     current_app,
+    redirect,
+    url_for,
 )
 
 from healthcheck import HealthCheck
@@ -19,10 +21,33 @@ logger = logging.getLogger(__name__)
 main = Blueprint("main", __name__)
 
 
+@main.context_processor
+def inject_mavis_data():
+    """Inject common data into the template context."""
+    return {
+        "site_title": "Manage vaccinations in schools",
+    }
+
+
 @main.route("/")
 @auth_helper.login_required
 def index():
     return render_template("default.jinja")
+
+
+@main.route("/download", methods=["GET", "POST"])
+@auth_helper.login_required
+def download():
+    if request.method == "POST":
+        return redirect(url_for("main.download"))
+
+    programmes = [
+        {"code": "hpv", "name": "HPV"},
+        {"code": "flu", "name": "Flu"},
+        {"code": "menacwy", "name": "MenACWY"},
+        {"code": "td-ipv", "name": "Td/IPV"},
+    ]
+    return render_template("download.jinja", programmes=programmes)
 
 
 @main.errorhandler(404)
