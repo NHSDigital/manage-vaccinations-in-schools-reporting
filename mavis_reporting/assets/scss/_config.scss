@@ -1,0 +1,12 @@
+@forward "nhsuk-frontend/dist/nhsuk" with (
+  $nhsuk-fonts-path: "../fonts/",
+  $nhsuk-page-width: 1280px,
+  $nhsuk-grid-widths: (
+    one-quarter: 25%,
+    one-third: 33.3333%,
+    one-half: 50%,
+    two-thirds: 66.6666%,
+    three-quarters: 75%,
+    full: 100%,
+  )
+);

@@ -1,19 +1,7 @@
-$nhsuk-fonts-path: "../fonts/";
-$nhsuk-page-width: 1280px;
-$nhsuk-grid-widths: (
-  one-quarter: 25%,
-  one-third: 33.3333%,
-  one-half: 50%,
-  two-thirds: 66.6666%,
-  three-quarters: 75%,
-  full: 100%,
-);
+@use "config" as *;
 
-@import "nhsuk-frontend/packages/nhsuk.scss";
-
-@import "grid";
-
-@import "components/app_control";
-@import "components/app_card";
-@import "components/secondary_navigation";
-@import "components/data_table";
+@use "grid";
+@use "app_control";
+@use "app_card";
+@use "secondary_navigation";
+@use "data_table";

@@ -1,7 +1,9 @@
+@use "config" as *;
+
 .app-grid-column-filters {
-  @include nhsuk-grid-column(one-quarter, $at: large-desktop, $class: false);
+  @include nhsuk-grid-column(one-quarter, $at: large-desktop);
 }
 
 .app-grid-column-content {
-  @include nhsuk-grid-column(three-quarters, $at: large-desktop, $class: false);
+  @include nhsuk-grid-column(three-quarters, $at: large-desktop);
 }
