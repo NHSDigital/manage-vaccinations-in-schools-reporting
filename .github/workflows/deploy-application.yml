@@ -91,7 +91,7 @@ jobs:
         with:
           ref: ${{ inputs.git_sha_to_deploy || github.sha }}
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ env.aws_role }}
           aws-region: eu-west-2
@@ -156,7 +156,7 @@ jobs:
       id-token: write
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ env.aws_role }}
           aws-region: eu-west-2
