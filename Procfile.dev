@@ -1,3 +1,0 @@
-scss: npm run build:scss:dev
-js: npm run build:js:dev
-flask: uv run flask run --debug -p 5001

@@ -2,7 +2,7 @@ FROM python:3.13.7-alpine AS builder
 
 WORKDIR /app
 
-ADD package.json package-lock.json pyproject.toml uv.lock Makefile /app/
+ADD package.json package-lock.json pyproject.toml uv.lock /app/
 
 RUN apk add build-base libffi-dev npm bash curl
 
@@ -18,7 +18,9 @@ FROM builder
 
 WORKDIR /app
 
-RUN make build-assets
+RUN mkdir -p mavis/reporting/static/favicons && \
+    cp -r node_modules/nhsuk-frontend/dist/nhsuk/assets/images/* mavis/reporting/static/favicons/ && \
+    npm run build:scss && npm run build:js
 
 RUN addgroup --gid 1000 app
 RUN adduser app -h /app -u 1000 -G app -DH

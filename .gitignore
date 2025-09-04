@@ -8,6 +8,8 @@
 # Please, add your custom content below!
 .DS_Store
 .env
+mise.local.toml
+mise.*.local.toml
 .venv/
 __pycache__/
 .ruff_cache/
@@ -22,9 +24,11 @@ mavis/reporting/static/js/*
 mavis/reporting/static/favicons/*
 !mavis/reporting/static/favicons/.keep
 
-sentinel
-
 .coverage
 htmlcov
 coverage.svg
 coverage.xml
+
+.pytest_cache
+tmp
+!tmp/.keep
