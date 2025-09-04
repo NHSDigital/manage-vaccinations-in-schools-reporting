@@ -9,7 +9,7 @@ $nhsuk-grid-widths: (
   full: 100%,
 );
 
-@import "nhsuk-frontend/packages/nhsuk.scss";
+@import "nhsuk-frontend/dist/nhsuk";
 
 @import "grid";
 
