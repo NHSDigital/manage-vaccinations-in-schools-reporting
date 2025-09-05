@@ -25,6 +25,9 @@ dev = [
     "pyright>=1.1.405",
 ]
 
+[tool.ruff]
+output-format = "github"
+
 [tool.ruff.lint]
 select = ["ARG", "PL", "E", "W", "F"]
 
