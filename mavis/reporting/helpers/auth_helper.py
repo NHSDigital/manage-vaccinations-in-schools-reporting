@@ -1,17 +1,16 @@
 from datetime import datetime, timedelta, timezone
-import jwt
-from urllib.parse import quote
+from functools import wraps
 from typing import Any
+from urllib.parse import quote
 
+import jwt
 from flask import (
+    current_app,
+    redirect,
     request,
     session,
-    redirect,
-    current_app,
 )
 from flask.sessions import SessionMixin
-
-from functools import wraps
 
 from mavis.reporting.helpers import mavis_helper, url_helper
 

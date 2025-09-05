@@ -1,8 +1,9 @@
+from datetime import datetime, timedelta, timezone
 from os import urandom
 from typing import cast
-from datetime import datetime, timedelta, timezone
 
 from flask.sessions import SessionMixin
+
 from mavis.reporting.helpers import auth_helper
 
 

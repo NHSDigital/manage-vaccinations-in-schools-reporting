@@ -30,6 +30,7 @@ output-format = "github"
 
 [tool.ruff.lint]
 select = ["ARG", "PL", "E", "W", "F"]
+extend-select = ["I"]
 
 [tool.hatch.build.targets.wheel]
 packages = []

@@ -1,8 +1,9 @@
+import os
+
 from flask import Flask, redirect
+
 from mavis.reporting.config import config
 from mavis.reporting.config.jinja2 import configure_jinja2
-
-import os
 
 
 def create_app(config_name=None):

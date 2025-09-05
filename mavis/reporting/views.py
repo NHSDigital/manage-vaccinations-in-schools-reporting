@@ -1,20 +1,18 @@
+import logging
+
 from flask import (
     Blueprint,
+    current_app,
+    redirect,
     render_template,
     request,
     session,
-    current_app,
-    redirect,
     url_for,
 )
-
 from healthcheck import HealthCheck
-
 from werkzeug.exceptions import Unauthorized
 
-import logging
-
-from mavis.reporting.helpers import mavis_helper, auth_helper, url_helper
+from mavis.reporting.helpers import auth_helper, mavis_helper, url_helper
 
 logger = logging.getLogger(__name__)
 

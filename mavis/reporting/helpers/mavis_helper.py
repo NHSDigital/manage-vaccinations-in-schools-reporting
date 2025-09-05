@@ -1,9 +1,9 @@
-from http import HTTPStatus
-import requests
 import urllib.parse
-from werkzeug.exceptions import Unauthorized
+from http import HTTPStatus
 
+import requests
 from flask import redirect
+from werkzeug.exceptions import Unauthorized
 
 from mavis.reporting.helpers import auth_helper
 

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import argparse
-import sys
 import os
+import sys
+from typing import Any, Dict, List
+
 import boto3
 import yaml
-from typing import Dict, List, Any
 
 
 def load_yaml_config(file_path: str) -> Dict[str, Any]:
