@@ -11,7 +11,7 @@ RUN pip install uv
 ADD ./mavis/reporting /app/mavis/reporting
 ADD README.md /app/
 
-RUN uv sync --frozen --all-extras
+RUN uv sync --frozen
 RUN npm install
 
 FROM builder
