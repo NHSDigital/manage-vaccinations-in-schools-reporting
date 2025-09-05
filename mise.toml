@@ -17,7 +17,7 @@ run = "npm install"
 
 [tasks."uv:sync"]
 description = "Sync Python dependencies with uv"
-run = "uv sync --all-extras"
+run = "uv sync --group dev"
 
 [tasks."build:favicons"]
 description = "Copy NHS UK frontend favicons"

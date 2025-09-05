@@ -14,7 +14,7 @@ dependencies = [
     "pyjwt>=2.10.1",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "ruff==0.12.12",
     "pytest>=8.4.1",
