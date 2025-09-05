@@ -1,11 +1,10 @@
+import urllib.parse
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
-from flask import session
 from os import urandom
 from unittest import mock
 
-
-import urllib.parse
+from flask import session
 
 
 def configure_app(app):

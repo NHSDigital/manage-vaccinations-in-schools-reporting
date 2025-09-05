@@ -1,10 +1,10 @@
 import json
 from http import HTTPStatus
-import pytest
-from werkzeug.exceptions import Unauthorized
-
-from flask import current_app
 from unittest.mock import patch
+
+import pytest
+from flask import current_app
+from werkzeug.exceptions import Unauthorized
 
 from mavis.reporting.helpers import mavis_helper
 

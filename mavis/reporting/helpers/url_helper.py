@@ -1,4 +1,4 @@
-from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urlunparse, urljoin
+from urllib.parse import parse_qs, parse_qsl, urlencode, urljoin, urlparse, urlunparse
 
 
 def url_without_param(url: str, param: str) -> str:

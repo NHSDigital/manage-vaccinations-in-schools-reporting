@@ -1,5 +1,6 @@
 import os
-from flask import url_for, current_app
+
+from flask import current_app, url_for
 
 
 def get_file_mtime(file_path):
