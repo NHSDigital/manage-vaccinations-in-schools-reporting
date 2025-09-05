@@ -1,7 +1,7 @@
 import json
 from http import HTTPStatus
 import pytest
-import werkzeug
+from werkzeug.exceptions import Unauthorized
 
 from flask import current_app
 from unittest.mock import patch
@@ -60,7 +60,7 @@ class MockResponse:
         self.json_obj = kwargs.get("json_obj", None)
 
     def json(self):
-        return self.json_obj or json.loads(self.text)
+        return self.json_obj or json.loads(self.text or "{}")
 
 
 def test_that_verify_auth_code_is_called_correctly(
@@ -146,7 +146,7 @@ def test_that_an_unauthorized_api_call_raises_an_exception_and_clears_the_sessio
                 "mavis.reporting.helpers.mavis_helper.get_request",
                 return_value=mock_response,
             ):
-                with pytest.raises(werkzeug.exceptions.Unauthorized):
+                with pytest.raises(Unauthorized):
                     mavis_helper.api_call(
                         app,
                         mock_session,

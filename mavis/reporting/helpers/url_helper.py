@@ -1,7 +1,7 @@
 from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urlunparse, urljoin
 
 
-def url_without_param(url, param):
+def url_without_param(url: str, param: str) -> str:
     parsed_url = urlparse(url)
     query_params_as_dict = parse_qs(parsed_url.query)
     if param in query_params_as_dict:
@@ -16,7 +16,7 @@ def url_without_param(url, param):
         return url
 
 
-def externalise_current_url(current_app, request):
+def externalise_current_url(current_app, request) -> str:
     return urljoin(
         current_app.config["ROOT_URL"] or request.host_url, request.full_path
     )

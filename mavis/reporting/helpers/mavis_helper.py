@@ -1,7 +1,7 @@
 from http import HTTPStatus
 import requests
 import urllib.parse
-import werkzeug
+from werkzeug.exceptions import Unauthorized
 
 from flask import redirect
 
@@ -49,7 +49,7 @@ def api_call(current_app, session, path, params={}):
     response = get_request(url, headers=headers)
     if response.status_code in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
         session.clear()
-        raise (werkzeug.exceptions.Unauthorized)
+        raise Unauthorized()
 
     return response
 
@@ -60,7 +60,7 @@ def login_and_return_after(current_app, return_url):
         "/start?redirect_uri=" + urllib.parse.quote_plus(return_url),
     )
     current_app.logger.warning("REDIRECTING TO %s", target_url)
-    return redirect(target_url)
+    return redirect(str(target_url))
 
 
 def get_request(url, headers={}):

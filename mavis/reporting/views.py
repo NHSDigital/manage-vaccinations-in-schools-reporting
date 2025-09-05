@@ -51,7 +51,7 @@ def download():
 
 
 @main.errorhandler(404)
-def page_not_found():
+def page_not_found(_error):
     return render_template("errors/404.html"), 404
 
 

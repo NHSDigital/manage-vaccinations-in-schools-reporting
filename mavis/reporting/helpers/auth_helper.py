@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import jwt
-import urllib
+from urllib.parse import quote
+from typing import Any
 
 from flask import (
     request,
@@ -8,6 +9,7 @@ from flask import (
     redirect,
     current_app,
 )
+from flask.sessions import SessionMixin
 
 from functools import wraps
 
@@ -34,7 +36,7 @@ def login_required(f):
 
                     log_user_in(verification_data, session)
                     return redirect(
-                        url_helper.url_without_param(request.full_path, "code")
+                        str(url_helper.url_without_param(request.full_path, "code"))
                     )
                 except KeyError:
                     pass
@@ -44,9 +46,9 @@ def login_required(f):
             return_url = url_helper.externalise_current_url(current_app, request)
             target_url = mavis_helper.mavis_url(
                 current_app,
-                "/start?redirect_uri=" + urllib.parse.quote(return_url),
+                "/start?redirect_uri=" + quote(return_url),
             )
-            return redirect(target_url)
+            return redirect(str(target_url))
 
         return f(*args, **kwargs)
 
@@ -85,7 +87,7 @@ def encode_jwt(payload, current_app=current_app):
     return jwt.encode(payload, secret, algorithm="HS512")
 
 
-def log_user_in(data, session=session):
+def log_user_in(data: dict[str, Any], session: SessionMixin):
     jwt_data = data["jwt_data"]
 
     session["last_visit"] = datetime.now().astimezone(timezone.utc)
