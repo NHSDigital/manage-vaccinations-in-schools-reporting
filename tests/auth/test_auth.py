@@ -5,18 +5,6 @@ from unittest import mock
 
 from flask import session
 
-from tests.helpers import create_random_token
-
-
-def configure_app(app):
-    app.config.update(
-        {
-            "TESTING": True,
-            "CLIENT_ID": create_random_token(),
-            "CLIENT_SECRET": create_random_token(),
-        }
-    )
-
 
 def default_url():
     return "/reporting/"
@@ -38,7 +26,6 @@ def test_when_session_has_a_user_id_and_is_not_expired_it_does_not_redirect(
     app, client
 ):
     with app.app_context():
-        configure_app(app)
         with client.session_transaction() as session:
             # set session vars without going through the login route
             session["user_id"] = 1
@@ -79,7 +66,6 @@ def test_when_fake_login_is_enabled_it_logs_in_as_nurse_joy_without_a_redirect(
     app, client
 ):
     with app.app_context():
-        configure_app(app)
         with client:
             # with client.session_transaction() as session:
             response = client.get(default_url(), follow_redirects=False)
