@@ -62,11 +62,6 @@ def inject_mavis_data():
 
 
 @main.route("/")
-@auth_helper.login_required
-def index():
-    return render_template("default.jinja")
-
-
 @main.route("/dashboard")
 @auth_helper.login_required
 def dashboard():

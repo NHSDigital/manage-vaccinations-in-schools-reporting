@@ -22,11 +22,6 @@ class Config:
     TEMPLATES_AUTO_RELOAD = True
     SESSION_TTL_SECONDS = int(os.environ.get("SESSION_TTL_SECONDS") or "600")
 
-    # If this is set to True, you will always have a session as user_id 1,
-    # nurse.joy@example.com, org: R1L, role: S8000:G8000:R8001
-    # (the default user from db/seeds.rb on the main mavis app)
-    FAKE_LOGIN_ENABLED = str2bool(os.environ.get("FAKE_LOGIN_ENABLED"))
-
     ROOT_URL = os.environ.get("ROOT_URL")
 
 
@@ -36,9 +31,6 @@ class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = False
     LOG_LEVEL = "DEBUG"
-    # Uncomment this line to allow developing locally without having
-    # the main Mavis running:
-    # FAKE_LOGIN_ENABLED = True
 
 
 class ProductionConfig(Config):

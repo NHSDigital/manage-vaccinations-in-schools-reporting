@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from functools import wraps
 from typing import Any
 from urllib.parse import quote
@@ -18,13 +18,7 @@ from mavis.reporting.helpers import mavis_helper, url_helper
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if fake_login_enabled(current_app):
-            current_app.logger.warning(
-                "FAKE_LOGIN_ENABLED! Logging in as fake_user_session_info"
-            )
-            log_user_in(fake_user_session_info(), session)
-
-        elif not is_logged_in(session, current_app):
+        if not is_logged_in(session, current_app):
             current_app.logger.info("NOT logged in")
             auth_code = request.args.get("code")
             if auth_code:
@@ -110,47 +104,3 @@ def minimal_jwt(data):
         }
     }
     return encode_jwt(payload)
-
-
-def fake_login_enabled(current_app):
-    return bool(current_app.config.get("FAKE_LOGIN_ENABLED"))
-
-
-def fake_user_session_info():
-    return {
-        "jwt_data": {
-            "user_id": 1,
-            "created_at": datetime.now() - timedelta(minutes=5),
-            "last_visit": datetime.now() - timedelta(minutes=1),
-            "user": {
-                "id": 1,
-                "email": "nurse.joy@example.com",
-                "created_at": "2025-06-16T11:09:24.289+01:00",
-                "updated_at": "2025-07-04T10:11:36.100+01:00",
-                "provider": None,
-                "uid": None,
-                "given_name": "Nurse",
-                "family_name": "Joy",
-                "session_token": None,
-                "reporting_api_session_token": None,
-                "fallback_role": "nurse",
-            },
-            "cis2_info": {
-                "selected_org": {"code": "R1L", "name": "SAIS Organisation 1"},
-                "selected_role": {
-                    "code": "S8000:G8000:R8001",
-                    "workgroups": ["schoolagedimmunisations"],
-                },
-            },
-        },
-        "user_nav": fake_user_nav(),
-    }
-
-
-def fake_user_nav():
-    return {
-        "items": [
-            {"text": "JOY, Nurse (Nurse)", "icon": True},
-            {"href": "/logout", "text": "Log out"},
-        ]
-    }

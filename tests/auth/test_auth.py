@@ -1,13 +1,13 @@
 import urllib.parse
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
-from unittest import mock
 
-from flask import session
+from mavis.reporting.helpers.auth_helper import log_user_in
+from tests.helpers import mock_user_info
 
 
 def default_url():
-    return "/reporting/"
+    return "/reporting/organisation/R1L/monthly-vaccinations"
 
 
 def it_redirects_to_mavis_start(response):
@@ -27,11 +27,7 @@ def test_when_session_has_a_user_id_and_is_not_expired_it_does_not_redirect(
 ):
     with app.app_context():
         with client.session_transaction() as session:
-            # set session vars without going through the login route
-            session["user_id"] = 1
-            session["last_visit"] = datetime.now().astimezone(timezone.utc) - timedelta(
-                minutes=1
-            )
+            log_user_in(mock_user_info(), session)
 
         response = client.get(default_url())
         assert response.status_code == HTTPStatus.OK
@@ -56,19 +52,3 @@ def test_when_user_id_not_in_session_it_redirects_to_mavis_sign_in(client):
 
     response = client.get(default_url(), follow_redirects=False)
     assert it_redirects_to_mavis_start(response)
-
-
-@mock.patch(
-    "mavis.reporting.helpers.auth_helper.fake_login_enabled",
-    mock.MagicMock(return_value=True),
-)
-def test_when_fake_login_is_enabled_it_logs_in_as_nurse_joy_without_a_redirect(
-    app, client
-):
-    with app.app_context():
-        with client:
-            # with client.session_transaction() as session:
-            response = client.get(default_url(), follow_redirects=False)
-            assert response.status_code == HTTPStatus.OK
-            assert session["user_id"] == 1
-            assert session["user"]["email"] == "nurse.joy@example.com"

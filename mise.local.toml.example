@@ -13,4 +13,3 @@ CLIENT_SECRET = "(some random hex string)"
 # MAVIS_ROOT_URL = "http://localhost:4000/"    # Already set in mise.toml
 # SESSION_TTL_SECONDS = "600"                  # Already set in mise.toml
 # ROOT_URL = ""                                # Only needed in production
-# FAKE_LOGIN_ENABLED = "true"                  # Uncomment to bypass OAuth
