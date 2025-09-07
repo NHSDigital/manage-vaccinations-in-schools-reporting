@@ -1,24 +1,21 @@
 import urllib.parse
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
-from os import urandom
 from unittest import mock
 
 from flask import session
+
+from tests.helpers import create_random_token
 
 
 def configure_app(app):
     app.config.update(
         {
             "TESTING": True,
-            "CLIENT_ID": random_token(),
-            "CLIENT_SECRET": random_token(),
+            "CLIENT_ID": create_random_token(),
+            "CLIENT_SECRET": create_random_token(),
         }
     )
-
-
-def random_token():
-    return urandom(16).hex()
 
 
 def default_url():

@@ -1,24 +1,20 @@
 from datetime import datetime, timedelta, timezone
-from os import urandom
 from typing import cast
 
 from flask.sessions import SessionMixin
 
 from mavis.reporting.helpers import auth_helper
+from tests.helpers import create_random_token
 
 
 def configure_app(app):
     app.config.update(
         {
             "TESTING": True,
-            "CLIENT_ID": random_token(),
-            "CLIENT_SECRET": random_token(),
+            "CLIENT_ID": create_random_token(),
+            "CLIENT_SECRET": create_random_token(),
         }
     )
-
-
-def random_token():
-    return urandom(16).hex()
 
 
 def mock_user_info():
@@ -42,8 +38,8 @@ def mock_user_info():
             },
         },
     }
-    jwt_data["user"]["session_token"] = random_token()
-    jwt_data["user"]["reporting_api_session_token"] = random_token()
+    jwt_data["user"]["session_token"] = create_random_token()
+    jwt_data["user"]["reporting_api_session_token"] = create_random_token()
     return {
         "jwt_data": jwt_data,
         "user_nav": {
