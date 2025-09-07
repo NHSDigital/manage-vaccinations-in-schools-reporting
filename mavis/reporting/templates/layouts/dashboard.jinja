@@ -4,19 +4,13 @@
 
 {% extends 'layouts/base.jinja' %}
 
-{% block beforeContent %}
-  {{ breadcrumb({
-    "items": breadcrumb_items
-  }) }}
-{% endblock %}
-
 {% block page_content %}
 
 {{ heading({
   "text": organisation.name,
   "level": 1,
   "size": "xl",
-  "caption": org_type_title,
+  "caption": organisation.type,
 }) }}
 
 {{ secondaryNavigation({
