@@ -4,7 +4,7 @@ from typing import cast
 from flask.sessions import SessionMixin
 
 from mavis.reporting.helpers import auth_helper
-from tests.helpers import create_random_token
+from tests.helpers import create_random_token, mock_user_info
 
 
 def configure_app(app):
@@ -15,40 +15,6 @@ def configure_app(app):
             "CLIENT_SECRET": create_random_token(),
         }
     )
-
-
-def mock_user_info():
-    jwt_data = {
-        "user": {
-            "id": 1,
-            "email": "nurse.joy@example.com",
-            "created_at": "2025-06-16T11:09:24.289+01:00",
-            "updated_at": "2025-07-04T10:11:36.100+01:00",
-            "provider": None,
-            "uid": None,
-            "given_name": "Nurse",
-            "family_name": "Joy",
-            "fallback_role": "nurse",
-        },
-        "cis2_info": {
-            "selected_org": {"code": "R1L", "name": "SAIS Organisation 1"},
-            "selected_role": {
-                "code": "S8000:G8000:R8001",
-                "workgroups": ["schoolagedimmunisations"],
-            },
-        },
-    }
-    jwt_data["user"]["session_token"] = create_random_token()
-    jwt_data["user"]["reporting_api_session_token"] = create_random_token()
-    return {
-        "jwt_data": jwt_data,
-        "user_nav": {
-            "items": [
-                {"text": "Test User", "icon": True},
-                {"href": "/logout", "text": "Log out"},
-            ]
-        },
-    }
 
 
 def test_that_log_user_in_sets_last_visit_to_now(app):
