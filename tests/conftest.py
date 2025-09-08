@@ -9,6 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pytest
 
 from mavis.reporting import create_app
+from tests.helpers import create_random_token
 
 
 @pytest.fixture()
@@ -18,14 +19,11 @@ def app():
         {
             "MAVIS_ROOT_URL": "http://mavis-root.localhost/",
             "TESTING": True,
+            "CLIENT_ID": create_random_token(),
+            "CLIENT_SECRET": create_random_token(),
         }
     )
-
-    # other setup can go here
-
     yield app
-
-    # clean up / reset resources here
 
 
 @pytest.fixture()

@@ -1,0 +1,41 @@
+{% from "tables/macro.jinja" import table %}
+{% from "components/filters.jinja" import filters %}
+
+{% extends 'layouts/dashboard.jinja' %}
+
+{% block pageTitle %}{{ organisation.name }} | {{ site_title }}{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="nhsuk-grid-row">
+  <div class="app-grid-column-filters">
+    {{ filters({
+      "programmes": programmes,
+      "year_groups": year_groups,
+      "genders": genders
+    }) }}
+  </div>
+
+  {% set rows = [] %}
+  {% for row in data %}
+    {% set _ = rows.append([
+      { "text": row.month ~ " " ~ row.year },
+      { "text": row.number_of_vaccinations | thousands, "format": "numeric" }
+    ]) %}
+  {% endfor %}
+
+  <div class="app-grid-column-content">
+    {{ table({
+      "heading": "Monthly vaccinations",
+      "tableClasses": "nhsuk-table--data",
+      "panel": true,
+      "head": [
+        { "text": "Month", "format": "date"},
+        { "text": "Number of vaccinations", "format": "numeric" }
+      ],
+      "rows": rows
+    }) }}
+  </div>
+</div>
+
+{% endblock %}
