@@ -29,7 +29,7 @@ RUN chown -R app:app /app/.venv
 
 USER 1000
 
-VOLUME ["/tmp", "/var/tmp", "/usr/tmp"]
+VOLUME ["/tmp", "/var/tmp", "/usr/tmp", "/app/.cache"]
 
 # pass through additional arguments like --workers=5 via GUNICORN_CMD_ARGS
 CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "mavis.reporting:create_app()"]
