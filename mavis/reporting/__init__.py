@@ -13,6 +13,12 @@ def create_app(config_name=None):
     app = Flask(__name__, static_url_path="/reporting/assets")
     app.config.from_object(config[config_name])
 
+    # Set cache timeout for static files (1 hour in development, 1 year in production)
+    if config_name == "development":
+        app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 3600  # 1 hour
+    else:
+        app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 31536000  # 1 year
+
     configure_jinja2(app)
 
     # ruff: noqa: PLC0415
