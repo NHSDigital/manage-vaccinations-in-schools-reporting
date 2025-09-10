@@ -9,20 +9,20 @@ class Config:
     """Base configuration"""
 
     # used for verifying signature of Mavis-issued JWTs
-    CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+    CLIENT_SECRET = os.environ["CLIENT_SECRET"]
     # used to identify this app in the OAuth Authorization Code request
-    CLIENT_ID = os.environ.get("CLIENT_ID")
+    CLIENT_ID = os.environ["CLIENT_ID"]
     # Used as the base for constructing URLs to
     # exchange auth codes, and request data
-    MAVIS_ROOT_URL = os.environ.get("MAVIS_ROOT_URL")
+    MAVIS_ROOT_URL = os.environ["MAVIS_ROOT_URL"]
 
     # Flask config
     # Flask-internal secret
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+    SECRET_KEY = os.environ["SECRET_KEY"]
     TEMPLATES_AUTO_RELOAD = True
-    SESSION_TTL_SECONDS = int(os.environ.get("SESSION_TTL_SECONDS") or "600")
+    SESSION_TTL_SECONDS = int(os.environ["SESSION_TTL_SECONDS"])
 
-    ROOT_URL = os.environ.get("ROOT_URL")
+    ROOT_URL = os.environ["ROOT_URL"]
 
 
 class DevelopmentConfig(Config):
