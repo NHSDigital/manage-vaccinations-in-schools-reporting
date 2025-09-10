@@ -2,9 +2,13 @@
 age = "latest"
 awscli = "2.27.46"
 gitleaks = "latest"
+node = "lts"
 python = "3.13"
 sops = "latest"
 uv = "latest"
+
+[vars]
+uv_sync_args = "--group dev"
 
 [env]
 DOCKER_IMAGE = "mavis-reporting:latest"
@@ -18,7 +22,7 @@ run = "npm install"
 
 [tasks."uv:sync"]
 description = "Sync Python dependencies with uv"
-run = "uv sync --group dev"
+run = "uv sync {{vars.uv_sync_args}}"
 
 [tasks."build:favicons"]
 description = "Copy NHS UK frontend favicons"
