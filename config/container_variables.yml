@@ -5,7 +5,6 @@
 # This file specifies environment-specific variables that will be added to or override
 # the environment variables extracted from terraform configuration
 
-
 environments:
   production:
 
@@ -18,9 +17,6 @@ environments:
   training:
 
   sandbox-alpha:
-    ROOT_URL: https://sandbox-alpha.mavistesting.com/reporting/
-    MAVIS_ROOT_URL: https://sandbox-alpha.mavistesting.com/
-    FLASK_ENV: staging
 
   sandbox-beta:
 
