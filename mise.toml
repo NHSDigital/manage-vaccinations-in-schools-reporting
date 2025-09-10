@@ -119,7 +119,7 @@ run = "gitleaks detect --verbose --redact"
 
 [tasks."docker:build"]
 description = "Build Docker image"
-run = "docker build -t ${DOCKER_IMAGE} ."
+run = "docker build --platform linux/amd64 -t ${DOCKER_IMAGE} ."
 
 [tasks."docker:run"]
 description = "Run Docker container"
