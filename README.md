@@ -8,7 +8,6 @@ Please see the main Mavis repository for [how to install
 mise](https://github.com/nhsuk/manage-vaccinations-in-schools?tab=readme-ov-file#mise).
 
 ```sh
-mise install                               # Install dev tools
 mise dev                                   # Run dev server
 mise ci                                    # Run CI tests
 ```
@@ -92,8 +91,8 @@ sops encrypt -i --age $(age-keygen -y config/credentials/staging.key) \
   config/credentials/staging.enc.yaml                  # Encrypt the file
 git add config/credentials/staging.enc.yaml            # It's now safe to commit
 
-mise credentials:show                                  # Show secrets
-mise credentials:edit                                  # Edit secrets
+mise credentials:show --env staging                    # Show secrets
+mise credentials:edit --env staging                    # Edit secrets
 ```
 
 To view and edit staging/production secrets, you need to obtain the

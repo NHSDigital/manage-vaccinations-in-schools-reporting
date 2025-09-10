@@ -1,5 +1,6 @@
 [vars]
 credentials_file = "config/credentials/development.enc.yaml"
+uv_sync_args = "--group dev"
 
 [settings]
 sops.age_key_file = "config/credentials/development.key"

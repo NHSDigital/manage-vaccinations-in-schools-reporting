@@ -8,7 +8,7 @@ sops = "latest"
 uv = "latest"
 
 [vars]
-uv_sync_args = "--group dev"
+uv_sync_args = "--frozen --no-dev"
 
 [env]
 DOCKER_BUILDKIT = 1
@@ -92,10 +92,14 @@ description = "Run Flask development server"
 depends = ["uv:sync"]
 run = "uv run flask run --debug -p $HOST_PORT"
 
+[tasks."dev:start"]
+description = "Start development servers (internal)"
+depends = ["bundle"]
+run = "mise dev:scss ::: dev:js ::: dev:flask"
+
 [tasks.dev]
 description = "Start development servers"
-depends = ["bundle"]
-run = "mise --env development dev:scss ::: dev:js ::: dev:flask"
+run = "mise --env development dev:start"
 
 [tasks.test]
 description = "Run all tests"
@@ -132,7 +136,7 @@ run = "mise docker:run"
 
 [tasks.ci]
 description = "Run CI checks in parallel"
-depends = ["gitleaks", "lint", "test", "typecheck"]
+run = "mise --env development gitleaks ::: lint ::: test ::: typecheck"
 
 [tasks."credentials:show"]
 description = "Show credentials"

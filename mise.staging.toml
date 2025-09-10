@@ -1,6 +1,5 @@
 [vars]
 credentials_file = "config/credentials/staging.enc.yaml"
-uv_sync_args = "--frozen --no-dev"
 
 [settings]
 sops.age_key_file = "config/credentials/staging.key"
