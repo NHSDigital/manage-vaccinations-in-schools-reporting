@@ -8,6 +8,7 @@ sops = "latest"
 uv = "latest"
 
 [vars]
+host_port = "4001"
 uv_sync_args = "--frozen --no-dev"
 
 [env]
@@ -90,10 +91,11 @@ run = "npm run build:js:dev"
 [tasks."dev:flask"]
 description = "Run Flask development server"
 depends = ["uv:sync"]
-run = "uv run flask run --debug -p $HOST_PORT"
+run = "uv run flask run --debug -p {{vars.host_port}}"
 
 [tasks."dev:start"]
 description = "Start development servers (internal)"
+hide = true
 depends = ["bundle"]
 run = "mise dev:scss ::: dev:js ::: dev:flask"
 
@@ -127,12 +129,12 @@ run = "docker build --platform linux/amd64 -t ${DOCKER_IMAGE} ."
 
 [tasks."docker:run"]
 description = "Run Docker container"
-run = "docker run --rm -p ${HOST_PORT}:5000 -e GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS} ${DOCKER_IMAGE}"
+run = "docker run --rm --network host -e MISE_SOPS_AGE_KEY=${MISE_SOPS_AGE_KEY} ${DOCKER_IMAGE}"
 
 [tasks.docker]
 description = "Build and run Docker container"
 depends = ["docker:build"]
-run = "mise docker:run"
+run = "MISE_SOPS_AGE_KEY=$(cat config/credentials/staging.key) mise docker:run"
 
 [tasks.ci]
 description = "Run CI checks in parallel"
