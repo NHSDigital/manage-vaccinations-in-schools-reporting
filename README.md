@@ -34,8 +34,6 @@ environment:
 mise docker
 ```
 
-Different environment variables can be overwritten in `mise.local.toml`.
-
 ## Runtime dependencies
 
 This application authenticates with the main Mavis application using the [OAuth

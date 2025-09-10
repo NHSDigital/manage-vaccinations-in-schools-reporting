@@ -8,7 +8,7 @@ sops = "latest"
 uv = "latest"
 
 [vars]
-host_port = "4001"
+port = "4001"
 uv_sync_args = "--frozen --no-dev"
 
 [env]
@@ -91,7 +91,7 @@ run = "npm run build:js:dev"
 [tasks."dev:flask"]
 description = "Run Flask development server"
 depends = ["uv:sync"]
-run = "uv run flask run --debug -p {{vars.host_port}}"
+run = "uv run flask run --debug -p {{vars.port}}"
 
 [tasks."dev:start"]
 description = "Start development servers (internal)"
@@ -129,7 +129,13 @@ run = "docker build --platform linux/amd64 -t ${DOCKER_IMAGE} ."
 
 [tasks."docker:run"]
 description = "Run Docker container"
-run = "docker run --rm --network host -e MISE_SOPS_AGE_KEY=${MISE_SOPS_AGE_KEY} ${DOCKER_IMAGE}"
+run = """
+docker run --rm --network host \
+           --env PORT={{vars.port}} \
+           --env MISE_ENV=${MISE_ENV} \
+           --env MISE_SOPS_AGE_KEY=${MISE_SOPS_AGE_KEY} \
+           ${DOCKER_IMAGE}
+"""
 
 [tasks.docker]
 description = "Build and run Docker container"

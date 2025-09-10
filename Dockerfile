@@ -37,6 +37,5 @@ RUN addgroup --gid 1000 app && \
 USER 1000
 RUN mise trust --all
 
-EXPOSE 5000
-CMD ["mise", "exec", "--", "uv", "run", "--no-sync", "gunicorn", \
-    "--bind", "0.0.0.0:5000", "mavis.reporting:create_app()"]
+ENV PORT=5000
+CMD ["sh", "-c", "mise exec -- uv run --no-sync gunicorn --bind 0.0.0.0:${PORT} 'mavis.reporting:create_app()'"]
