@@ -36,27 +36,6 @@ mise docker
 
 Different environment variables can be overwritten in `mise.local.toml`.
 
-### Gunicorn arguments
-
-Additional parameters to the `gunicorn` executable (for instance, the number of
-workers) can be passed through with the `GUNICORN_CMD_ARGS` environment
-variable.
-
-Example:
-
-```bash
-% HOST_PORT=5555 GUNICORN_CMD_ARGS="--workers=5" mise docker:run
-docker run --rm -p 5555:5000 -e GUNICORN_CMD_ARGS=--workers=5 mavis-reporting:latest
-[2025-07-17 10:32:01 +0000] [1] [INFO] Starting gunicorn 23.0.0
-[2025-07-17 10:32:01 +0000] [1] [INFO] Listening at: http://0.0.0.0:5000 (1)
-[2025-07-17 10:32:01 +0000] [1] [INFO] Using worker: sync
-[2025-07-17 10:32:01 +0000] [10] [INFO] Booting worker with pid: 10
-[2025-07-17 10:32:01 +0000] [11] [INFO] Booting worker with pid: 11
-[2025-07-17 10:32:01 +0000] [12] [INFO] Booting worker with pid: 12
-[2025-07-17 10:32:01 +0000] [13] [INFO] Booting worker with pid: 13
-[2025-07-17 10:32:01 +0000] [14] [INFO] Booting worker with pid: 14
-```
-
 ## Runtime dependencies
 
 This application authenticates with the main Mavis application using the [OAuth
