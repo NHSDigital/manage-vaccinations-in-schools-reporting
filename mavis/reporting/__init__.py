@@ -8,7 +8,7 @@ from mavis.reporting.config.jinja2 import configure_jinja2
 
 def create_app(config_name=None):
     if config_name is None:
-        config_name = os.environ.get("FLASK_ENV", "development")
+        config_name = os.environ["FLASK_ENV"]
 
     app = Flask(__name__, static_url_path="/reporting/assets")
     app.config.from_object(config[config_name])

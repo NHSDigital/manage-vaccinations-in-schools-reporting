@@ -1,0 +1,14 @@
+[vars]
+credentials_file = "config/credentials/staging.enc.yaml"
+secret_file = "config/credentials/staging.key"
+
+[settings]
+sops.age_key_file = "{{vars.secret_file}}"
+
+[env]
+SOPS_AGE_KEY_FILE = "{{vars.secret_file}}"
+_.file = "{{vars.credentials_file}}"
+
+FLASK_ENV = "staging"
+MAVIS_ROOT_URL = "https://sandbox-alpha.mavistesting.com/"
+ROOT_URL = "https://sandbox-alpha.mavistesting.com/reporting/"

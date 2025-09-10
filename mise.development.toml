@@ -1,0 +1,15 @@
+[vars]
+credentials_file = "config/credentials/development.enc.yaml"
+secret_file = "config/credentials/development.key"
+uv_sync_args = "--group dev"
+
+[settings]
+sops.age_key_file = "{{vars.secret_file}}"
+
+[env]
+SOPS_AGE_KEY_FILE = "{{vars.secret_file}}"
+_.file = "{{vars.credentials_file}}"
+
+FLASK_ENV = "development"
+MAVIS_ROOT_URL = "http://localhost:4000/"
+ROOT_URL = "http://localhost:4001/"

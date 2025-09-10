@@ -1,35 +1,41 @@
-FROM python:3.13.7-alpine AS builder
-
+FROM python:3.13.7-alpine AS base
 WORKDIR /app
+
+ARG MISE_ENV=staging
+ENV MISE_ENV=${MISE_ENV} \
+    MISE_TASK_RUN_AUTO_INSTALL=false \
+    PATH="/root/.local/share/mise/shims:$PATH"
+
+RUN apk add --no-cache mise sops uv
+
+# Builder image
+FROM base AS builder
+
+RUN apk add --no-cache build-base libffi-dev bash npm
+
+ADD mise.toml /app/
+RUN mise trust
 
 ADD package.json package-lock.json pyproject.toml uv.lock /app/
+ADD mavis/reporting /app/mavis/reporting
+RUN mise build
 
-RUN apk add build-base libffi-dev npm bash curl
+# Runtime image
+FROM base
 
-RUN pip install uv
+COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /app/mavis /app/mavis
+COPY --from=builder /app/pyproject.toml /app/pyproject.toml
 
-ADD ./mavis/reporting /app/mavis/reporting
-ADD README.md /app/
+ADD config/credentials/*.enc.yaml /app/config/credentials/
+ADD mise.*.toml /app/
 
-RUN uv sync --frozen
-RUN npm install
-
-FROM builder
-
-WORKDIR /app
-
-RUN mkdir -p mavis/reporting/static/favicons && \
-    cp -r node_modules/nhsuk-frontend/dist/nhsuk/assets/images/* mavis/reporting/static/favicons/ && \
-    npm run build:scss && npm run build:js
-
-RUN addgroup --gid 1000 app
-RUN adduser app -h /app -u 1000 -G app -DH
-RUN mkdir -p /app/.cache/uv && chown -R app:app /app/.cache
-RUN chown -R app:app /app/.venv
+RUN addgroup --gid 1000 app && \
+    adduser app -h /app -u 1000 -G app -DH && \
+    chown -R app:app /app
 
 USER 1000
+RUN mise trust --all
 
-VOLUME ["/tmp", "/var/tmp", "/usr/tmp", "/app/.cache", "/app/.venv"]
-
-# pass through additional arguments like --workers=5 via GUNICORN_CMD_ARGS
-CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "mavis.reporting:create_app()"]
+ENV PORT=5000
+CMD ["sh", "-c", "mise exec -- uv run --no-sync gunicorn --bind 0.0.0.0:${PORT} 'mavis.reporting:create_app()'"]

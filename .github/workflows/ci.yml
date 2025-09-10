@@ -2,6 +2,9 @@ name: CI
 
 on: [push]
 
+env:
+  MISE_ENV: development
+
 jobs:
   gitleaks:
     runs-on: ubuntu-latest
