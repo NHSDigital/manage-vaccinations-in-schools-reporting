@@ -93,15 +93,10 @@ description = "Run Flask development server"
 depends = ["uv:sync"]
 run = "uv run flask run --debug -p {{vars.port}}"
 
-[tasks."dev:start"]
-description = "Start development servers (internal)"
-hide = true
-depends = ["bundle"]
-run = "mise dev:scss ::: dev:js ::: dev:flask"
-
 [tasks.dev]
 description = "Start development servers"
-run = "mise --env development dev:start"
+depends = ["bundle"]
+run = "mise dev:scss ::: dev:js ::: dev:flask"
 
 [tasks.test]
 description = "Run all tests"
@@ -144,7 +139,7 @@ run = "MISE_SOPS_AGE_KEY=$(cat config/credentials/staging.key) mise docker:run"
 
 [tasks.ci]
 description = "Run CI checks in parallel"
-run = "mise --env development gitleaks ::: lint ::: test ::: typecheck"
+depends = ["gitleaks", "lint", "test", "typecheck"]
 
 [tasks."credentials:show"]
 description = "Show credentials"

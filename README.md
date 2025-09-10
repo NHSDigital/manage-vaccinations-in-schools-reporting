@@ -8,8 +8,8 @@ Please see the main Mavis repository for [how to install
 mise](https://github.com/nhsuk/manage-vaccinations-in-schools?tab=readme-ov-file#mise).
 
 ```sh
-mise dev                                   # Run dev server
-mise ci                                    # Run CI tests
+mise dev --env development                 # Run dev server
+mise ci --env development                  # Run CI tests
 ```
 
 The application will be available at <http://localhost:4001>.
