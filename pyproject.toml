@@ -3,7 +3,6 @@ name = "manage-vaccinations-in-schools-reporting"
 version = "0.1.0"
 description = "Python/Flask application for the commissioner reporting component of Mavis"
 license = { text = "MIT" }
-readme = "README.md"
 requires-python = ">=3.13,<4.0"
 dependencies = [
     "flask==3.1.2",
