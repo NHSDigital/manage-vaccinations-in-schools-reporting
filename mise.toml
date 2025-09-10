@@ -1,16 +1,24 @@
 [tools]
+age = "latest"
 awscli = "2.27.46"
 gitleaks = "latest"
 python = "3.13"
+sops = "latest"
 uv = "latest"
+
+[settings]
+sops.age_key_file = "config/credentials/development.key"
 
 [env]
 DOCKER_IMAGE = "mavis-reporting:latest"
-HOST_PORT = "4001"
+FLASK_APP = "mavis.reporting:create_app"
 FLASK_ENV = "development"
-SESSION_TTL_SECONDS = "600"
+HOST_PORT = "4001"
 MAVIS_ROOT_URL = "http://localhost:4000/"
-PYTHONPYCACHEPREFIX = "tmp/pycache"       # Output directory for Python bytecode cache
+PYTHONPYCACHEPREFIX = "tmp/pycache" # Output directory for Python bytecode cache
+SESSION_TTL_SECONDS = "600"
+SOPS_AGE_KEY_FILE = "config/credentials/development.key"
+_.file = "config/credentials/development.enc.yaml"
 
 [tasks."npm:install"]
 description = "Install Node.js dependencies"
@@ -128,3 +136,11 @@ run = "mise docker:run"
 [tasks.ci]
 description = "Run CI checks in parallel"
 depends = ["gitleaks", "lint", "test", "typecheck"]
+
+[tasks."credentials:show"]
+description = "Show credentials"
+run = "sops decrypt config/credentials/development.enc.yaml"
+
+[tasks."credentials:edit"]
+description = "Edit credentials"
+run = "sops edit config/credentials/development.enc.yaml"

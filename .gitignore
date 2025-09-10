@@ -32,3 +32,6 @@ coverage.xml
 .pytest_cache
 tmp
 !tmp/.keep
+
+config/credentials/*.key
+!config/credentials/development.key

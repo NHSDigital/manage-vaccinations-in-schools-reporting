@@ -9,7 +9,6 @@ mise](https://github.com/nhsuk/manage-vaccinations-in-schools?tab=readme-ov-file
 
 ```sh
 mise install                               # Install dev tools
-cp mise.local.toml.example mise.local.toml # Fill in shared secrets
 mise dev                                   # Run dev server
 mise ci                                    # Run CI tests
 ```
@@ -77,3 +76,22 @@ To do this, it requires:
    - have a value for `Settings.reporting_api.client_app.secret` (..which can
      also be set via the `MAVIS__REPORTING_API__CLIENT_APP__SECRET` environment
      variable) which matches this application's `CLIENT_SECRET` value
+
+## Secrets
+
+This project uses encrypted secrets stored in `config/credentials`, using the
+[mise secrets](https://mise.jdx.dev/environments/secrets.html) integration with
+`age` and `sops`.
+
+```sh
+age-keygen -o config/credentials/staging.key           # Generate a new keypair
+age-keygen -y config/credentials/staging.key           # View the public key
+
+echo "FOO: bar" > config/credentials/staging.enc.yaml  # Create a secret file
+sops encrypt -i --age $(age-keygen -y config/credentials/staging.key) \
+  config/credentials/staging.enc.yaml                  # Encrypt the file
+git add config/credentials/staging.enc.yaml            # It's now safe to commit
+
+mise credentials:show                                  # Show secrets
+mise credentials:edit                                  # Edit secrets
+```
