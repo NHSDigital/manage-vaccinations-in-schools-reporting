@@ -11,6 +11,7 @@ uv = "latest"
 uv_sync_args = "--group dev"
 
 [env]
+DOCKER_BUILDKIT = 1
 DOCKER_IMAGE = "mavis-reporting:latest"
 FLASK_APP = "mavis.reporting:create_app"
 PYTHONPYCACHEPREFIX = "tmp/pycache" # Output directory for Python bytecode cache
@@ -118,7 +119,7 @@ run = "gitleaks detect --verbose --redact"
 
 [tasks."docker:build"]
 description = "Build Docker image"
-run = "DOCKER_BUILDKIT=1 docker build -t ${DOCKER_IMAGE} ."
+run = "docker build -t ${DOCKER_IMAGE} ."
 
 [tasks."docker:run"]
 description = "Run Docker container"
