@@ -40,18 +40,8 @@ This application authenticates with the main Mavis application using the [OAuth
 2.0 Authorization Code
 flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1).
 
-To do this, it requires:
-
-1. A copy of the main Mavis app must be running and available at the URL given
-   in the `MAVIS_ROOT_URL` env var
-2. That copy of Mavis must:
-   - have the `reporting_api` feature flag enabled
-   - have a value for `Settings.reporting_api.client_app.client_id` (..which can
-     also be set via the `MAVIS__REPORTING_API__CLIENT_APP__CLIENT_ID`
-     environment variable) which matches this application's `CLIENT_ID` value
-   - have a value for `Settings.reporting_api.client_app.secret` (..which can
-     also be set via the `MAVIS__REPORTING_API__CLIENT_APP__SECRET` environment
-     variable) which matches this application's `CLIENT_SECRET` value
+Mavis should already have the development secrets set up in the development
+environment. Make sure to turn on the `reporting_api` feature flag.
 
 ## Secrets
 
