@@ -1,0 +1,14 @@
+[vars]
+credentials_file = "config/credentials/development.enc.yaml"
+
+[settings]
+sops.age_key_file = "config/credentials/development.key"
+
+[env]
+SOPS_AGE_KEY_FILE = "config/credentials/development.key"
+_.file = "config/credentials/development.enc.yaml"
+
+FLASK_ENV = "development"
+HOST_PORT = "4001"
+MAVIS_ROOT_URL = "http://localhost:4000/"
+ROOT_URL = "http://localhost:4001/"

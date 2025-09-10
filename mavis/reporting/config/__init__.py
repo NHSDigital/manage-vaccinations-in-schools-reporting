@@ -14,7 +14,7 @@ class Config:
     CLIENT_ID = os.environ.get("CLIENT_ID")
     # Used as the base for constructing URLs to
     # exchange auth codes, and request data
-    MAVIS_ROOT_URL = os.environ.get("MAVIS_ROOT_URL") or "http://localhost:4000/"
+    MAVIS_ROOT_URL = os.environ.get("MAVIS_ROOT_URL")
 
     # Flask config
     # Flask-internal secret

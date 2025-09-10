@@ -6,19 +6,11 @@ python = "3.13"
 sops = "latest"
 uv = "latest"
 
-[settings]
-sops.age_key_file = "config/credentials/development.key"
-
 [env]
 DOCKER_IMAGE = "mavis-reporting:latest"
 FLASK_APP = "mavis.reporting:create_app"
-FLASK_ENV = "development"
-HOST_PORT = "4001"
-MAVIS_ROOT_URL = "http://localhost:4000/"
 PYTHONPYCACHEPREFIX = "tmp/pycache" # Output directory for Python bytecode cache
 SESSION_TTL_SECONDS = "600"
-SOPS_AGE_KEY_FILE = "config/credentials/development.key"
-_.file = "config/credentials/development.enc.yaml"
 
 [tasks."npm:install"]
 description = "Install Node.js dependencies"
@@ -98,7 +90,7 @@ run = "uv run flask run --debug -p $HOST_PORT"
 [tasks.dev]
 description = "Start development servers"
 depends = ["bundle"]
-run = "mise dev:scss ::: dev:js ::: dev:flask"
+run = "mise --env development dev:scss ::: dev:js ::: dev:flask"
 
 [tasks.test]
 description = "Run all tests"
@@ -139,8 +131,8 @@ depends = ["gitleaks", "lint", "test", "typecheck"]
 
 [tasks."credentials:show"]
 description = "Show credentials"
-run = "sops decrypt config/credentials/development.enc.yaml"
+run = "sops decrypt {{vars.credentials_file}}"
 
 [tasks."credentials:edit"]
 description = "Edit credentials"
-run = "sops edit config/credentials/development.enc.yaml"
+run = "sops edit {{vars.credentials_file}}"

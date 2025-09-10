@@ -22,8 +22,8 @@ below for details.
 ## Other tasks
 
 ```sh
-mise tasks # See all available tasks
-mise env   # See all available environment variables
+mise tasks                                 # See all available tasks
+mise env --env development                 # See env vars and dev secrets
 ```
 
 ### Docker
@@ -95,3 +95,6 @@ git add config/credentials/staging.enc.yaml            # It's now safe to commit
 mise credentials:show                                  # Show secrets
 mise credentials:edit                                  # Edit secrets
 ```
+
+To view and edit staging/production secrets, you need to obtain the
+`config/credentials/staging.key` (or `production.key`) from a colleague.
