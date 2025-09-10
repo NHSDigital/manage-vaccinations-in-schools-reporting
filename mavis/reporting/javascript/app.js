@@ -1,2 +1,3 @@
-import initHeader from "nhsuk-frontend/packages/components/header/header.js";
-initHeader();
+import { createAll, Header } from "nhsuk-frontend";
+
+createAll(Header);

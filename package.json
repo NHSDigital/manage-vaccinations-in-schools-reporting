@@ -6,7 +6,7 @@
     "build:scss": "sass --load-path=node_modules mavis/reporting/assets/scss/app.scss:mavis/reporting/static/css/app.css --style=compressed --no-source-map",
     "build:scss:dev": "sass --load-path=node_modules --watch mavis/reporting/assets/scss:mavis/reporting/static/css --style=expanded --source-map",
     "build:js": "esbuild mavis/reporting/javascript/app.js --bundle --outfile=mavis/reporting/static/js/app.js --minify",
-    "build:js:dev": "esbuild mavis/reporting/javascript/app.js --bundle --outfile=mavis/reporting/static/js/app.js --sourcemap --minify --watch"
+    "build:js:dev": "esbuild mavis/reporting/javascript/app.js --bundle --outfile=mavis/reporting/static/js/app.js --sourcemap --minify --watch=forever"
   },
   "dependencies": {
     "nhsuk-frontend": "^10.0.0"
