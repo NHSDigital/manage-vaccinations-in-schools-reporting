@@ -11,7 +11,7 @@ from flask import (
 )
 from healthcheck import HealthCheck
 
-from mavis.reporting.helpers import auth_helper
+from mavis.reporting.helpers import auth_helper, breadcrumb_helper
 from mavis.reporting.models.organisation import Organisation
 
 logger = logging.getLogger(__name__)
@@ -83,6 +83,8 @@ def monthly_vaccinations(code):
     if organisation.code != code:
         return redirect(url_for("main.monthly_vaccinations", code=organisation.code))
 
+    breadcrumb_items = breadcrumb_helper.generate_breadcrumb_items(organisation)
+
     fake_data = [
         {"month": "September", "year": 2025, "number_of_vaccinations": 102},
         {"month": "October", "year": 2025, "number_of_vaccinations": 86},
@@ -97,6 +99,7 @@ def monthly_vaccinations(code):
         programmes=g.programmes,
         year_groups=g.year_groups,
         genders=g.genders,
+        breadcrumb_items=breadcrumb_items,
     )
 
 
