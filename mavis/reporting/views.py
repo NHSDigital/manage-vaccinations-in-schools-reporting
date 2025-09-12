@@ -84,6 +84,12 @@ def monthly_vaccinations(code):
         return redirect(url_for("main.monthly_vaccinations", code=organisation.code))
 
     breadcrumb_items = breadcrumb_helper.generate_breadcrumb_items(organisation)
+    secondary_navigation_items = [
+        {
+            "text": "Monthly vaccinations",
+            "href": url_for("main.dashboard"),
+        },
+    ]
 
     fake_data = [
         {"month": "September", "year": 2025, "number_of_vaccinations": 102},
@@ -100,6 +106,7 @@ def monthly_vaccinations(code):
         year_groups=g.year_groups,
         genders=g.genders,
         breadcrumb_items=breadcrumb_items,
+        secondary_navigation_items=secondary_navigation_items,
     )
 
 
