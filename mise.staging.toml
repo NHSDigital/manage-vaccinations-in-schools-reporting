@@ -1,6 +1,7 @@
 [vars]
 credentials_file = "config/credentials/staging.enc.yaml"
 secret_file = "config/credentials/staging.key"
+uv_sync_args = "--frozen --no-dev"
 
 [settings]
 sops.age_key_file = "{{vars.secret_file}}"
@@ -12,3 +13,4 @@ _.file = "{{vars.credentials_file}}"
 FLASK_ENV = "staging"
 MAVIS_ROOT_URL = "https://sandbox-alpha.mavistesting.com/"
 ROOT_URL = "https://sandbox-alpha.mavistesting.com/reporting/"
+SESSION_TTL_SECONDS = "600"
