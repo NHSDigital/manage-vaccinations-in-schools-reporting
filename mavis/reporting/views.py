@@ -69,13 +69,36 @@ def dashboard():
     return redirect(url_for("main.vaccinations", code=organisation.code))
 
 
-@main.route("/download", methods=["GET", "POST"])
+@main.route("/organisation/<code>/download", methods=["GET", "POST"])
 @auth_helper.login_required
-def download():
-    if request.method == "POST":
-        return redirect(url_for("main.download"))
+def download(code):
+    organisation = Organisation.get_from_session(session)
+    if organisation.code != code:
+        return redirect(url_for("main.download", code=organisation.code))
 
-    return render_template("download.jinja", programmes=g.programmes)
+    if request.method == "POST":
+        return redirect(url_for("main.download", code=organisation.code))
+
+    breadcrumb_items = breadcrumb_helper.generate_breadcrumb_items(organisation)
+    secondary_navigation_items = [
+        {
+            "text": "Vaccinations",
+            "href": url_for("main.vaccinations", code=organisation.code),
+        },
+        {
+            "text": "Download data",
+            "href": url_for("main.download", code=organisation.code),
+            "current": True,
+        },
+    ]
+
+    return render_template(
+        "download.jinja",
+        organisation=organisation,
+        programmes=g.programmes,
+        breadcrumb_items=breadcrumb_items,
+        secondary_navigation_items=secondary_navigation_items,
+    )
 
 
 @main.route("/organisation/<code>/vaccinations")
@@ -91,6 +114,10 @@ def vaccinations(code):
             "text": "Vaccinations",
             "href": url_for("main.vaccinations", code=organisation.code),
             "current": True,
+        },
+        {
+            "text": "Download data",
+            "href": url_for("main.download", code=organisation.code),
         },
     ]
 
