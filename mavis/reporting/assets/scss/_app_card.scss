@@ -20,6 +20,14 @@
     @include nhsuk-typography-weight-bold;
   }
 
+  .nhsuk-card__caption {
+    @include nhsuk-typography-weight-normal;
+    color: $nhsuk-secondary-text-color;
+    display: block;
+    font-size: 16px;
+    margin-top: 0.5em;
+  }
+
   &--reversed {
     background-color: $color_nhsuk-blue;
     border-color: nhsuk-shade($nhsuk-link-color, 25%);
@@ -31,6 +39,10 @@
 
     .nhsuk-card__link {
       @include nhsuk-link-style-white;
+    }
+
+    .nhsuk-card__caption {
+      color: $color_nhsuk-white;
     }
   }
 

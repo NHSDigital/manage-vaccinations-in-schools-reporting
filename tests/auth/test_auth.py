@@ -7,7 +7,7 @@ from tests.helpers import mock_user_info
 
 
 def default_url():
-    return "/reporting/organisation/R1L/monthly-vaccinations"
+    return "/reporting/organisation/R1L/vaccinations"
 
 
 def it_redirects_to_mavis_start(response):
