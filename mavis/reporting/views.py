@@ -11,6 +11,7 @@ from flask import (
 )
 from healthcheck import HealthCheck
 
+from mavis.reporting.api_client.client import MavisApiClient
 from mavis.reporting.helpers import auth_helper, breadcrumb_helper
 from mavis.reporting.models.organisation import Organisation
 
@@ -21,6 +22,7 @@ main = Blueprint("main", __name__)
 
 @main.before_request
 def stub_mavis_data():
+    g.api_client = MavisApiClient()
     g.programmes = [
         {"value": "hpv", "text": "HPV", "checked": True},
         {"value": "flu", "text": "Flu"},
@@ -64,7 +66,7 @@ def inject_mavis_data():
 @auth_helper.login_required
 def dashboard():
     organisation = Organisation.get_from_session(session)
-    return redirect(url_for("main.monthly_vaccinations", code=organisation.code))
+    return redirect(url_for("main.vaccinations", code=organisation.code))
 
 
 @main.route("/download", methods=["GET", "POST"])
@@ -76,35 +78,31 @@ def download():
     return render_template("download.jinja", programmes=g.programmes)
 
 
-@main.route("/organisation/<code>/monthly-vaccinations")
+@main.route("/organisation/<code>/vaccinations")
 @auth_helper.login_required
-def monthly_vaccinations(code):
+def vaccinations(code):
     organisation = Organisation.get_from_session(session)
     if organisation.code != code:
-        return redirect(url_for("main.monthly_vaccinations", code=organisation.code))
+        return redirect(url_for("main.vaccinations", code=organisation.code))
 
     breadcrumb_items = breadcrumb_helper.generate_breadcrumb_items(organisation)
     secondary_navigation_items = [
         {
-            "text": "Monthly vaccinations",
-            "href": url_for("main.dashboard"),
+            "text": "Vaccinations",
+            "href": url_for("main.vaccinations", code=organisation.code),
+            "current": True,
         },
     ]
 
-    fake_data = [
-        {"month": "September", "year": 2025, "number_of_vaccinations": 102},
-        {"month": "October", "year": 2025, "number_of_vaccinations": 86},
-        {"month": "November", "year": 2025, "number_of_vaccinations": 324},
-        {"month": "December", "year": 2025, "number_of_vaccinations": 299},
-    ]
+    data = g.api_client.get_vaccination_data()
 
     return render_template(
-        "monthly_vaccinations.jinja",
+        "vaccinations.jinja",
         organisation=organisation,
-        data=fake_data,
         programmes=g.programmes,
         year_groups=g.year_groups,
         genders=g.genders,
+        data=data,
         breadcrumb_items=breadcrumb_items,
         secondary_navigation_items=secondary_navigation_items,
     )

@@ -18,6 +18,6 @@ def generate_breadcrumb_items(organisation: "Organisation"):
         },
         {
             "text": organisation.name,
-            "href": url_for("main.monthly_vaccinations", code=organisation.code),
+            "href": url_for("main.vaccinations", code=organisation.code),
         },
     ]
