@@ -21,7 +21,7 @@ def thousands(value: int | None) -> str:
 
 def percentage(value: float | None) -> str:
     """
-    Format an integer as a percentage.
+    Format a decimal proportion as a percentage.
     """
     if value is None:
         return ""
