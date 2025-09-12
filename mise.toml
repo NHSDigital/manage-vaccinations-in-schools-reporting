@@ -16,7 +16,6 @@ DOCKER_BUILDKIT = 1
 DOCKER_IMAGE = "mavis-reporting:latest"
 FLASK_APP = "mavis.reporting:create_app"
 PYTHONPYCACHEPREFIX = "tmp/pycache" # Output directory for Python bytecode cache
-SESSION_TTL_SECONDS = "600"
 
 [tasks."npm:install"]
 description = "Install Node.js dependencies"
