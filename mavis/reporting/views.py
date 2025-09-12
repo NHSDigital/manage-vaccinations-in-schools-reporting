@@ -12,7 +12,9 @@ from flask import (
 from healthcheck import HealthCheck
 
 from mavis.reporting.api_client.client import MavisApiClient
-from mavis.reporting.helpers import auth_helper, breadcrumb_helper
+from mavis.reporting.helpers import auth_helper
+from mavis.reporting.helpers.breadcrumb_helper import generate_breadcrumb_items
+from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
 from mavis.reporting.models.organisation import Organisation
 
 logger = logging.getLogger(__name__)
@@ -79,18 +81,11 @@ def download(code):
     if request.method == "POST":
         return redirect(url_for("main.download", code=organisation.code))
 
-    breadcrumb_items = breadcrumb_helper.generate_breadcrumb_items(organisation)
-    secondary_navigation_items = [
-        {
-            "text": "Vaccinations",
-            "href": url_for("main.vaccinations", code=organisation.code),
-        },
-        {
-            "text": "Download data",
-            "href": url_for("main.download", code=organisation.code),
-            "current": True,
-        },
-    ]
+    breadcrumb_items = generate_breadcrumb_items(organisation)
+    secondary_navigation_items = generate_secondary_nav_items(
+        organisation.code,
+        current_page="download",
+    )
 
     return render_template(
         "download.jinja",
@@ -108,18 +103,11 @@ def vaccinations(code):
     if organisation.code != code:
         return redirect(url_for("main.vaccinations", code=organisation.code))
 
-    breadcrumb_items = breadcrumb_helper.generate_breadcrumb_items(organisation)
-    secondary_navigation_items = [
-        {
-            "text": "Vaccinations",
-            "href": url_for("main.vaccinations", code=organisation.code),
-            "current": True,
-        },
-        {
-            "text": "Download data",
-            "href": url_for("main.download", code=organisation.code),
-        },
-    ]
+    breadcrumb_items = generate_breadcrumb_items(organisation)
+    secondary_navigation_items = generate_secondary_nav_items(
+        organisation.code,
+        current_page="vaccinations",
+    )
 
     data = g.api_client.get_vaccination_data()
 
