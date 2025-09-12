@@ -25,34 +25,6 @@ main = Blueprint("main", __name__)
 @main.before_request
 def stub_mavis_data():
     g.api_client = MavisApiClient()
-    g.programmes = [
-        {"value": "hpv", "text": "HPV", "checked": True},
-        {"value": "flu", "text": "Flu"},
-        {"value": "menacwy", "text": "MenACWY"},
-        {"value": "td-ipv", "text": "Td/IPV"},
-    ]
-
-    g.year_groups = [
-        {"value": "0", "text": "Reception"},
-        {"value": "1", "text": "Year 1"},
-        {"value": "2", "text": "Year 2"},
-        {"value": "3", "text": "Year 3"},
-        {"value": "4", "text": "Year 4"},
-        {"value": "5", "text": "Year 5"},
-        {"value": "6", "text": "Year 6"},
-        {"value": "7", "text": "Year 7"},
-        {"value": "8", "text": "Year 8"},
-        {"value": "9", "text": "Year 9"},
-        {"value": "10", "text": "Year 10"},
-        {"value": "11", "text": "Year 11"},
-    ]
-
-    g.genders = [
-        {"value": "male", "text": "Male"},
-        {"value": "female", "text": "Female"},
-        {"value": "other", "text": "Other"},
-        {"value": "unknown", "text": "Unknown"},
-    ]
 
 
 @main.context_processor
@@ -90,7 +62,7 @@ def download(code):
     return render_template(
         "download.jinja",
         organisation=organisation,
-        programmes=g.programmes,
+        programmes=g.api_client.get_programmes(),
         breadcrumb_items=breadcrumb_items,
         secondary_navigation_items=secondary_navigation_items,
     )
@@ -114,9 +86,9 @@ def vaccinations(code):
     return render_template(
         "vaccinations.jinja",
         organisation=organisation,
-        programmes=g.programmes,
-        year_groups=g.year_groups,
-        genders=g.genders,
+        programmes=g.api_client.get_programmes(),
+        year_groups=g.api_client.get_year_groups(),
+        genders=g.api_client.get_genders(),
         data=data,
         breadcrumb_items=breadcrumb_items,
         secondary_navigation_items=secondary_navigation_items,
