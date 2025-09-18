@@ -4,6 +4,12 @@
 
 {% extends 'layouts/base.jinja' %}
 
+{% block beforeContent %}
+  {{ breadcrumb({
+    "items": breadcrumb_items
+  }) }}
+{% endblock %}
+
 {% block page_content %}
 
 {{ heading({

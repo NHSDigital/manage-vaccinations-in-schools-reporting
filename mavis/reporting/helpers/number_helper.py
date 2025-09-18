@@ -19,10 +19,11 @@ def thousands(value: int | None) -> str:
         return str(value)
 
 
-def percentage(value: int | None) -> str:
+def percentage(value: float | None) -> str:
     """
-    Format an integer as a percentage.
+    Format a decimal proportion as a percentage.
     """
     if value is None:
         return ""
-    return f"{value}%"
+    percentage = round(value * 100, 1)
+    return f"{percentage}%"

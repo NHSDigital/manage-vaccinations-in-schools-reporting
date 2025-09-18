@@ -3,11 +3,11 @@
 {% from "checkboxes/macro.jinja" import checkboxes %}
 {% from "button/macro.jinja" import button %}
 
-{% extends 'layouts/base.jinja' %}
+{% extends 'layouts/dashboard.jinja' %}
 
-{% block pageTitle %}Download reporting data – {{ site_title }}{% endblock %}
+{% block pageTitle %}{{ organisation.name }} | {{ site_title }}{% endblock %}
 
-{% block page_content %}
+{% block dashboard_content %}
 
 {{ heading({
   "text": "Download reporting data",
@@ -21,7 +21,7 @@
   </div>
 </div>
 
-<form action="{{ url_for('main.download') }}" method="post">
+<form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
 
 <div class="nhsuk-grid-row">
   <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
