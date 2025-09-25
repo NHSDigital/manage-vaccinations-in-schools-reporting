@@ -9,19 +9,19 @@
   {% call fieldset({
     "legend": {
       "text": "Filter data",
-      "classes": "nhsuk-heading-m app-control-container__legend",
+      "classes": "nhsuk-heading-m filter-container__legend",
       "isPageHeading": false
     },
-    "classes": "nhsuk-card app-control-container"
+    "classes": "nhsuk-card filter-container"
   }) %}
 
-    <div class="app-control">
+    <div class="filter">
       {{ radios({
         "idPrefix": "programme",
         "name": "programme",
         "fieldset": {
           "legend": {
-            "text": "Vaccine programme",
+            "text": "Programme",
             "classes": "nhsuk-fieldset__legend--s"
           }
         },
@@ -29,7 +29,7 @@
       }) }}
     </div>
 
-    <div class="app-control">
+    <div class="filter">
       {{ checkboxes({
         "idPrefix": "gender",
         "name": "gender",
@@ -43,7 +43,7 @@
       }) }}
     </div>
 
-    <div class="app-control">
+    <div class="filter">
       {{ checkboxes({
         "idPrefix": "year-group",
         "name": "year-group",
