@@ -53,7 +53,7 @@ def download(code):
     if request.method == "POST":
         return redirect(url_for("main.download", code=organisation.code))
 
-    breadcrumb_items = generate_breadcrumb_items(organisation)
+    breadcrumb_items = generate_breadcrumb_items()
     secondary_navigation_items = generate_secondary_nav_items(
         organisation.code,
         current_page="download",
@@ -75,7 +75,7 @@ def vaccinations(code):
     if organisation.code != code:
         return redirect(url_for("main.vaccinations", code=organisation.code))
 
-    breadcrumb_items = generate_breadcrumb_items(organisation)
+    breadcrumb_items = generate_breadcrumb_items()
     secondary_navigation_items = generate_secondary_nav_items(
         organisation.code,
         current_page="vaccinations",
