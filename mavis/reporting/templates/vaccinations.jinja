@@ -100,7 +100,7 @@
     {% for row in data.monthly_vaccinations_given %}
       {% set _ = rows.append([
         { "text": row.month ~ " " ~ row.year },
-        { "text": row.vaccinations_given | thousands, "format": "numeric" }
+        { "text": row.count | thousands, "format": "numeric" }
       ]) %}
     {% endfor %}
     {% set _ = rows.append([

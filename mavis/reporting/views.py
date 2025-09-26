@@ -2,6 +2,7 @@ import logging
 
 from flask import (
     Blueprint,
+    current_app,
     g,
     redirect,
     render_template,
@@ -25,7 +26,7 @@ main = Blueprint("main", __name__)
 
 @main.before_request
 def stub_mavis_data():
-    g.api_client = MavisApiClient()
+    g.api_client = MavisApiClient(app=current_app, session=session)
 
 
 @main.context_processor
@@ -83,7 +84,19 @@ def vaccinations(code):
         current_page="vaccinations",
     )
 
-    data = g.api_client.get_vaccination_data()
+    filters = {}
+    if request.args.get("programme"):
+        filters["programme"] = request.args.get("programme")
+    if request.args.get("year_group"):
+        filters["year_group"] = request.args.get("year_group")
+    if request.args.get("gender"):
+        filters["gender"] = request.args.get("gender")
+    if request.args.get("from_date"):
+        filters["from_date"] = request.args.get("from_date")
+    if request.args.get("to_date"):
+        filters["to_date"] = request.args.get("to_date")
+
+    data = g.api_client.get_vaccination_data(filters)
 
     return render_template(
         "vaccinations.jinja",

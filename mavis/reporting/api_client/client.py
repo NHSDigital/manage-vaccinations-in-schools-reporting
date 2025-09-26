@@ -1,47 +1,38 @@
+from mavis.reporting.helpers import mavis_helper
+
+
 class MavisApiClient:
+    def __init__(self, app=None, session=None):
+        self.app = app
+        self.session = session
+
     def add_percentages(self, data: dict):
         n = data["cohort"]
-        data["vaccinated_percentage"] = data["vaccinated"] / n
-        data["not_vaccinated_percentage"] = data["not_vaccinated"] / n
-        data["vaccinated_by_sais_percentage"] = data["vaccinated_by_sais"] / n
-        data["vaccinated_elsewhere_declared_percentage"] = (
-            data["vaccinated_elsewhere_declared"] / n
-        )
-        data["vaccinated_elsewhere_reported_percentage"] = (
-            data["vaccinated_elsewhere_reported"] / n
-        )
-        data["vaccinated_previously_percentage"] = data["vaccinated_previously"] / n
+        if n > 0:
+            data["vaccinated_percentage"] = data["vaccinated"] / n
+            data["not_vaccinated_percentage"] = data["not_vaccinated"] / n
+            data["vaccinated_by_sais_percentage"] = data["vaccinated_by_sais"] / n
+            data["vaccinated_elsewhere_declared_percentage"] = (
+                data["vaccinated_elsewhere_declared"] / n
+            )
+            data["vaccinated_elsewhere_reported_percentage"] = (
+                data["vaccinated_elsewhere_reported"] / n
+            )
+            data["vaccinated_previously_percentage"] = data["vaccinated_previously"] / n
+        else:
+            data["vaccinated_percentage"] = 0
+            data["not_vaccinated_percentage"] = 0
+            data["vaccinated_by_sais_percentage"] = 0
+            data["vaccinated_elsewhere_percentage"] = 0
+            data["vaccinated_previously_percentage"] = 0
         return data
 
-    def get_vaccination_data(self):
-        data = {
-            "cohort": 546,
-            "vaccinated": 456,
-            "not_vaccinated": 90,
-            "vaccinated_by_sais": 400,
-            "vaccinated_elsewhere_declared": 32,
-            "vaccinated_elsewhere_reported": 24,
-            "vaccinated_previously": 0,
-            "vaccinations_given": 402,
-            "monthly_vaccinations_given": [
-                {
-                    "month": "September",
-                    "year": 2025,
-                    "vaccinations_given": 121,
-                },
-                {
-                    "month": "October",
-                    "year": 2025,
-                    "vaccinations_given": 145,
-                },
-                {
-                    "month": "November",
-                    "year": 2025,
-                    "vaccinations_given": 136,
-                },
-            ],
-            "last_updated": "2025-09-26",
-        }
+    def get_vaccination_data(self, filters=None):
+        params = filters or {}
+        response = mavis_helper.api_call(
+            self.app, self.session, "/api/reporting/totals", params=params
+        )
+        data = response.json()
         return self.add_percentages(data)
 
     def get_programmes(self) -> list[dict]:
