@@ -1,6 +1,7 @@
 import urllib.parse
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
+from unittest.mock import MagicMock, patch
 
 from mavis.reporting.helpers.auth_helper import log_user_in
 from tests.helpers import mock_user_info
@@ -29,8 +30,41 @@ def test_when_session_has_a_user_id_and_is_not_expired_it_does_not_redirect(
         with client.session_transaction() as session:
             log_user_in(mock_user_info(), session)
 
-        response = client.get(default_url())
-        assert response.status_code == HTTPStatus.OK
+        mock_response = MagicMock()
+        mock_response.json.return_value = {
+            "cohort": 546,
+            "vaccinated": 456,
+            "not_vaccinated": 90,
+            "vaccinated_by_sais": 400,
+            "vaccinated_elsewhere_declared": 36,
+            "vaccinated_elsewhere_recorded": 20,
+            "vaccinated_previously": 0,
+            "vaccinations_given": 402,
+            "monthly_vaccinations_given": [
+                {
+                    "month": "September",
+                    "year": 2025,
+                    "count": 121,
+                },
+                {
+                    "month": "October",
+                    "year": 2025,
+                    "count": 145,
+                },
+                {
+                    "month": "November",
+                    "year": 2025,
+                    "count": 136,
+                },
+            ],
+        }
+
+        with patch(
+            "mavis.reporting.helpers.mavis_helper.api_call",
+            return_value=mock_response,
+        ):
+            response = client.get(default_url())
+            assert response.status_code == HTTPStatus.OK
 
 
 def test_when_session_has_a_user_id_but_is_expired_it_redirects_to_mavis_start(client):
