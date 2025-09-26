@@ -14,6 +14,7 @@ from healthcheck import HealthCheck
 from mavis.reporting.api_client.client import MavisApiClient
 from mavis.reporting.helpers import auth_helper
 from mavis.reporting.helpers.breadcrumb_helper import generate_breadcrumb_items
+from mavis.reporting.helpers.date_helper import get_current_academic_year_range
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
 from mavis.reporting.models.organisation import Organisation
 
@@ -89,6 +90,7 @@ def vaccinations(code):
         programmes=g.api_client.get_programmes(),
         year_groups=g.api_client.get_year_groups(),
         genders=g.api_client.get_genders(),
+        academic_year=get_current_academic_year_range(),
         data=data,
         breadcrumb_items=breadcrumb_items,
         secondary_navigation_items=secondary_navigation_items,
