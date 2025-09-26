@@ -40,13 +40,14 @@ class MavisApiClient:
                     "vaccinations_given": 136,
                 },
             ],
+            "last_updated": "2025-09-26",
         }
         return self.add_percentages(data)
 
     def get_programmes(self) -> list[dict]:
         return [
-            {"value": "hpv", "text": "HPV", "checked": True},
             {"value": "flu", "text": "Flu"},
+            {"value": "hpv", "text": "HPV", "checked": True},
             {"value": "menacwy", "text": "MenACWY"},
             {"value": "td-ipv", "text": "Td/IPV"},
         ]
@@ -69,8 +70,8 @@ class MavisApiClient:
 
     def get_genders(self) -> list[dict]:
         return [
-            {"value": "male", "text": "Male"},
             {"value": "female", "text": "Female"},
+            {"value": "male", "text": "Male"},
             {"value": "other", "text": "Other"},
             {"value": "unknown", "text": "Unknown"},
         ]

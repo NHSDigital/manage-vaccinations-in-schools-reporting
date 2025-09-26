@@ -2,6 +2,7 @@ import os
 
 from jinja2 import ChainableUndefined, ChoiceLoader, FileSystemLoader, PackageLoader
 
+from mavis.reporting.helpers.date_helper import format_date_string
 from mavis.reporting.helpers.number_helper import percentage, thousands
 from mavis.reporting.helpers.static_file_helper import static
 
@@ -32,5 +33,6 @@ def configure_jinja2(app):
     # Add custom filters
     app.jinja_env.filters["thousands"] = thousands
     app.jinja_env.filters["percentage"] = percentage
+    app.jinja_env.filters["date"] = format_date_string
 
     return app

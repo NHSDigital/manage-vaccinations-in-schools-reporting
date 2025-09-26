@@ -5,7 +5,7 @@
 
 {% extends 'layouts/dashboard.jinja' %}
 
-{% block pageTitle %}{{ organisation.name }} | {{ site_title }}{% endblock %}
+{% block pageTitle %}Reports | {{ site_title }}{% endblock %}
 
 {% block dashboard_content %}
 
@@ -23,7 +23,7 @@
     <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
       <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
         {{ card({
-          "classes": "app-card",
+          "classes": "app-card app-card--blue",
           "heading": "Cohort",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
@@ -33,7 +33,7 @@
 
       <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
         {{ card({
-          "classes": "app-card",
+          "classes": "app-card app-card--red",
           "heading": "Not vaccinated",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
@@ -43,7 +43,7 @@
 
       <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
         {{ card({
-          "classes": "app-card app-card--reversed",
+          "classes": "app-card app-card--green",
           "heading": "Vaccinated",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
@@ -53,17 +53,29 @@
     </div>
 
     <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
-      <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item app-card-group__item">
+      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
-          "heading": "Vaccinated by SAIS this year",
+          "heading": "Vaccinated by SAIS in " ~ academic_year,
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
           "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_by_sais_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_by_sais"] | thousands ~ " children</span></p>",
         }) }}
       </div>
 
-      <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item app-card-group__item">
+      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
+        {{ card({
+          "classes": "app-card",
+          "heading": "Vaccinated in a previous academic year",
+          "headingClasses": "nhsuk-heading-xs",
+          "headingLevel": 3,
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_previously_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_previously"] | thousands ~ " children</span></p>",
+        }) }}
+      </div>
+    </div>
+
+    <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
+      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
           "heading": "Vaccinated elsewhere (self-declared)",
@@ -73,23 +85,13 @@
         }) }}
       </div>
 
-      <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item app-card-group__item">
+      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
           "heading": "Vaccinated elsewhere (reported)",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
           "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_reported_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_reported"] | thousands ~ " children</span></p>",
-        }) }}
-      </div>
-
-      <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card",
-          "heading": "Vaccinated previously",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_previously_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_previously"] | thousands ~ " children</span></p>",
         }) }}
       </div>
     </div>
@@ -116,6 +118,8 @@
       ],
       "rows": rows
     }) }}
+
+    <p class="nhsuk-body-s nhsuk-u-margin-top-7"><strong>Data last updated:</strong> {{ data.last_updated | date }}</p>
 
   </div>
 </div>

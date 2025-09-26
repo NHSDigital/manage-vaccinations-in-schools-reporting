@@ -14,6 +14,7 @@ from healthcheck import HealthCheck
 from mavis.reporting.api_client.client import MavisApiClient
 from mavis.reporting.helpers import auth_helper
 from mavis.reporting.helpers.breadcrumb_helper import generate_breadcrumb_items
+from mavis.reporting.helpers.date_helper import get_current_academic_year_range
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
 from mavis.reporting.models.organisation import Organisation
 
@@ -53,7 +54,7 @@ def download(code):
     if request.method == "POST":
         return redirect(url_for("main.download", code=organisation.code))
 
-    breadcrumb_items = generate_breadcrumb_items(organisation)
+    breadcrumb_items = generate_breadcrumb_items()
     secondary_navigation_items = generate_secondary_nav_items(
         organisation.code,
         current_page="download",
@@ -63,6 +64,7 @@ def download(code):
         "download.jinja",
         organisation=organisation,
         programmes=g.api_client.get_programmes(),
+        academic_year=get_current_academic_year_range(),
         breadcrumb_items=breadcrumb_items,
         secondary_navigation_items=secondary_navigation_items,
     )
@@ -75,7 +77,7 @@ def vaccinations(code):
     if organisation.code != code:
         return redirect(url_for("main.vaccinations", code=organisation.code))
 
-    breadcrumb_items = generate_breadcrumb_items(organisation)
+    breadcrumb_items = generate_breadcrumb_items()
     secondary_navigation_items = generate_secondary_nav_items(
         organisation.code,
         current_page="vaccinations",
@@ -89,6 +91,7 @@ def vaccinations(code):
         programmes=g.api_client.get_programmes(),
         year_groups=g.api_client.get_year_groups(),
         genders=g.api_client.get_genders(),
+        academic_year=get_current_academic_year_range(),
         data=data,
         breadcrumb_items=breadcrumb_items,
         secondary_navigation_items=secondary_navigation_items,

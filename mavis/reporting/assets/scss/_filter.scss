@@ -1,7 +1,7 @@
 @use "sass:color";
 @use "config" as *;
 
-.app-control {
+.filter {
   &-container {
     background-color: color.scale($color_nhsuk-grey-4, $alpha: -50%);
     margin-bottom: nhsuk-spacing(6);
