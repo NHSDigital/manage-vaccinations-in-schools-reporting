@@ -36,7 +36,8 @@ def test_when_session_has_a_user_id_and_is_not_expired_it_does_not_redirect(
             "vaccinated": 456,
             "not_vaccinated": 90,
             "vaccinated_by_sais": 400,
-            "vaccinated_elsewhere": 56,
+            "vaccinated_elsewhere_declared": 36,
+            "vaccinated_elsewhere_recorded": 20,
             "vaccinated_previously": 0,
             "vaccinations_given": 402,
             "monthly_vaccinations_given": [

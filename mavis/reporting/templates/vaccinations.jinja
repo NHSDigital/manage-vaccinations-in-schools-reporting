@@ -91,7 +91,7 @@
           "heading": "Vaccinated elsewhere (reported)",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_reported_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_reported"] | thousands ~ " children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_recorded_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_recorded"] | thousands ~ " children</span></p>",
         }) }}
       </div>
     </div>
@@ -118,8 +118,6 @@
       ],
       "rows": rows
     }) }}
-
-    <p class="nhsuk-body-s nhsuk-u-margin-top-7"><strong>Data last updated:</strong> {{ data.last_updated | date }}</p>
 
   </div>
 </div>

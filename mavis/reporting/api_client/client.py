@@ -8,6 +8,7 @@ class MavisApiClient:
 
     def add_percentages(self, data: dict):
         n = data["cohort"]
+
         if n > 0:
             data["vaccinated_percentage"] = data["vaccinated"] / n
             data["not_vaccinated_percentage"] = data["not_vaccinated"] / n
@@ -15,15 +16,16 @@ class MavisApiClient:
             data["vaccinated_elsewhere_declared_percentage"] = (
                 data["vaccinated_elsewhere_declared"] / n
             )
-            data["vaccinated_elsewhere_reported_percentage"] = (
-                data["vaccinated_elsewhere_reported"] / n
+            data["vaccinated_elsewhere_recorded_percentage"] = (
+                data["vaccinated_elsewhere_recorded"] / n
             )
             data["vaccinated_previously_percentage"] = data["vaccinated_previously"] / n
         else:
             data["vaccinated_percentage"] = 0
             data["not_vaccinated_percentage"] = 0
             data["vaccinated_by_sais_percentage"] = 0
-            data["vaccinated_elsewhere_percentage"] = 0
+            data["vaccinated_elsewhere_declared_percentage"] = 0
+            data["vaccinated_elsewhere_recorded_percentage"] = 0
             data["vaccinated_previously_percentage"] = 0
         return data
 
