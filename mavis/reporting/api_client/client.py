@@ -4,7 +4,12 @@ class MavisApiClient:
         data["vaccinated_percentage"] = data["vaccinated"] / n
         data["not_vaccinated_percentage"] = data["not_vaccinated"] / n
         data["vaccinated_by_sais_percentage"] = data["vaccinated_by_sais"] / n
-        data["vaccinated_elsewhere_percentage"] = data["vaccinated_elsewhere"] / n
+        data["vaccinated_elsewhere_declared_percentage"] = (
+            data["vaccinated_elsewhere_declared"] / n
+        )
+        data["vaccinated_elsewhere_reported_percentage"] = (
+            data["vaccinated_elsewhere_reported"] / n
+        )
         data["vaccinated_previously_percentage"] = data["vaccinated_previously"] / n
         return data
 
@@ -14,7 +19,8 @@ class MavisApiClient:
             "vaccinated": 456,
             "not_vaccinated": 90,
             "vaccinated_by_sais": 400,
-            "vaccinated_elsewhere": 56,
+            "vaccinated_elsewhere_declared": 32,
+            "vaccinated_elsewhere_reported": 24,
             "vaccinated_previously": 0,
             "vaccinations_given": 402,
             "monthly_vaccinations_given": [

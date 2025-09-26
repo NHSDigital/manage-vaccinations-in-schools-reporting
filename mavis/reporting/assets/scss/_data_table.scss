@@ -1,16 +1,26 @@
 @use "config" as *;
 
-.nhsuk-table--data {
-  th,
-  td {
-    padding: 12px;
+.nhsuk-table {
+  &--data {
+
+    th,
+    td {
+      padding: 12px;
+    }
+
+    .nhsuk-table__section-start {
+      border-left: 1px solid $color_nhsuk-grey-4;
+    }
+
+    .nhsuk-table__cell--bold {
+      font-weight: 700;
+    }
   }
 
-  .nhsuk-table__section-start {
-    border-left: 1px solid $color_nhsuk-grey-4;
-  }
-
-  .nhsuk-table__cell--bold {
-    font-weight: 700;
+  &--with-total {
+    .nhsuk-table__row:last-child {
+      background-color: $color_nhsuk-grey-5;
+      font-weight: 600;
+    }
   }
 }

@@ -66,10 +66,20 @@
       <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
-          "heading": "Vaccinated elsewhere",
+          "heading": "Vaccinated elsewhere (self-declared)",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere"] | thousands ~ " children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_declared_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_declared"] | thousands ~ " children</span></p>",
+        }) }}
+      </div>
+
+      <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item app-card-group__item">
+        {{ card({
+          "classes": "app-card",
+          "heading": "Vaccinated elsewhere (reported)",
+          "headingClasses": "nhsuk-heading-xs",
+          "headingLevel": 3,
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_reported_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_reported"] | thousands ~ " children</span></p>",
         }) }}
       </div>
 
@@ -82,16 +92,6 @@
           "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_previously_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_previously"] | thousands ~ " children</span></p>",
         }) }}
       </div>
-
-      <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card",
-          "heading": "Vaccinations given",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinations_given"] | thousands ~ "<span class='nhsuk-card__caption'>given</span></p>",
-        }) }}
-      </div>
     </div>
 
     {% set rows = [] %}
@@ -101,10 +101,14 @@
         { "text": row.vaccinations_given | thousands, "format": "numeric" }
       ]) %}
     {% endfor %}
+    {% set _ = rows.append([
+      { "text": "Total" },
+      { "text": data.vaccinations_given | thousands, "format": "numeric" }
+    ]) %}
 
     {{ table({
       "heading": "Monthly vaccinations",
-      "tableClasses": "nhsuk-table--data",
+      "tableClasses": "nhsuk-table--data nhsuk-table--with-total",
       "panel": true,
       "head": [
         { "text": "Month", "format": "date"},
