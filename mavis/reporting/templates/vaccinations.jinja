@@ -50,9 +50,6 @@
           "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated"] | thousands ~ " children</span></p>",
         }) }}
       </div>
-    </div>
-
-    <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
       <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
@@ -72,9 +69,7 @@
           "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_previously_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_previously"] | thousands ~ " children</span></p>",
         }) }}
       </div>
-    </div>
-
-    <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
+      
       <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
