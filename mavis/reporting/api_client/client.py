@@ -40,6 +40,7 @@ class MavisApiClient:
                     "vaccinations_given": 136,
                 },
             ],
+            "last_updated": "2025-09-26",
         }
         return self.add_percentages(data)
 

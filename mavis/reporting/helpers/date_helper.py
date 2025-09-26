@@ -14,3 +14,7 @@ def get_current_academic_year_range(date: datetime = None):
     start_year = get_current_academic_year(date)
     end_year = start_year + 1
     return f"{start_year} to {end_year}"
+
+
+def format_date_string(date: str):
+    return datetime.strptime(date, "%Y-%m-%d").strftime("%d %B %Y")

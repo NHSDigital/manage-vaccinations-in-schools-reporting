@@ -64,6 +64,7 @@ def download(code):
         "download.jinja",
         organisation=organisation,
         programmes=g.api_client.get_programmes(),
+        academic_year=get_current_academic_year_range(),
         breadcrumb_items=breadcrumb_items,
         secondary_navigation_items=secondary_navigation_items,
     )
