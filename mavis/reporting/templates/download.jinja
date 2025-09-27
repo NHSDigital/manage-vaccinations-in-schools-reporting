@@ -1,6 +1,7 @@
 {% from "components/heading.jinja" import heading %}
 {% from "radios/macro.jinja" import radios %}
 {% from "button/macro.jinja" import button %}
+{% from "error-summary/macro.jinja" import errorSummary %}
 
 {% extends 'layouts/dashboard.jinja' %}
 
@@ -10,27 +11,42 @@
 
 <form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
 
+{% if form.errors %}
+  {{ errorSummary({
+    "titleText": "There is a problem",
+    "errorList": [
+      {
+        "text": form.data_type.errors[0],
+        "href": "#" + form.data_type.id,
+      }
+    ]}) }}
+{% endif %}
+
+{{ form.csrf_token }}
+
+{% set items = [] %}
+{% for choice in form.data_type.choices %}
+  {% set _ = items.append({
+    "value": choice[0],
+    "text": choice[1],
+  }) %}
+{% endfor %}
+
 <div class="nhsuk-grid-row">
   <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
     {{ radios({
-      "idPrefix": "download-type",
-      "name": "download-type",
+      "idPrefix": form.data_type.id,
+      "name": form.data_type.name,
       "fieldset": {
         "legend": {
-          "text": "What kind of data do you want to download?",
+          "text": form.data_type.label.text,
           "classes": "nhsuk-fieldset__legend--s"
         }
       },
-      "items": [
-        {
-          "text": "Child-level vaccination record data",
-          "value": "child-records",
-        },
-        {
-          "text": "Aggregate vaccination and consent data",
-          "value": "aggregate-data",
-        },
-      ],
+      "errorMessage": {
+        "text": form.data_type.errors[0],
+      } if form.data_type.errors else "",
+      "items": items,
     }) }}
   </div>
 </div>
