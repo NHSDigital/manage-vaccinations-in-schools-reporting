@@ -56,6 +56,8 @@ def download(code):
         return redirect(url_for("main.download", code=organisation.code))
 
     breadcrumb_items = generate_breadcrumb_items()
+
+    selected_item_text = "Download"
     secondary_navigation_items = generate_secondary_nav_items(
         organisation.code,
         current_page="download",
@@ -67,6 +69,7 @@ def download(code):
         programmes=g.api_client.get_programmes(),
         academic_year=get_current_academic_year_range(),
         breadcrumb_items=breadcrumb_items,
+        selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
     )
 
@@ -79,6 +82,8 @@ def vaccinations(code):
         return redirect(url_for("main.vaccinations", code=organisation.code))
 
     breadcrumb_items = generate_breadcrumb_items()
+
+    selected_item_text = "Vaccinations"
     secondary_navigation_items = generate_secondary_nav_items(
         organisation.code,
         current_page="vaccinations",
@@ -107,6 +112,7 @@ def vaccinations(code):
         academic_year=get_current_academic_year_range(),
         data=data,
         breadcrumb_items=breadcrumb_items,
+        selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
     )
 
