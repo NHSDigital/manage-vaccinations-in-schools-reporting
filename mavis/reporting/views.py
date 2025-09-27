@@ -46,12 +46,12 @@ def dashboard():
     return redirect(url_for("main.vaccinations", code=organisation.code))
 
 
-@main.route("/organisation/<code>/download", methods=["GET", "POST"])
+@main.route("/organisation/<code>/start-download", methods=["GET", "POST"])
 @auth_helper.login_required
-def download(code):
+def start_download(code):
     organisation = Organisation.get_from_session(session)
     if organisation.code != code:
-        return redirect(url_for("main.download", code=organisation.code))
+        return redirect(url_for("main.start_download", code=organisation.code))
 
     form = DataTypeForm()
 
@@ -59,7 +59,7 @@ def download(code):
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
             return redirect(current_app.config["MAVIS_ROOT_URL"] + "/programmes")
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
-            return redirect(url_for("main.download", code=organisation.code))
+            return redirect(url_for("main.start_download", code=organisation.code))
         else:
             raise ValueError("Invalid data type")
 
@@ -72,7 +72,7 @@ def download(code):
     )
 
     return render_template(
-        "download.jinja",
+        "start-download.jinja",
         organisation=organisation,
         programmes=g.api_client.get_programmes(),
         academic_year=get_current_academic_year_range(),

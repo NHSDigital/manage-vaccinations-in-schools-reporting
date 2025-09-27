@@ -10,7 +10,7 @@ def generate_secondary_nav_items(organisation_code: str, current_page: str):
         },
         {
             "text": "Download data",
-            "href": url_for("main.download", code=organisation_code),
+            "href": url_for("main.start_download", code=organisation_code),
             "current": current_page == "download",
         },
     ]

@@ -9,7 +9,7 @@
 
 {% block dashboard_content %}
 
-<form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
+<form action="{{ url_for('main.start_download', code=organisation.code) }}" method="post">
 
 {% if form.errors %}
   {{ errorSummary({
