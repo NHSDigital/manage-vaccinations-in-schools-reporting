@@ -59,7 +59,7 @@ def start_download(code):
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
             return redirect(current_app.config["MAVIS_ROOT_URL"] + "/programmes")
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
-            return redirect(url_for("main.start_download", code=organisation.code))
+            return redirect(url_for("main.download", code=organisation.code))
         else:
             raise ValueError("Invalid data type")
 
@@ -74,12 +74,26 @@ def start_download(code):
     return render_template(
         "start-download.jinja",
         organisation=organisation,
-        programmes=g.api_client.get_programmes(),
         academic_year=get_current_academic_year_range(),
         breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
         form=form,
+    )
+
+
+@main.route("/organisation/<code>/download")
+@auth_helper.login_required
+def download(code):
+    organisation = Organisation.get_from_session(session)
+    if organisation.code != code:
+        return redirect(url_for("main.download", code=organisation.code))
+
+    return render_template(
+        "download.jinja",
+        organisation=organisation,
+        programmes=g.api_client.get_programmes(),
+        academic_year=get_current_academic_year_range(),
     )
 
 

@@ -1,0 +1,22 @@
+{% from "components/heading.jinja" import heading %}
+{% from "back-link/macro.jinja" import backLink %}
+
+{% extends 'layouts/base.jinja' %}
+
+{% block pageTitle %}{{ organisation.name }} | {{ site_title }}{% endblock %}
+
+{% block beforeContent %}
+  {{ backLink({
+    "href": url_for("main.start_download", code=organisation.code),
+    "text": "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+{{ heading({
+  "text": "Download data",
+  "level": "1",
+}) }}
+
+{% endblock %}
