@@ -1,6 +1,5 @@
 {% from "components/heading.jinja" import heading %}
-{% from "select/macro.jinja" import select %}
-{% from "checkboxes/macro.jinja" import checkboxes %}
+{% from "radios/macro.jinja" import radios %}
 {% from "button/macro.jinja" import button %}
 
 {% extends 'layouts/dashboard.jinja' %}
@@ -9,84 +8,35 @@
 
 {% block dashboard_content %}
 
-{{ heading({
-  "text": "Download reporting data",
-  "level": 1,
-  "size": "xl",
-}) }}
-
-<div class="nhsuk-grid-row">
-  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
-    <p>Download data for the number of vaccinations given to children in schools by month for your organisation.</p>
-  </div>
-</div>
-
 <form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
 
 <div class="nhsuk-grid-row">
   <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
-    {{ heading({
-      "text": "Choose a programme",
-      "level": 2,
-      "size": "s",
-    }) }}
-
-    {% set programme_items = [] %}
-    {% for programme in programmes %}
-      {% set _ = programme_items.append({
-        "text": programme["name"],
-        "value": programme["code"],
-        "selected": programme["code"] == "hpv",
-      }) %}
-    {% endfor %}
-
-    {{ select({
-      "label": {
-        "text": "Programme",
-        "classes": "nhsuk-u-visually-hidden",
+    {{ radios({
+      "idPrefix": "download-type",
+      "name": "download-type",
+      "fieldset": {
+        "legend": {
+          "text": "What kind of data do you want to download?",
+          "classes": "nhsuk-fieldset__legend--s"
+        }
       },
-      "id": "programme",
-      "name": "programme",
-      "items": programmes,
-    }) }}
-  </div>
-</div>
-
-<div class="nhsuk-grid-row">
-  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
-    {{ heading({
-      "text": "Choose other variables",
-      "level": 2,
-      "size": "s",
-    }) }}
-
-    {{ checkboxes({
-      "id": "variables",
-      "name": "variables",
       "items": [
         {
-          "text": "Local authority",
-          "value": "local_authority",
+          "text": "Child-level vaccination record data",
+          "value": "child-records",
         },
         {
-          "text": "School",
-          "value": "school",
+          "text": "Aggregate vaccination and consent data",
+          "value": "aggregate-data",
         },
-        {
-          "text": "Year group",
-          "value": "year_group",
-        },
-        {
-          "text": "Gender",
-          "value": "gender",
-        }
       ],
     }) }}
   </div>
 </div>
 
 {{ button({
-  "text": "Download data",
+  "text": "Continue",
   "type": "submit",
 }) }}
 
