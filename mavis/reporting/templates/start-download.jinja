@@ -1,7 +1,7 @@
 {% from "components/heading.jinja" import heading %}
 {% from "radios/macro.jinja" import radios %}
 {% from "button/macro.jinja" import button %}
-{% from "error-summary/macro.jinja" import errorSummary %}
+{% from "components/form_error_summary.jinja" import formErrorSummary %}
 
 {% extends 'layouts/dashboard.jinja' %}
 
@@ -11,18 +11,9 @@
 
 <form action="{{ url_for('main.start_download', code=organisation.code) }}" method="post">
 
-{% if form.errors %}
-  {{ errorSummary({
-    "titleText": "There is a problem",
-    "errorList": [
-      {
-        "text": form.data_type.errors[0],
-        "href": "#" + form.data_type.id,
-      }
-    ]}) }}
-{% endif %}
-
 {{ form.csrf_token }}
+
+{{ formErrorSummary(form) }}
 
 {% set items = [] %}
 {% for choice in form.data_type.choices %}

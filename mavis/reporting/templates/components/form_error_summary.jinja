@@ -1,0 +1,20 @@
+{% from "error-summary/macro.jinja" import errorSummary %}
+
+{% macro formErrorSummary(form) %}
+  {% set error_list = [] %}
+  {% for field, field_errors in form.errors.items() %}
+    {% for error in field_errors %}
+      {% set _ = error_list.append({
+        "text": error,
+        "href": "#" + field,
+      }) %}
+    {% endfor %}
+  {% endfor %}
+
+  {% if form.errors %}
+    {{ errorSummary({
+      "titleText": "There is a problem",
+      "errorList": error_list,
+    }) }}
+  {% endif %}
+{% endmacro %}
