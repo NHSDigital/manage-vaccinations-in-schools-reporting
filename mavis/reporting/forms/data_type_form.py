@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import RadioField
-from wtforms.validators import InputRequired, ValidationError
+from wtforms.validators import InputRequired
 
 
 class DataTypeForm(FlaskForm):
@@ -19,7 +19,3 @@ class DataTypeForm(FlaskForm):
             (AGGREGATE_DATA, "Aggregate vaccination and consent data"),
         ],
     )
-
-    def validate_data_type(self, field):
-        if not field.data:
-            raise ValidationError("Please select a data type")

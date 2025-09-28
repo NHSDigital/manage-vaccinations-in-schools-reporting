@@ -1,5 +1,9 @@
 {% from "components/heading.jinja" import heading %}
 {% from "back-link/macro.jinja" import backLink %}
+{% from "radios/macro.jinja" import radios %}
+{% from "checkboxes/macro.jinja" import checkboxes %}
+{% from "button/macro.jinja" import button %}
+{% from "error-summary/macro.jinja" import errorSummary %}
 
 {% extends 'layouts/base.jinja' %}
 
@@ -18,5 +22,95 @@
   "text": "Download data",
   "level": "1",
 }) }}
+
+<p class="nhsuk-body-m nhsuk-u-margin-bottom-3">
+  Download vaccination and consent data for the {{ academic_year }} academic year so far.
+</p>
+
+<p class="nhsuk-body-m nhsuk-u-margin-bottom-6">
+  Last updated: {{ last_updated_time }}.
+</p>
+
+<form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
+
+{{ form.csrf_token }}
+
+{% set error_list = [] %}
+{% for field, field_errors in form.errors.items() %}
+  {% for error in field_errors %}
+    {% set _ = error_list.append({
+      "text": error,
+      "href": "#" + field,
+    }) %}
+  {% endfor %}
+{% endfor %}
+
+{% if form.errors %}
+  {{ errorSummary({
+    "titleText": "There is a problem",
+    "errorList": error_list,
+  }) }}
+{% endif %}
+
+{% set items = [] %}
+{% for choice in form.programme.choices %}
+  {% set _ = items.append({
+    "value": choice[0],
+    "text": choice[1],
+  }) %}
+{% endfor %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+    {{ radios({
+      "idPrefix": form.programme.id,
+      "name": form.programme.name,
+      "fieldset": {
+        "legend": {
+          "text": form.programme.label.text,
+          "classes": "nhsuk-fieldset__legend--s"
+        }
+      },
+      "errorMessage": {
+        "text": form.programme.errors[0],
+      } if form.programme.errors else "",
+      "items": items,
+    }) }}
+  </div>
+</div>
+
+{% set items = [] %}
+{% for choice in form.variables.choices %}
+  {% set _ = items.append({
+    "value": choice[0],
+    "text": choice[1],
+  }) %}
+{% endfor %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+    {{ checkboxes({
+      "idPrefix": form.variables.name,
+      "name": form.variables.name,
+      "fieldset": {
+        "legend": {
+          "text": form.variables.label,
+          "classes": "nhsuk-fieldset__legend--s"
+        }
+      },
+      "errorMessage": {
+        "text": form.variables.errors[0],
+      } if form.variables.errors else "",
+      "items": items,
+    }) }}
+  </div>
+</div>
+
+{{ button({
+  "text": "Download",
+  "type": "submit",
+}) }}
+
+</form>
 
 {% endblock %}

@@ -37,6 +37,14 @@ class MavisApiClient:
         data = response.json()
         return self.add_percentages(data)
 
+    def get_variables(self) -> list[dict]:
+        return [
+            {"value": "local_authority", "text": "Local Authority"},
+            {"value": "school", "text": "School"},
+            {"value": "year_group", "text": "Year group"},
+            {"value": "gender", "text": "Gender"},
+        ]
+
     def get_programmes(self) -> list[dict]:
         return [
             {"value": "flu", "text": "Flu"},
