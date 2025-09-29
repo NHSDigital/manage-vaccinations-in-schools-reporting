@@ -16,6 +16,14 @@
   }) }}
 {% endblock %}
 
+{% block before_page_heading %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+      {{ formErrorSummary(form) }}
+    </div>
+  </div>
+{% endblock %}
+
 {% block page_heading %}
   {{ heading({
     "text": "Download data",
@@ -36,8 +44,6 @@
 <form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
 
 {{ form.csrf_token }}
-
-{{ formErrorSummary(form) }}
 
 {% set items = [] %}
 {% for choice in form.programme.choices %}

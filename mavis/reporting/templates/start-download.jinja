@@ -7,6 +7,14 @@
 
 {% block pageTitle %}Download vaccination data | {{ site_title }}{% endblock %}
 
+{% block before_page_heading %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+      {{ formErrorSummary(form) }}
+    </div>
+  </div>
+{% endblock %}
+
 {% block dashboard_content %}
 
 <form action="{{ url_for('main.start_download', code=organisation.code) }}" method="post">
@@ -15,8 +23,6 @@
 
 <div class="nhsuk-grid-row">
   <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
-    {{ formErrorSummary(form) }}
-
     {% set items = [] %}
     {% for choice in form.data_type.choices %}
       {% set _ = items.append({
