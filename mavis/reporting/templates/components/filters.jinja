@@ -3,9 +3,10 @@
 {% from "checkboxes/macro.jinja" import checkboxes %}
 {% from "input/macro.jinja" import input %}
 {% from "fieldset/macro.jinja" import fieldset %}
+{% from "button/macro.jinja" import button %}
 
 {% macro filters(params) %}
-<form>
+<form method="get" action="{{ params.form_action }}">
   {% call fieldset({
     "legend": {
       "text": "Filter data",
@@ -16,6 +17,23 @@
   }) %}
 
     <div class="filter">
+      {{ button({
+        "text": "Apply filters",
+        "classes": "nhsuk-button--secondary"
+      }) }}
+    </div>
+
+    <div class="filter">
+      {% set programme_items = [] %}
+      {% for programme in params.programmes %}
+        {% set checked = params.current_filters.get('programme') == programme.value %}
+        {% set _ = programme_items.append({
+          "value": programme.value,
+          "text": programme.text,
+          "checked": checked
+        }) %}
+      {% endfor %}
+
       {{ radios({
         "idPrefix": "programme",
         "name": "programme",
@@ -25,11 +43,21 @@
             "classes": "nhsuk-fieldset__legend--s"
           }
         },
-        "items": params.programmes
+        "items": programme_items
       }) }}
     </div>
 
     <div class="filter">
+      {% set gender_items = [] %}
+      {% for gender in params.genders %}
+        {% set checked = gender.value in (params.current_filters.get('gender') or []) %}
+        {% set _ = gender_items.append({
+          "value": gender.value,
+          "text": gender.text,
+          "checked": checked
+        }) %}
+      {% endfor %}
+
       {{ checkboxes({
         "idPrefix": "gender",
         "name": "gender",
@@ -39,11 +67,21 @@
             "classes": "nhsuk-fieldset__legend--s"
           }
         },
-        "items": params.genders
+        "items": gender_items
       }) }}
     </div>
 
     <div class="filter">
+      {% set year_group_items = [] %}
+      {% for year_group in params.year_groups %}
+        {% set checked = year_group.value in (params.current_filters.get('year_group') or []) %}
+        {% set _ = year_group_items.append({
+          "value": year_group.value,
+          "text": year_group.text,
+          "checked": checked
+        }) %}
+      {% endfor %}
+
       {{ checkboxes({
         "idPrefix": "year-group",
         "name": "year-group",
@@ -53,7 +91,7 @@
             "classes": "nhsuk-fieldset__legend--s"
           }
         },
-        "items": params.year_groups
+        "items": year_group_items
       }) }}
     </div>
   {% endcall %}

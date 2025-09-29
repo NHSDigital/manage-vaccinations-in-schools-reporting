@@ -30,7 +30,23 @@ class MavisApiClient:
         return data
 
     def get_vaccination_data(self, filters=None):
-        params = filters or {}
+        params = {}
+
+        if filters:
+            filter_keys = [
+                "programme",
+                "gender",
+                "year_group",
+                "academic_year",
+                "team_id",
+                "local_authority",
+                "school_local_authority",
+            ]
+
+            for key in filter_keys:
+                if key in filters:
+                    params[key] = filters[key]
+
         response = mavis_helper.api_call(
             self.app, self.session, "/api/reporting/totals", params=params
         )
@@ -55,24 +71,25 @@ class MavisApiClient:
 
     def get_year_groups(self) -> list[dict]:
         return [
-            {"value": "0", "text": "Reception"},
-            {"value": "1", "text": "Year 1"},
-            {"value": "2", "text": "Year 2"},
-            {"value": "3", "text": "Year 3"},
-            {"value": "4", "text": "Year 4"},
-            {"value": "5", "text": "Year 5"},
-            {"value": "6", "text": "Year 6"},
-            {"value": "7", "text": "Year 7"},
-            {"value": "8", "text": "Year 8"},
-            {"value": "9", "text": "Year 9"},
-            {"value": "10", "text": "Year 10"},
-            {"value": "11", "text": "Year 11"},
+            {"value": "5", "text": "Reception"},
+            {"value": "6", "text": "Year 1"},
+            {"value": "7", "text": "Year 2"},
+            {"value": "8", "text": "Year 3"},
+            {"value": "9", "text": "Year 4"},
+            {"value": "10", "text": "Year 5"},
+            {"value": "11", "text": "Year 6"},
+            {"value": "12", "text": "Year 7"},
+            {"value": "13", "text": "Year 8"},
+            {"value": "14", "text": "Year 9"},
+            {"value": "15", "text": "Year 10"},
+            {"value": "16", "text": "Year 11"},
         ]
 
+    # https://www.datadictionary.nhs.uk/attributes/person_gender_code.html
     def get_genders(self) -> list[dict]:
         return [
-            {"value": "female", "text": "Female"},
-            {"value": "male", "text": "Male"},
-            {"value": "other", "text": "Other"},
-            {"value": "unknown", "text": "Unknown"},
+            {"value": "2", "text": "Female"},
+            {"value": "1", "text": "Male"},
+            {"value": "9", "text": "Other"},
+            {"value": "0", "text": "Unknown"},
         ]
