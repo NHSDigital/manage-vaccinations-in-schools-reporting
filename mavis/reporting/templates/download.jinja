@@ -33,28 +33,29 @@
 
 {% block page_content %}
 
-<p class="nhsuk-body-m nhsuk-u-margin-bottom-3">
-  Download vaccination and consent data for the {{ academic_year }} academic year so far.
-</p>
-
-<p class="nhsuk-body-m nhsuk-u-margin-bottom-6">
-  Last updated: {{ last_updated_time }}.
-</p>
-
-<form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
-
-{{ form.csrf_token }}
-
-{% set items = [] %}
-{% for choice in form.programme.choices %}
-  {% set _ = items.append({
-    "value": choice[0],
-    "text": choice[1],
-  }) %}
-{% endfor %}
-
 <div class="nhsuk-grid-row">
   <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+
+  <p class="nhsuk-body-m nhsuk-u-margin-bottom-3">
+    Download vaccination and consent data for the {{ academic_year }} academic year so far.
+  </p>
+
+  <p class="nhsuk-body-m nhsuk-u-margin-bottom-6">
+    Last updated: {{ last_updated_time }}.
+  </p>
+
+  <form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
+
+    {{ form.csrf_token }}
+
+    {% set items = [] %}
+    {% for choice in form.programme.choices %}
+      {% set _ = items.append({
+        "value": choice[0],
+        "text": choice[1],
+      }) %}
+    {% endfor %}
+
     {{ radios({
       "idPrefix": form.programme.id,
       "name": form.programme.name,
@@ -69,19 +70,15 @@
       } if form.programme.errors else "",
       "items": items,
     }) }}
-  </div>
-</div>
 
-{% set items = [] %}
-{% for choice in form.variables.choices %}
-  {% set _ = items.append({
-    "value": choice[0],
-    "text": choice[1],
-  }) %}
-{% endfor %}
+    {% set items = [] %}
+    {% for choice in form.variables.choices %}
+      {% set _ = items.append({
+        "value": choice[0],
+        "text": choice[1],
+      }) %}
+    {% endfor %}
 
-<div class="nhsuk-grid-row">
-  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
     {{ checkboxes({
       "idPrefix": form.variables.name,
       "name": form.variables.name,
@@ -96,14 +93,15 @@
       } if form.variables.errors else "",
       "items": items,
     }) }}
+
+    {{ button({
+      "text": "Download",
+      "type": "submit",
+    }) }}
+
+  </form>
+
   </div>
 </div>
-
-{{ button({
-  "text": "Download",
-  "type": "submit",
-}) }}
-
-</form>
 
 {% endblock %}
