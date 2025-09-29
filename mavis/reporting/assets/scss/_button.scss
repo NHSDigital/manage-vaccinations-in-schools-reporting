@@ -1,0 +1,7 @@
+@use "config" as *;
+
+.app-button--small {
+  padding: nhsuk-spacing(2) 12px nhsuk-spacing(1);
+
+  @include nhsuk-font-size(16);
+}
