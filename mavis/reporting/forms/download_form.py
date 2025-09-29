@@ -10,7 +10,7 @@ class DownloadForm(FlaskForm):
         id="programme",
         label="Which programme do you want to download data for?",
         name="programme",
-        validators=[InputRequired(message="Please select a programme")],
+        validators=[InputRequired(message="Select a programme to get data for")],
     )
 
     variables = SelectMultipleField(
