@@ -16,12 +16,14 @@
   }) }}
 {% endblock %}
 
-{% block content %}
+{% block page_heading %}
+  {{ heading({
+    "text": "Download data",
+    "level": "1",
+  }) }}
+{% endblock %}
 
-{{ heading({
-  "text": "Download data",
-  "level": "1",
-}) }}
+{% block page_content %}
 
 <p class="nhsuk-body-m nhsuk-u-margin-bottom-3">
   Download vaccination and consent data for the {{ academic_year }} academic year so far.
