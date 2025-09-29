@@ -18,3 +18,7 @@ def get_current_academic_year_range(date: datetime | None = None):
 
 def format_date_string(date: str):
     return datetime.strptime(date, "%Y-%m-%d").strftime("%d %B %Y")
+
+
+def get_last_updated_time():
+    return datetime.now().strftime("%d %B %Y at %H:00")

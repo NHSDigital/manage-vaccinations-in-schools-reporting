@@ -25,6 +25,7 @@
       {
         "href": url_for('main.dashboard'),
         "text": "Reports",
+        "active": True,
       }
     ]
   },
@@ -34,7 +35,8 @@
 
 {% block content %}
 
-{% block page_content %}
-{% endblock %}
+  {% block before_page_heading %}{% endblock %}
+  {% block page_heading required %}{% endblock %}
+  {% block page_content required %}{% endblock %}
 
 {% endblock %}

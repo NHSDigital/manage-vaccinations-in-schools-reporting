@@ -1,0 +1,58 @@
+{% from "components/heading.jinja" import heading %}
+{% from "radios/macro.jinja" import radios %}
+{% from "button/macro.jinja" import button %}
+{% from "components/form_error_summary.jinja" import formErrorSummary %}
+
+{% extends 'layouts/dashboard.jinja' %}
+
+{% block pageTitle %}Download vaccination data | {{ site_title }}{% endblock %}
+
+{% block before_page_heading %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+      {{ formErrorSummary(form) }}
+    </div>
+  </div>
+{% endblock %}
+
+{% block dashboard_content %}
+
+<form action="{{ url_for('main.start_download', code=organisation.code) }}" method="post">
+
+{{ form.csrf_token }}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+    {% set items = [] %}
+    {% for choice in form.data_type.choices %}
+      {% set _ = items.append({
+        "value": choice[0],
+        "text": choice[1],
+      }) %}
+    {% endfor %}
+
+    {{ radios({
+      "idPrefix": form.data_type.id,
+      "name": form.data_type.name,
+      "fieldset": {
+        "legend": {
+          "text": form.data_type.label.text,
+          "classes": "nhsuk-fieldset__legend--s"
+        }
+      },
+      "errorMessage": {
+        "text": form.data_type.errors[0],
+      } if form.data_type.errors else "",
+      "items": items,
+    }) }}
+  </div>
+</div>
+
+{{ button({
+  "text": "Continue",
+  "type": "submit",
+}) }}
+
+</form>
+
+{% endblock %}

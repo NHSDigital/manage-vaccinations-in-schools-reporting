@@ -13,9 +13,14 @@ from flask import (
 from healthcheck import HealthCheck
 
 from mavis.reporting.api_client.client import MavisApiClient
+from mavis.reporting.forms.data_type_form import DataTypeForm
+from mavis.reporting.forms.download_form import DownloadForm
 from mavis.reporting.helpers import auth_helper
 from mavis.reporting.helpers.breadcrumb_helper import generate_breadcrumb_items
-from mavis.reporting.helpers.date_helper import get_current_academic_year_range
+from mavis.reporting.helpers.date_helper import (
+    get_current_academic_year_range,
+    get_last_updated_time,
+)
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
 from mavis.reporting.models.organisation import Organisation
 
@@ -45,6 +50,42 @@ def dashboard():
     return redirect(url_for("main.vaccinations", code=organisation.code))
 
 
+@main.route("/organisation/<code>/start-download", methods=["GET", "POST"])
+@auth_helper.login_required
+def start_download(code):
+    organisation = Organisation.get_from_session(session)
+    if organisation.code != code:
+        return redirect(url_for("main.start_download", code=organisation.code))
+
+    form = DataTypeForm()
+
+    if form.validate_on_submit():
+        if form.data_type.data == DataTypeForm.CHILD_RECORDS:
+            return redirect(current_app.config["MAVIS_ROOT_URL"] + "/programmes")
+        elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
+            return redirect(url_for("main.download", code=organisation.code))
+        else:
+            raise ValueError("Invalid data type")
+
+    breadcrumb_items = generate_breadcrumb_items()
+
+    selected_item_text = "Download"
+    secondary_navigation_items = generate_secondary_nav_items(
+        organisation.code,
+        current_page="download",
+    )
+
+    return render_template(
+        "start-download.jinja",
+        organisation=organisation,
+        academic_year=get_current_academic_year_range(),
+        breadcrumb_items=breadcrumb_items,
+        selected_item_text=selected_item_text,
+        secondary_navigation_items=secondary_navigation_items,
+        form=form,
+    )
+
+
 @main.route("/organisation/<code>/download", methods=["GET", "POST"])
 @auth_helper.login_required
 def download(code):
@@ -52,22 +93,20 @@ def download(code):
     if organisation.code != code:
         return redirect(url_for("main.download", code=organisation.code))
 
-    if request.method == "POST":
-        return redirect(url_for("main.download", code=organisation.code))
-
-    breadcrumb_items = generate_breadcrumb_items()
-    secondary_navigation_items = generate_secondary_nav_items(
-        organisation.code,
-        current_page="download",
+    form = DownloadForm(
+        g.api_client.get_programmes(),
+        g.api_client.get_variables(),
     )
+
+    if request.method == "POST" and form.validate_on_submit():
+        return redirect(url_for("main.download", code=organisation.code))
 
     return render_template(
         "download.jinja",
         organisation=organisation,
-        programmes=g.api_client.get_programmes(),
         academic_year=get_current_academic_year_range(),
-        breadcrumb_items=breadcrumb_items,
-        secondary_navigation_items=secondary_navigation_items,
+        last_updated_time=get_last_updated_time(),
+        form=form,
     )
 
 
@@ -79,6 +118,8 @@ def vaccinations(code):
         return redirect(url_for("main.vaccinations", code=organisation.code))
 
     breadcrumb_items = generate_breadcrumb_items()
+
+    selected_item_text = "Vaccinations"
     secondary_navigation_items = generate_secondary_nav_items(
         organisation.code,
         current_page="vaccinations",
@@ -107,6 +148,7 @@ def vaccinations(code):
         academic_year=get_current_academic_year_range(),
         data=data,
         breadcrumb_items=breadcrumb_items,
+        selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
     )
 

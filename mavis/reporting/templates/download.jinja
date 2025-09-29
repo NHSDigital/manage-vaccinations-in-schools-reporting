@@ -1,95 +1,107 @@
 {% from "components/heading.jinja" import heading %}
-{% from "select/macro.jinja" import select %}
+{% from "back-link/macro.jinja" import backLink %}
+{% from "radios/macro.jinja" import radios %}
 {% from "checkboxes/macro.jinja" import checkboxes %}
 {% from "button/macro.jinja" import button %}
+{% from "components/form_error_summary.jinja" import formErrorSummary %}
 
-{% extends 'layouts/dashboard.jinja' %}
+{% extends 'layouts/base.jinja' %}
 
 {% block pageTitle %}{{ organisation.name }} | {{ site_title }}{% endblock %}
 
-{% block dashboard_content %}
+{% block beforeContent %}
+  {{ backLink({
+    "href": url_for("main.start_download", code=organisation.code),
+    "text": "Back"
+  }) }}
+{% endblock %}
 
-{{ heading({
-  "text": "Download reporting data",
-  "level": 1,
-  "size": "xl",
-}) }}
-
-<div class="nhsuk-grid-row">
-  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
-    <p>Download data for the number of vaccinations given to children in schools by month for your organisation.</p>
+{% block before_page_heading %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+      {{ formErrorSummary(form) }}
+    </div>
   </div>
-</div>
+{% endblock %}
 
-<form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
+{% block page_heading %}
+  {{ heading({
+    "text": "Download data",
+    "level": "1",
+  }) }}
+{% endblock %}
+
+{% block page_content %}
 
 <div class="nhsuk-grid-row">
   <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
-    {{ heading({
-      "text": "Choose a programme",
-      "level": 2,
-      "size": "s",
-    }) }}
 
-    {% set programme_items = [] %}
-    {% for programme in programmes %}
-      {% set _ = programme_items.append({
-        "text": programme["name"],
-        "value": programme["code"],
-        "selected": programme["code"] == "hpv",
+  <p class="nhsuk-body-m nhsuk-u-margin-bottom-3">
+    Download vaccination and consent data for the {{ academic_year }} academic year so far.
+  </p>
+
+  <p class="nhsuk-body-m nhsuk-u-margin-bottom-6">
+    Last updated: {{ last_updated_time }}.
+  </p>
+
+  <form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
+
+    {{ form.csrf_token }}
+
+    {% set items = [] %}
+    {% for choice in form.programme.choices %}
+      {% set _ = items.append({
+        "value": choice[0],
+        "text": choice[1],
       }) %}
     {% endfor %}
 
-    {{ select({
-      "label": {
-        "text": "Programme",
-        "classes": "nhsuk-u-visually-hidden",
+    {{ radios({
+      "idPrefix": form.programme.id,
+      "name": form.programme.name,
+      "fieldset": {
+        "legend": {
+          "text": form.programme.label.text,
+          "classes": "nhsuk-fieldset__legend--s"
+        }
       },
-      "id": "programme",
-      "name": "programme",
-      "items": programmes,
+      "errorMessage": {
+        "text": form.programme.errors[0],
+      } if form.programme.errors else "",
+      "items": items,
     }) }}
-  </div>
-</div>
 
-<div class="nhsuk-grid-row">
-  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
-    {{ heading({
-      "text": "Choose other variables",
-      "level": 2,
-      "size": "s",
-    }) }}
+    {% set items = [] %}
+    {% for choice in form.variables.choices %}
+      {% set _ = items.append({
+        "value": choice[0],
+        "text": choice[1],
+      }) %}
+    {% endfor %}
 
     {{ checkboxes({
-      "id": "variables",
-      "name": "variables",
-      "items": [
-        {
-          "text": "Local authority",
-          "value": "local_authority",
-        },
-        {
-          "text": "School",
-          "value": "school",
-        },
-        {
-          "text": "Year group",
-          "value": "year_group",
-        },
-        {
-          "text": "Gender",
-          "value": "gender",
+      "idPrefix": form.variables.name,
+      "name": form.variables.name,
+      "fieldset": {
+        "legend": {
+          "text": form.variables.label,
+          "classes": "nhsuk-fieldset__legend--s"
         }
-      ],
+      },
+      "errorMessage": {
+        "text": form.variables.errors[0],
+      } if form.variables.errors else "",
+      "items": items,
     }) }}
+
+    {{ button({
+      "text": "Download",
+      "type": "submit",
+    }) }}
+
+  </form>
+
   </div>
 </div>
-
-{{ button({
-  "text": "Download data",
-  "type": "submit",
-}) }}
-
-</form>
 
 {% endblock %}

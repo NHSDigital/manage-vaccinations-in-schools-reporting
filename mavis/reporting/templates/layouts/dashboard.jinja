@@ -10,21 +10,22 @@
   }) }}
 {% endblock %}
 
+{% block page_heading %}
+  {{ heading({
+    "text": "Reports",
+    "level": 1,
+    "size": "l",
+    "summary": "For " ~ academic_year ~ " so far"
+  }) }}
+{% endblock %}
+
 {% block page_content %}
 
-{{ heading({
-  "text": "Reports",
-  "level": 1,
-  "size": "l",
-  "summary": "For " ~ academic_year ~ " so far"
-}) }}
-
 {{ secondaryNavigation({
-  "items": secondary_navigation_items
+  "items": secondary_navigation_items,
+  "selected_item_text": selected_item_text,
 }) }}
 
-{% block dashboard_content %}
-
-{% endblock %}
+{% block dashboard_content required %}{% endblock %}
 
 {% endblock %}
