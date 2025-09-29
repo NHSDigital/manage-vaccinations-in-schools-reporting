@@ -13,18 +13,18 @@
 
 {{ form.csrf_token }}
 
-{{ formErrorSummary(form) }}
-
-{% set items = [] %}
-{% for choice in form.data_type.choices %}
-  {% set _ = items.append({
-    "value": choice[0],
-    "text": choice[1],
-  }) %}
-{% endfor %}
-
 <div class="nhsuk-grid-row">
   <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+    {{ formErrorSummary(form) }}
+
+    {% set items = [] %}
+    {% for choice in form.data_type.choices %}
+      {% set _ = items.append({
+        "value": choice[0],
+        "text": choice[1],
+      }) %}
+    {% endfor %}
+
     {{ radios({
       "idPrefix": form.data_type.id,
       "name": form.data_type.name,
