@@ -12,7 +12,16 @@ def mavis_url(current_app, path, params={}):
     url = urllib.parse.urljoin(current_app.config["MAVIS_ROOT_URL"], path)
     if params != {}:
         parsed_url = urllib.parse.urlsplit(url)
-        query_string = urllib.parse.urlencode(params, doseq=True)
+
+        encoded_params = []
+        for key, value in params.items():
+            if isinstance(value, list):
+                for item in value:
+                    encoded_params.append((f"{key}[]", item))
+            else:
+                encoded_params.append((key, value))
+
+        query_string = urllib.parse.urlencode(encoded_params)
         url_with_params = parsed_url._replace(query=query_string)
         url = urllib.parse.urlunsplit(url_with_params)
 
