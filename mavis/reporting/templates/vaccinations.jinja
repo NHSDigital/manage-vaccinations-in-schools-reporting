@@ -20,7 +20,7 @@
     }) }}
   </div>
 
-  <div class="app-grid-column-content">
+  <div id="dashboard" class="app-grid-column-content">
 
     <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
       <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
@@ -71,7 +71,7 @@
           "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_previously_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_previously"] | thousands ~ " children</span></p>",
         }) }}
       </div>
-      
+
       <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
