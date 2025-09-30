@@ -53,6 +53,15 @@ def test_that_mavis_url_applies_url_encoding_to_params(app):
         )
 
 
+def test_mavis_url_with_list_params(app):
+    with app.app_context():
+        app.config["MAVIS_ROOT_URL"] = "http://i.am.mavis:4000/"
+        url = mavis_helper.mavis_url(
+            current_app, "/some/path.json", {"year_group": ["8", "9"]}
+        )
+        assert url == "http://i.am.mavis:4000/some/path.json?year_group%5B%5D=8&year_group%5B%5D=9"
+
+
 class MockResponse:
     def __init__(self, **kwargs):
         self.status_code = kwargs.get("status_code", None)
