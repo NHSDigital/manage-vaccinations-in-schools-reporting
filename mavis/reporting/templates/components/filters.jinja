@@ -6,7 +6,15 @@
 {% from "button/macro.jinja" import button %}
 
 {% macro filters(params) %}
-<form method="get" action="{{ params.form_action }}">
+<form method="get"
+      action="{{ params.form_action }}"
+      hx-get="{{ params.form_action }}"
+      hx-trigger="change from:input"
+      hx-target="#dashboard"
+      hx-select="#dashboard"
+      hx-swap="outerHTML"
+      hx-replace-url="true"
+      hx-sync="this:replace">
   {% call fieldset({
     "legend": {
       "text": "Filter data",
@@ -91,7 +99,7 @@
     <div class="nhsuk-button-group">
       {{ button({
         "text": "Update results",
-        "classes": "nhsuk-button--secondary app-button--small"
+        "classes": "nhsuk-button--secondary app-button--small js-hide"
       }) }}
 
       {{ button({
