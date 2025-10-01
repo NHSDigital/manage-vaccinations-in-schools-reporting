@@ -53,6 +53,16 @@ class MavisApiClient:
         data = response.json()
         return self.add_percentages(data)
 
+    def download_totals_csv(self, programme, variables=None):
+        params = {"programme": programme}
+
+        if variables:
+            params["group"] = ",".join(variables)
+
+        return mavis_helper.api_call(
+            self.app, self.session, "/api/reporting/totals.csv", params=params
+        )
+
     def get_variables(self) -> list[dict]:
         return [
             {"value": "local_authority", "text": "Local Authority"},
