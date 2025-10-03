@@ -126,6 +126,23 @@ def test_api_call_non_2xx_status(app, mock_mavis_get_request):
     assert exc_info.value.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
 
 
+def test_verify_auth_code_unauthorized(app, mock_mavis_post_request):
+    mock_mavis_post_request(MockResponse(status_code=HTTPStatus.UNAUTHORIZED))
+
+    with pytest.raises(Unauthorized):
+        mavis_helper.verify_auth_code("mock_code", app)
+
+
+def test_verify_auth_code_internal_server_error(app, mock_mavis_post_request):
+    mock_mavis_post_request(MockResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR))
+
+    with pytest.raises(MavisApiError, match="500") as exc_info:
+        mavis_helper.verify_auth_code("mock_code", app)
+
+    assert exc_info.value.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+    assert exc_info.value.message == "Authorization response: 500"
+
+
 def test_verify_auth_code_missing_jwt(app, mock_mavis_post_request):
     mock_mavis_post_request(MockResponse(json_obj={"data": "mydata"}))
 

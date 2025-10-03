@@ -54,6 +54,22 @@ def parse_json_response(response, context="API response"):
         )
 
 
+def validate_http_response(response, session=None, context="API response"):
+    if response.status_code in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
+        if session:
+            session.clear()
+        raise Unauthorized()
+
+    if not response.ok:
+        raise MavisApiError(
+            f"{context}: {response.status_code}",
+            status_code=response.status_code,
+            response_body=response.text[:500],
+        )
+
+    return response
+
+
 def verify_auth_code(code, current_app):
     url = mavis_url(current_app, "/api/reporting/authorize")
     body = {
@@ -66,13 +82,16 @@ def verify_auth_code(code, current_app):
         "Content-type": "application/json; charset=utf-8",
     }
 
-    r = post_request(url, body=body, headers=headers)
+    context = "Authorization response"
 
-    auth_code_response_data = parse_json_response(r, "Authorization response")
+    r = post_request(url, body=body, headers=headers)
+    validate_http_response(r, session=None, context=context)
+
+    auth_code_response_data = parse_json_response(r, context)
 
     if "jwt" not in auth_code_response_data:
         raise MavisApiError(
-            "Authorization response missing 'jwt' field",
+            f"{context}: missing 'jwt' field",
             status_code=r.status_code,
             response_body=str(auth_code_response_data),
         )
@@ -90,17 +109,7 @@ def api_call(current_app, session, path, params={}):
         "Content-type": "application/json; charset=utf-8",
     }
     response = get_request(url, headers=headers)
-
-    if response.status_code in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
-        session.clear()
-        raise Unauthorized()
-
-    if not response.ok:
-        raise MavisApiError(
-            f"Mavis API error: {response.status_code}",
-            status_code=response.status_code,
-            response_body=response.text[:500],
-        )
+    validate_http_response(response, session=session)
 
     return response
 
