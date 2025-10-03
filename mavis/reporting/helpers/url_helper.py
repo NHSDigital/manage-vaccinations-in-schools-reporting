@@ -1,19 +1,16 @@
-from urllib.parse import parse_qs, parse_qsl, urlencode, urljoin, urlparse, urlunparse
+from urllib.parse import parse_qsl, urlencode, urljoin, urlparse, urlunparse
 
 
 def url_without_param(url: str, param: str) -> str:
     parsed_url = urlparse(url)
-    query_params_as_dict = parse_qs(parsed_url.query)
-    if param in query_params_as_dict:
-        query_param_pairs = parse_qsl(parsed_url.query)
-        query_pairs_without_param = [
-            (p, v) for (p, v) in query_param_pairs if p != param
-        ]
+    query_param_pairs = parse_qsl(parsed_url.query, keep_blank_values=True)
+    filtered_pairs = [(p, v) for (p, v) in query_param_pairs if p != param]
 
-        parsed_url = parsed_url._replace(query=urlencode(query_pairs_without_param))
-        return urlunparse(parsed_url)
-    else:
+    if len(filtered_pairs) == len(query_param_pairs):
         return url
+
+    new_query = urlencode(filtered_pairs)
+    return urlunparse(parsed_url._replace(query=new_query))
 
 
 def externalise_current_url(current_app, request) -> str:
