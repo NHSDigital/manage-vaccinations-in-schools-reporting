@@ -1,4 +1,5 @@
 from mavis.reporting.helpers import mavis_helper
+from mavis.reporting.helpers.mavis_helper import MavisApiError, parse_json_response
 
 
 class MavisApiClient:
@@ -50,7 +51,15 @@ class MavisApiClient:
         response = mavis_helper.api_call(
             self.app, self.session, "/api/reporting/totals", params=params
         )
-        data = response.json()
+        data = parse_json_response(response, "Vaccination data")
+
+        if "cohort" not in data:
+            raise MavisApiError(
+                "Vaccination data response missing 'cohort' field",
+                status_code=response.status_code,
+                response_body=str(data),
+            )
+
         return self.add_percentages(data)
 
     def get_variables(self) -> list[dict]:

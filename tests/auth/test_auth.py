@@ -15,7 +15,7 @@ def it_redirects_to_mavis_start(response):
     # Check that the response had a redirect code.
     assert response.status_code == HTTPStatus.FOUND
     redirect_to = response.headers["Location"]
-    assert redirect_to.startswith("http://mavis-root.localhost/")
+    assert redirect_to.startswith("http://mavis.test/")
     assert "/start" in redirect_to
     # Check that the return_url param is on the redirect
     parsed_url = urllib.parse.urlparse(redirect_to)

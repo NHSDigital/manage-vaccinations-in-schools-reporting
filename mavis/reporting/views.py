@@ -15,7 +15,7 @@ from healthcheck import HealthCheck
 from mavis.reporting.api_client.client import MavisApiClient
 from mavis.reporting.forms.data_type_form import DataTypeForm
 from mavis.reporting.forms.download_form import DownloadForm
-from mavis.reporting.helpers import auth_helper
+from mavis.reporting.helpers import auth_helper, mavis_helper
 from mavis.reporting.helpers.breadcrumb_helper import generate_breadcrumb_items
 from mavis.reporting.helpers.date_helper import (
     get_current_academic_year_range,
@@ -61,7 +61,7 @@ def start_download(code):
 
     if form.validate_on_submit():
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
-            return redirect(current_app.config["MAVIS_ROOT_URL"] + "/programmes")
+            return redirect(mavis_helper.mavis_url(current_app, "/programmes"))
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
             return redirect(url_for("main.download", code=organisation.code))
         else:
