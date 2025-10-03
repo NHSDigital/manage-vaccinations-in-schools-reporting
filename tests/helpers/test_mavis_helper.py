@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+import jwt
 import pytest
 from flask import current_app
 from werkzeug.exceptions import Unauthorized
@@ -138,3 +139,23 @@ def test_verify_auth_code_missing_jwt(app, mock_mavis_post_request):
 
     with pytest.raises(MavisApiError, match="missing 'jwt' field"):
         mavis_helper.verify_auth_code("mock_code", app)
+
+
+def test_verify_auth_code_invalid_jwt(app, mock_mavis_post_request, monkeypatch):
+    mock_mavis_post_request(
+        MockResponse(json_obj={"jwt": "invalid.jwt.token", "user_nav": ""})
+    )
+
+    def mock_decode_jwt(*_args, **_kwargs):
+        raise jwt.DecodeError("Invalid signature")
+
+    monkeypatch.setattr(
+        "mavis.reporting.helpers.auth_helper.decode_jwt", mock_decode_jwt
+    )
+
+    with pytest.raises(MavisApiError, match="Invalid JWT") as exc_info:
+        mavis_helper.verify_auth_code("mock_code", app)
+
+    assert exc_info.value.status_code == HTTPStatus.OK
+    assert "Invalid signature" in exc_info.value.message
+    assert exc_info.value.response_body == "invalid.jwt.token"

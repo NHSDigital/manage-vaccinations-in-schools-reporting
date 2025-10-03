@@ -95,7 +95,17 @@ def verify_auth_code(code, current_app):
             response_body=str(auth_code_response_data),
         )
 
-    jwt_data = auth_helper.decode_jwt(auth_code_response_data["jwt"], current_app)
+    try:
+        jwt_data = auth_helper.decode_jwt(auth_code_response_data["jwt"], current_app)
+    except Exception as e:
+        raise MavisApiError(
+            f"{context}: Invalid JWT - {str(e)}",
+            status_code=r.status_code,
+            response_body=auth_code_response_data["jwt"][:100]
+            if isinstance(auth_code_response_data["jwt"], str)
+            else "non-string JWT",
+        )
+
     user_nav = auth_code_response_data.get("user_nav", "")
     return {"jwt_data": jwt_data["data"], "user_nav": user_nav}
 
