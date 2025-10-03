@@ -78,16 +78,6 @@ def test_unauthorized_api_call_clears_session(app, mock_mavis_get_request, statu
     assert not mock_session
 
 
-def test_login_and_return_after_redirects(app):
-    response = mavis_helper.login_and_return_after(app, "http://this.app/some/path")
-
-    assert response.status_code == HTTPStatus.FOUND
-    assert (
-        response.location
-        == "http://mavis.test/start?redirect_uri=http%3A%2F%2Fthis.app%2Fsome%2Fpath"
-    )
-
-
 def test_parse_json_empty_body():
     with pytest.raises(MavisApiError, match="Empty response body") as exc_info:
         mavis_helper.parse_json_response(MockResponse(content=b""), "Test context")

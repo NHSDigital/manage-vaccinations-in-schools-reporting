@@ -2,7 +2,6 @@ import urllib.parse
 from http import HTTPStatus
 
 import requests
-from flask import redirect
 from werkzeug.exceptions import Unauthorized
 
 from mavis.reporting.helpers import auth_helper
@@ -112,15 +111,6 @@ def api_call(current_app, session, path, params={}):
     validate_http_response(response, session=session)
 
     return response
-
-
-def login_and_return_after(current_app, return_url):
-    target_url = mavis_url(
-        current_app,
-        "/start?redirect_uri=" + urllib.parse.quote_plus(return_url),
-    )
-    current_app.logger.warning("REDIRECTING TO %s", target_url)
-    return redirect(str(target_url))
 
 
 def get_request(url, headers={}):
