@@ -1,69 +1,58 @@
+import pytest
+
 from mavis.reporting.helpers import url_helper
+from tests.conftest import MockRequest
 
 
-def test_url_without_param_with_a_single_param_removes_the_param():
-    assert (
-        url_helper.url_without_param(
-            "https://some.domain/path/file.name?q=search+string", "q"
-        )
-        == "https://some.domain/path/file.name"
-    )
-
-
-def test_url_without_param_with_multiple_params_removes_the_correct_param():
-    assert (
-        url_helper.url_without_param(
+@pytest.mark.parametrize(
+    "input_url,param,expected",
+    [
+        (
+            "https://some.domain/path/file.name?q=search+string",
+            "q",
+            "https://some.domain/path/file.name",
+        ),
+        (
             "https://some.domain/path/file.name?q=search%20string&other_param=othervalue",
             "q",
-        )
-        == "https://some.domain/path/file.name?other_param=othervalue"
-    )
-
-
-def test_url_without_param_preserves_the_order_of_params_which_are_not_removed():
-    assert (
-        url_helper.url_without_param(
+            "https://some.domain/path/file.name?other_param=othervalue",
+        ),
+        (
             "https://some.domain/path/file.name?q=search%20string&b=bbb&a=aaa",
             "q",
-        )
-        == "https://some.domain/path/file.name?b=bbb&a=aaa"
+            "https://some.domain/path/file.name?b=bbb&a=aaa",
+        ),
+        (
+            "https://some.domain/path/file.name?q=search+string&b=bbb&a=aaa&",
+            "c",
+            "https://some.domain/path/file.name?q=search+string&b=bbb&a=aaa&",
+        ),
+    ],
+    ids=["single_param", "keeps_other_params", "preserves_order", "param_not_present"],
+)
+def test_url_without_param(input_url, param, expected):
+    assert url_helper.url_without_param(input_url, param) == expected
+
+
+def test_externalise_url_uses_root_url(app):
+    request = MockRequest(
+        host_url="http://my.server/", full_path="/reporting/full/path?query=val1"
     )
+    app.config["ROOT_URL"] = "https://mavis.test/reporting"
 
-
-def test_url_without_param_with_a_single_param_that_is_not_present_makes_no_changes():
     assert (
-        url_helper.url_without_param(
-            "https://some.domain/path/file.name?q=search+string&b=bbb&a=aaa&", "c"
-        )
-        == "https://some.domain/path/file.name?q=search+string&b=bbb&a=aaa&"
+        url_helper.externalise_current_url(app, request)
+        == "https://mavis.test/reporting/full/path?query=val1"
     )
 
 
-class MockRequest:
-    def __init__(self, **kwargs):
-        self.host_url = kwargs.get("host_url", None)
-        self.full_path = kwargs.get("full_path", None)
-
-
-def test_that_externalise_current_url_uses_root_url_if_given(app):
+def test_externalise_url_uses_host_url(app):
     request = MockRequest(
         host_url="http://my.server/", full_path="/reporting/full/path?query=val1"
     )
-    with app.app_context():
-        app.config["ROOT_URL"] = "https://i.am.mavis:4000/reporting"
-        assert (
-            url_helper.externalise_current_url(app, request)
-            == "https://i.am.mavis:4000/reporting/full/path?query=val1"
-        )
+    app.config["ROOT_URL"] = None
 
-
-def test_that_externalise_current_url_uses_request_host_url_if_root_url_not_given(app):
-    request = MockRequest(
-        host_url="http://my.server/", full_path="/reporting/full/path?query=val1"
+    assert (
+        url_helper.externalise_current_url(app, request)
+        == "http://my.server/reporting/full/path?query=val1"
     )
-    with app.app_context():
-        app.config["ROOT_URL"] = None
-        assert (
-            url_helper.externalise_current_url(app, request)
-            == "http://my.server/reporting/full/path?query=val1"
-        )
