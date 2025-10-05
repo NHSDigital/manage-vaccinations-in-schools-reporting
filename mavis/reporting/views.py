@@ -2,6 +2,7 @@ import logging
 
 from flask import (
     Blueprint,
+    Response,
     current_app,
     g,
     redirect,
@@ -99,7 +100,16 @@ def download(code):
     )
 
     if request.method == "POST" and form.validate_on_submit():
-        return redirect(url_for("main.download", code=organisation.code))
+        api_response = g.api_client.download_totals_csv(
+            form.programme.data, form.variables.data
+        )
+
+        headers = {}
+        content_disposition = api_response.headers.get("Content-Disposition")
+        if content_disposition:
+            headers["Content-Disposition"] = content_disposition
+
+        return Response(api_response.content, mimetype="text/csv", headers=headers)
 
     return render_template(
         "download.jinja",
