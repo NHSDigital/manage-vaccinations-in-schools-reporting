@@ -36,23 +36,23 @@ def test_url_without_param(input_url, param, expected):
 
 def test_externalise_url_uses_root_url(app):
     request = MockRequest(
-        host_url="http://my.server/", full_path="/reporting/full/path?query=val1"
+        host_url="http://my.server/", full_path="/reports/full/path?query=val1"
     )
-    app.config["ROOT_URL"] = "https://mavis.test/reporting"
+    app.config["ROOT_URL"] = "https://mavis.test/reportsg"
 
     assert (
         url_helper.externalise_current_url(app, request)
-        == "https://mavis.test/reporting/full/path?query=val1"
+        == "https://mavis.test/reports/full/path?query=val1"
     )
 
 
 def test_externalise_url_uses_host_url(app):
     request = MockRequest(
-        host_url="http://my.server/", full_path="/reporting/full/path?query=val1"
+        host_url="http://my.server/", full_path="/reports/full/path?query=val1"
     )
     app.config["ROOT_URL"] = None
 
     assert (
         url_helper.externalise_current_url(app, request)
-        == "http://my.server/reporting/full/path?query=val1"
+        == "http://my.server/reports/full/path?query=val1"
     )
