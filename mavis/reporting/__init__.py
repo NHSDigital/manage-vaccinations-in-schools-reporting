@@ -29,10 +29,13 @@ if dsn := os.environ.get("SENTRY_DSN"):
 
 def create_app(config_name=None):
     if config_name is None:
-        config_name = os.environ["FLASK_ENV"]
+        config_name = os.environ["FLASK_ENV"].lower().strip()
 
     app = Flask(__name__, static_url_path="/reporting/assets")
-    app.config.from_object(config[config_name])
+    try:
+        app.config.from_object(config[config_name])
+    except KeyError:
+        app.config.from_object(config["default"])
 
     # Set cache timeout for static files (1 hour in development, 1 year in production)
     if config_name == "development":

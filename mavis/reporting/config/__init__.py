@@ -1,5 +1,7 @@
 import os
 
+from mavis.reporting.helpers.environment_helper import EnvType
+
 
 def str2bool(v):
     return v is not None and v.lower() in ("yes", "true", "t", "1")
@@ -28,6 +30,7 @@ class Config:
 class DevelopmentConfig(Config):
     """Development configuration"""
 
+    ENVIRONMENT = EnvType.DEV
     DEBUG = True
     TESTING = False
     LOG_LEVEL = "DEBUG"
@@ -36,6 +39,7 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     """Production configuration"""
 
+    ENVIRONMENT = EnvType.PROD
     DEBUG = False
     TESTING = False
     LOG_LEVEL = "INFO"
@@ -44,6 +48,7 @@ class ProductionConfig(Config):
 class StagingConfig(Config):
     """Staging configuration - for sandbox-alpha/-beta"""
 
+    ENVIRONMENT = EnvType.STAGING
     DEBUG = False
     TESTING = False
     LOG_LEVEL = "INFO"
@@ -52,14 +57,15 @@ class StagingConfig(Config):
 class TestingConfig(Config):
     """Testing configuration"""
 
+    ENVIRONMENT = EnvType.TEST
     TESTING = True
     DEBUG = True
 
 
 config = {
-    "development": DevelopmentConfig,
-    "production": ProductionConfig,
-    "testing": TestingConfig,
-    "staging": StagingConfig,
-    "default": DevelopmentConfig,
+    EnvType.DEV.value: DevelopmentConfig,
+    EnvType.PROD.value: ProductionConfig,
+    EnvType.STAGING.value: StagingConfig,
+    EnvType.TEST.value: TestingConfig,
+    "default": ProductionConfig,
 }
