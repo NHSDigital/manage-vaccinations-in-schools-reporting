@@ -31,7 +31,7 @@ def create_app(config_name=None):
     if config_name is None:
         config_name = os.environ["FLASK_ENV"].lower().strip()
 
-    app = Flask(__name__, static_url_path="/reporting/assets")
+    app = Flask(__name__, static_url_path="/reports/assets")
     try:
         app.config.from_object(config[config_name])
     except KeyError:
@@ -48,10 +48,10 @@ def create_app(config_name=None):
     # ruff: noqa: PLC0415
     from mavis.reporting.views import main
 
-    app.register_blueprint(main, url_prefix="/reporting")
+    app.register_blueprint(main, url_prefix="/reports")
 
     @app.route("/")
     def root():
-        return redirect("/reporting")
+        return redirect("/reports")
 
     return app
