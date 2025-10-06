@@ -1,0 +1,13 @@
+{% from "tag/macro.jinja" import tag %}
+
+{% macro environment(params) %}
+<div class="app-environment nhsuk-tag--{{ params.colour }}">
+  <div class="nhsuk-width-container">
+    {{ tag({
+      "classes": "nhsuk-tag--" + params.colour,
+      "text": params.title,
+    }) }}
+    <span>{{ params.title_in_sentence | safe }}</span>
+  </div>
+</div>
+{% endmacro %}

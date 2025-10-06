@@ -22,6 +22,7 @@ from mavis.reporting.helpers.date_helper import (
     get_current_academic_year_range,
     get_last_updated_time,
 )
+from mavis.reporting.helpers.environment_helper import Environment
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
 from mavis.reporting.models.organisation import Organisation
 
@@ -38,8 +39,10 @@ def stub_mavis_data():
 @main.context_processor
 def inject_mavis_data():
     """Inject common data into the template context."""
+    env = Environment(current_app.config["ENVIRONMENT"])
     return {
-        "site_title": "Manage vaccinations in schools",
+        "app_title": "Manage vaccinations in schools",
+        "app_environment": env,
     }
 
 

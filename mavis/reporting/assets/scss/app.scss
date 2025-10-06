@@ -6,6 +6,7 @@
 @use "secondary_navigation";
 @use "data_table";
 @use "button";
+@use "environment";
 
 .js-enabled .js-hide {
   display: none;
