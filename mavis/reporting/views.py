@@ -139,21 +139,16 @@ def vaccinations(code):
     )
 
     filters = {}
-    current_filters = {}
 
-    if request.args.get("programme"):
-        filters["programme"] = request.args.get("programme")
-        current_filters["programme"] = request.args.get("programme")
+    filters["programme"] = request.args.get("programme") or "hpv"
 
     gender_values = request.args.getlist("gender")
     if gender_values:
         filters["gender"] = gender_values
-        current_filters["gender"] = gender_values
 
     year_group_values = request.args.getlist("year-group")
     if year_group_values:
         filters["year_group"] = year_group_values
-        current_filters["year_group"] = year_group_values
 
     data = g.api_client.get_vaccination_data(filters)
 
@@ -165,7 +160,7 @@ def vaccinations(code):
         genders=g.api_client.get_genders(),
         academic_year=get_current_academic_year_range(),
         data=data,
-        current_filters=current_filters,
+        current_filters=filters,
         breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,

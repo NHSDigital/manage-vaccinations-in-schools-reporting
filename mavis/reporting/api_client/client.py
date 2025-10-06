@@ -83,7 +83,7 @@ class MavisApiClient:
     def get_programmes(self) -> list[dict]:
         return [
             {"value": "flu", "text": "Flu"},
-            {"value": "hpv", "text": "HPV", "checked": True},
+            {"value": "hpv", "text": "HPV"},
             {"value": "menacwy", "text": "MenACWY"},
             {"value": "td-ipv", "text": "Td/IPV"},
         ]
