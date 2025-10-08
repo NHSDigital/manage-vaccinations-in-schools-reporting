@@ -133,8 +133,6 @@ jobs:
         with:
           role-to-assume: ${{ env.aws_role }}
           aws-region: eu-west-2
-      - name: Checkout code
-        uses: actions/checkout@v5
       - name: Download reporting task definition artifact
         uses: actions/download-artifact@v5
         with:
@@ -143,27 +141,13 @@ jobs:
       - name: Change family of task definition
         run: |
           file_path="${{ runner.temp }}/reporting-task-definition.json"
+          family_name="mavis-reporting-task-definition-$environment"
           echo "$(jq --arg f "$family_name" '.family = $f' "$file_path")" > "$file_path"
-      - name: Register reporting task definition
-        id: register-task-definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ runner.temp }}/reporting-task-definition.json
-      - name: Create appspec.yml
-        run: |
-          cp config/templates/appspec.yaml.tpl appspec.yaml
-          sed -i "s#TASK_ARN#${{ steps.register-task-definition.outputs.task-definition-arn }}#g" appspec.yaml
-      - name: Deploy reporting service with CodeDeploy
-        id: deploy-reporting-service
+      - name: Deploy reporting service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ runner.temp }}/reporting-task-definition.json
           cluster: ${{ env.cluster_name }}
           service: mavis-${{ inputs.environment }}-reporting
-          codedeploy-application: mavis-${{ inputs.environment }}
-          codedeploy-deployment-group: reporting-${{ inputs.environment }}
-      - name: Wait for deployment to complete
-        run: |
-          echo "Waiting for CodeDeploy deployment ${{ steps.deploy-reporting-service.outputs.codedeploy-deployment-id }} to complete..."
-          aws deploy wait deployment-successful --deployment-id "${{ steps.deploy-reporting-service.outputs.codedeploy-deployment-id }}"
-          echo "Deployment successful"
+          force-new-deployment: true
+          wait-for-service-stability: true
