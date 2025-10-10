@@ -11,11 +11,11 @@ class DataTypeForm(FlaskForm):
 
     data_type = RadioField(
         id="data_type",
-        label="What kind of data do you want to download?",
+        label="What data do you want to download?",
         name="data_type",
-        validators=[InputRequired(message="Select a kind of data to download")],
+        validators=[InputRequired(message="Select which data you want to download")],
         choices=[
-            (CHILD_RECORDS, "Child-level vaccination record data"),
-            (AGGREGATE_DATA, "Aggregate vaccination and consent data"),
+            (CHILD_RECORDS, "Child-level vaccination data"),
+            (AGGREGATE_DATA, "Aggregate vaccination data"),
         ],
     )

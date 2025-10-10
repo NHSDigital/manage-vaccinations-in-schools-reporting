@@ -21,4 +21,6 @@ def format_date_string(date: str):
 
 
 def get_last_updated_time():
-    return datetime.now().strftime("%d %B %Y at %H:00")
+    # Format with %-d and %-I for no leading zeros, %p for AM/PM
+    formatted = datetime.now().strftime("%-d %B %Y at %-I%p")
+    return formatted.replace("AM", "am").replace("PM", "pm")

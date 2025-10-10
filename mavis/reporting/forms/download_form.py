@@ -8,7 +8,7 @@ class DownloadForm(FlaskForm):
 
     programme = RadioField(
         id="programme",
-        label="Which programme do you want to download data for?",
+        label="Which programme do you want data for?",
         name="programme",
         validators=[InputRequired(message="Select a programme to get data for")],
     )
@@ -16,7 +16,7 @@ class DownloadForm(FlaskForm):
     variables = SelectMultipleField(
         name="variables",
         id="variables",
-        label="How would you like to break down the data?",
+        label="What variables do you want to use to break down the data?",
         validators=[Optional()],
     )
 

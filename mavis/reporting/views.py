@@ -168,6 +168,7 @@ def vaccinations(code):
         breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
+        last_updated_time=get_last_updated_time(),
     )
 
 

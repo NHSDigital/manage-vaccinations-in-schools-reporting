@@ -37,11 +37,11 @@
   <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
 
   <p class="nhsuk-body-m nhsuk-u-margin-bottom-3">
-    Download vaccination and consent data for the {{ academic_year }} academic year so far.
+    Download vaccination data for the {{ academic_year }} academic year so far.
   </p>
 
   <p class="nhsuk-body-m nhsuk-u-margin-bottom-6">
-    Last updated: {{ last_updated_time }}.
+    This data was last updated on {{ last_updated_time }}.
   </p>
 
   <form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
