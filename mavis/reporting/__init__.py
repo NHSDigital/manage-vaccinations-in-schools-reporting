@@ -1,7 +1,7 @@
 import os
 
 import sentry_sdk
-from flask import Flask, redirect
+from flask import Flask
 
 from mavis.reporting.config import config
 from mavis.reporting.config.jinja2 import configure_jinja2
@@ -50,8 +50,14 @@ def create_app(config_name=None):
 
     app.register_blueprint(main, url_prefix="/reports")
 
-    @app.route("/")
-    def root():
-        return redirect("/reports")
+    if config_name == "development":
+        # In development: Proxy all non-/reports routes to Mavis
+        # In production: Load balancer handles this
+        from mavis.reporting.dev_proxy import proxy_to_mavis
+
+        all_methods = ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"]
+
+        app.route("/", defaults={"path": ""})(proxy_to_mavis)
+        app.route("/<path:path>", methods=all_methods)(proxy_to_mavis)
 
     return app

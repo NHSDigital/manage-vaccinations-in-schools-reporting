@@ -34,6 +34,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = False
     LOG_LEVEL = "DEBUG"
+    MAVIS_BACKEND_URL = os.environ["MAVIS_BACKEND_URL"]
 
 
 class ProductionConfig(Config):
