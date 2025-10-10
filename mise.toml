@@ -3,7 +3,7 @@ age = "latest"
 awscli = "2.27.46"
 gitleaks = "latest"
 node = "lts"
-python = "3.13"
+python = "3.14"
 sops = "latest"
 uv = "latest"
 
@@ -15,7 +15,7 @@ uv_sync_args = "--frozen --no-dev"
 DOCKER_BUILDKIT = 1
 DOCKER_IMAGE = "mavis-reporting:latest"
 FLASK_APP = "mavis.reporting:create_app"
-PYTHONPYCACHEPREFIX = "tmp/pycache" # Output directory for Python bytecode cache
+PYTHONPYCACHEPREFIX = "tmp/pycache"      # Output directory for Python bytecode cache
 
 [tasks."npm:install"]
 description = "Install Node.js dependencies"
