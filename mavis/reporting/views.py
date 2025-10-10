@@ -46,6 +46,7 @@ def inject_mavis_data():
         "app_title": "Manage vaccinations in schools",
         "app_environment": env,
         "navigation_items": build_navigation_items(request),
+        "service_guide_url": "https://guide.manage-vaccinations-in-schools.nhs.uk",
     }
 
 
