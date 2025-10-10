@@ -1,6 +1,4 @@
-import json
 import logging
-from urllib.parse import unquote
 
 from flask import (
     Blueprint,
@@ -14,7 +12,6 @@ from flask import (
     url_for,
 )
 from healthcheck import HealthCheck
-from markupsafe import Markup
 
 from mavis.reporting.api_client.client import MavisApiClient
 from mavis.reporting.forms.data_type_form import DataTypeForm
@@ -26,7 +23,7 @@ from mavis.reporting.helpers.date_helper import (
     get_last_updated_time,
 )
 from mavis.reporting.helpers.environment_helper import Environment
-from mavis.reporting.helpers.mavis_helper import mavis_url
+from mavis.reporting.helpers.navigation_helper import build_navigation_items
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
 from mavis.reporting.models.organisation import Organisation
 
@@ -40,79 +37,15 @@ def stub_mavis_data():
     g.api_client = MavisApiClient(app=current_app, session=session)
 
 
-def _parse_navigation_counts_cookie(request):
-    nav_counts = {}
-    if cookie_value := request.cookies.get("mavis_navigation_counts"):
-        try:
-            decoded_value = unquote(cookie_value)
-            nav_counts = json.loads(decoded_value)
-            current_app.logger.info(f"Navigation counts from cookie: {nav_counts}")
-        except (json.JSONDecodeError, ValueError):
-            current_app.logger.warning(
-                f"Failed to parse navigation counts cookie: {cookie_value}"
-            )
-    else:
-        current_app.logger.info("No mavis_navigation_counts cookie found")
-    return nav_counts
-
-
-def _build_nav_item(href, text, nav_counts, active=False, count_key=None):
-    item = {"href": href, "active": active}
-
-    if count_key and (count := nav_counts.get(count_key)) is not None:
-        badge = (
-            '<span class="app-count">'
-            '<span class="nhsuk-u-visually-hidden"> (</span>'
-            f"{count}"
-            '<span class="nhsuk-u-visually-hidden">)</span>'
-            "</span>"
-        )
-        item["html"] = Markup(f"{text}{badge}")
-        item["classes"] = "app-header__navigation-item--with-count"
-    else:
-        item["text"] = text
-
-    return item
-
-
 @main.context_processor
 def inject_mavis_data():
     """Inject common data into the template context."""
     env = Environment(current_app.config["ENVIRONMENT"])
-    nav_counts = _parse_navigation_counts_cookie(request)
-
-    navigation_items = [
-        _build_nav_item(
-            url_for("main.dashboard"), "Programmes", nav_counts, active=True
-        ),
-        _build_nav_item(mavis_url(current_app, "/sessions"), "Sessions", nav_counts),
-        _build_nav_item(mavis_url(current_app, "/patients"), "Children", nav_counts),
-        _build_nav_item(
-            mavis_url(current_app, "/consent-forms"),
-            "Unmatched responses",
-            nav_counts,
-            count_key="unmatched_consent_responses",
-        ),
-        _build_nav_item(
-            mavis_url(current_app, "/school-moves"),
-            "School moves",
-            nav_counts,
-            count_key="school_moves",
-        ),
-        _build_nav_item(mavis_url(current_app, "/vaccines"), "Vaccines", nav_counts),
-        _build_nav_item(
-            mavis_url(current_app, "/imports"),
-            "Imports",
-            nav_counts,
-            count_key="imports",
-        ),
-        _build_nav_item(mavis_url(current_app, "/team"), "Your team", nav_counts),
-    ]
 
     return {
         "app_title": "Manage vaccinations in schools",
         "app_environment": env,
-        "navigation_items": navigation_items,
+        "navigation_items": build_navigation_items(request),
     }
 
 
