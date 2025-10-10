@@ -31,8 +31,43 @@
     "items": [
       {
         "href": url_for('main.dashboard'),
-        "text": "Reports",
+        "text": "Programmes",
         "active": True,
+      },
+      {
+        "href": mavis_url("/sessions"),
+        "text": "Sessions",
+        "active": False,
+      },
+      {
+        "href": mavis_url("/patients"),
+        "text": "Children",
+        "active": False,
+      },
+      {
+        "href": mavis_url("/consent-forms"),
+        "text": "Unmatched responses",
+        "active": False,
+      },
+      {
+        "href": mavis_url("/school_moves"),
+        "text": "School moves",
+        "active": False,
+      },
+      {
+        "href": mavis_url("/vaccines"),
+        "text": "Vaccines",
+        "active": False,
+      },
+      {
+        "href": mavis_url("/imports"),
+        "text": "Imports",
+        "active": False,
+      },
+      {
+        "href": mavis_url("/team"),
+        "text": "Your team",
+        "active": False,
       }
     ]
   },
