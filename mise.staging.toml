@@ -11,6 +11,6 @@ SOPS_AGE_KEY_FILE = "{{vars.secret_file}}"
 _.file = "{{vars.credentials_file}}"
 
 FLASK_ENV = "staging"
-MAVIS_ROOT_URL = "https://sandbox-alpha.mavistesting.com/"
-ROOT_URL = "https://sandbox-alpha.mavistesting.com/reports/"
+MAVIS_ROOT_URL = "http://web:4000/"
+# ROOT_URL = "configured by terraform/app/variables.tf in the mavis repo"
 SESSION_TTL_SECONDS = "600"
