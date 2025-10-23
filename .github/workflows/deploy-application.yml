@@ -141,7 +141,7 @@ jobs:
       - name: Change family of task definition
         run: |
           file_path="${{ runner.temp }}/reporting-task-definition.json"
-          family_name="mavis-reporting-task-definition-$environment"
+          family_name="mavis-reporting-task-definition-${{ inputs.environment }}"
           echo "$(jq --arg f "$family_name" '.family = $f' "$file_path")" > "$file_path"
       - name: Deploy reporting service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
