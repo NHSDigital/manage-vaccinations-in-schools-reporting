@@ -69,7 +69,7 @@ def start_download(code):
 
     if form.validate_on_submit():
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
-            return redirect(mavis_helper.mavis_url(current_app, "/programmes"))
+            return redirect(mavis_helper.mavis_public_url(current_app, "/programmes"))
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
             return redirect(url_for("main.download", code=organisation.code))
         else:
