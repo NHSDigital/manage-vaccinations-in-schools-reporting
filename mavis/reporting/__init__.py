@@ -3,8 +3,8 @@ import os
 import sentry_sdk
 from flask import Flask
 
-from mavis.reporting.config import config
-from mavis.reporting.config.jinja2 import configure_jinja2
+from mavis.reporting.helpers.environment_helper import EnvType
+from mavis.reporting.jinja2_config import configure_jinja2
 
 if dsn := os.environ.get("SENTRY_DSN"):
     sentry_sdk.init(
@@ -32,16 +32,33 @@ def create_app(config_name=None):
         config_name = os.environ["FLASK_ENV"].lower().strip()
 
     app = Flask(__name__, static_url_path="/reports/assets")
-    try:
-        app.config.from_object(config[config_name])
-    except KeyError:
-        app.config.from_object(config["default"])
 
-    # Set cache timeout for static files (1 hour in development, 1 year in production)
+    app.config["CLIENT_ID"] = os.environ["CLIENT_ID"]
+    app.config["CLIENT_SECRET"] = os.environ["CLIENT_SECRET"]
+    app.config["MAVIS_ROOT_URL"] = os.environ["MAVIS_ROOT_URL"]
+    app.config["ROOT_URL"] = os.environ["ROOT_URL"]
+    app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
+
+    app.config["DEBUG"] = False
+    app.config["ENVIRONMENT"] = EnvType.PROD
+    app.config["LOG_LEVEL"] = "INFO"
+    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 31536000
+    app.config["SESSION_TTL_SECONDS"] = 600
+    app.config["TEMPLATES_AUTO_RELOAD"] = True
+    app.config["TESTING"] = False
+
     if config_name == "development":
-        app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 3600  # 1 hour
-    else:
-        app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 31536000  # 1 year
+        app.config["DEBUG"] = True
+        app.config["ENVIRONMENT"] = EnvType.DEV
+        app.config["LOG_LEVEL"] = "DEBUG"
+        app.config["MAVIS_BACKEND_URL"] = os.environ["MAVIS_BACKEND_URL"]
+    elif config_name == "test":
+        app.config["DEBUG"] = True
+        app.config["ENVIRONMENT"] = EnvType.TEST
+        app.config["LOG_LEVEL"] = "DEBUG"
+        app.config["TESTING"] = True
+    elif config_name == "staging":
+        app.config["ENVIRONMENT"] = EnvType.STAGING
 
     configure_jinja2(app)
 
