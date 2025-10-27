@@ -75,7 +75,7 @@
       <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
-          "heading": "Vaccinated elsewhere (self-declared)",
+          "heading": "Vaccinated elsewhere (self-reported)",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
           "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_declared_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_declared"] | thousands ~ " children</span></p>",
@@ -85,7 +85,7 @@
       <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
         {{ card({
           "classes": "app-card",
-          "heading": "Vaccinated elsewhere (reported)",
+          "heading": "Vaccinated elsewhere (recorded)",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
           "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_recorded_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_recorded"] | thousands ~ " children</span></p>",
