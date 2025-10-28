@@ -86,3 +86,22 @@ def test_when_user_id_not_in_session_it_redirects_to_mavis_sign_in(client):
 
     response = client.get(default_url(), follow_redirects=False)
     assert it_redirects_to_mavis_start(response)
+
+
+def test_when_api_returns_401_with_stale_session_it_redirects_to_mavis_start(
+    app, client
+):
+    with app.app_context():
+        with client.session_transaction() as session:
+            log_user_in(mock_user_info(), session)
+
+        mock_response = MagicMock()
+        mock_response.status_code = HTTPStatus.UNAUTHORIZED
+        mock_response.ok = False
+
+        with patch(
+            "mavis.reporting.helpers.mavis_helper.get_request",
+            return_value=mock_response,
+        ):
+            response = client.get(default_url())
+            assert it_redirects_to_mavis_start(response)
