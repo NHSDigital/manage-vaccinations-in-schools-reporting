@@ -1,8 +1,11 @@
 import os
+from urllib.parse import quote
 
 import sentry_sdk
-from flask import Flask
+from flask import Flask, redirect, request
+from werkzeug.exceptions import Unauthorized
 
+from mavis.reporting.helpers import mavis_helper, url_helper
 from mavis.reporting.helpers.environment_helper import EnvType
 from mavis.reporting.jinja2_config import configure_jinja2
 
@@ -61,6 +64,15 @@ def create_app(config_name=None):
         app.config["ENVIRONMENT"] = EnvType.STAGING
 
     configure_jinja2(app)
+
+    @app.errorhandler(Unauthorized)
+    def handle_unauthorized(_error):
+        return_url = url_helper.externalise_current_url(app, request)
+        target_url = mavis_helper.mavis_public_url(
+            app,
+            "/start?redirect_uri=" + quote(return_url),
+        )
+        return redirect(str(target_url))
 
     # ruff: noqa: PLC0415
     from mavis.reporting.views import main
