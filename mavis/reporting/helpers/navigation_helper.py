@@ -4,7 +4,7 @@ from urllib.parse import unquote
 from flask import current_app, url_for
 from markupsafe import Markup
 
-from mavis.reporting.helpers.mavis_helper import mavis_url
+from mavis.reporting.helpers.mavis_helper import mavis_public_url
 
 
 def parse_navigation_counts_cookie(request):
@@ -46,26 +46,34 @@ def build_navigation_items(request):
     nav_counts = parse_navigation_counts_cookie(request)
     return [
         build_nav_item(url_for("main.dashboard"), "Reports", nav_counts, active=True),
-        build_nav_item(mavis_url(current_app, "/sessions"), "Sessions", nav_counts),
-        build_nav_item(mavis_url(current_app, "/patients"), "Children", nav_counts),
         build_nav_item(
-            mavis_url(current_app, "/consent-forms"),
+            mavis_public_url(current_app, "/sessions"), "Sessions", nav_counts
+        ),
+        build_nav_item(
+            mavis_public_url(current_app, "/patients"), "Children", nav_counts
+        ),
+        build_nav_item(
+            mavis_public_url(current_app, "/consent-forms"),
             "Unmatched responses",
             nav_counts,
             count_key="unmatched_consent_responses",
         ),
         build_nav_item(
-            mavis_url(current_app, "/school-moves"),
+            mavis_public_url(current_app, "/school-moves"),
             "School moves",
             nav_counts,
             count_key="school_moves",
         ),
-        build_nav_item(mavis_url(current_app, "/vaccines"), "Vaccines", nav_counts),
         build_nav_item(
-            mavis_url(current_app, "/imports"),
+            mavis_public_url(current_app, "/vaccines"), "Vaccines", nav_counts
+        ),
+        build_nav_item(
+            mavis_public_url(current_app, "/imports"),
             "Imports",
             nav_counts,
             count_key="imports",
         ),
-        build_nav_item(mavis_url(current_app, "/team"), "Your team", nav_counts),
+        build_nav_item(
+            mavis_public_url(current_app, "/team"), "Your team", nav_counts
+        ),
     ]

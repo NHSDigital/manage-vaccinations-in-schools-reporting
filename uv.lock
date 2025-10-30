@@ -13,30 +13,30 @@ wheels = [
 
 [[package]]
 name = "boto3"
-version = "1.40.49"
+version = "1.40.56"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "botocore" },
     { name = "jmespath" },
     { name = "s3transfer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/5b/165dbfc6de77774b0dac5582ac8a7aa92652d61215871ff4c88854864fb0/boto3-1.40.49.tar.gz", hash = "sha256:ea37d133548fbae543092ada61aeb08bced8f9aecd2e96e803dc8237459a80a0", size = 111572, upload-time = "2025-10-09T19:21:49.295Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/8d/70929dde76e24f252d6cf1fb3224ff5694ca96451d9e7023a43555fab760/boto3-1.40.56.tar.gz", hash = "sha256:c1afdb04dd27418fc58400434ab8e05998bb452b69c428168d9ada344fe6b93e", size = 111489, upload-time = "2025-10-21T20:31:01.013Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/71/07/9b622ec8691911e3420c9872a50a9d333d4880d217e9eb25b327193099dc/boto3-1.40.49-py3-none-any.whl", hash = "sha256:64eb7af5f66998b34ad629786ff4a7f81d74c2d4ef9e42f69d99499dbee46d07", size = 139345, upload-time = "2025-10-09T19:21:46.886Z" },
+    { url = "https://files.pythonhosted.org/packages/86/b0/0ce2afc7ed21ea815208a03af193c891d3971b96bc7ba93dd8569597951c/boto3-1.40.56-py3-none-any.whl", hash = "sha256:8985a840d57671aa3c6124b0c178e79be97e3447de4b5819156071793f82ee5c", size = 139322, upload-time = "2025-10-21T20:30:59.436Z" },
 ]
 
 [[package]]
 name = "botocore"
-version = "1.40.49"
+version = "1.40.56"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jmespath" },
     { name = "python-dateutil" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/01/6a/eb7503536552bbd3388b2607bc7a64e59d4f988336406b51a69d29f17ed2/botocore-1.40.49.tar.gz", hash = "sha256:fe8d4cbcc22de84c20190ae728c46b931bafeb40fce247010fb071c31b6532b5", size = 14415240, upload-time = "2025-10-09T19:21:37.133Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f7/03/e48e32cd73a7f82bae267320f435526bb6c7ec8d3d72d69febd4ec5b8ee9/botocore-1.40.56.tar.gz", hash = "sha256:b29df3418a299609632cab240ee79275463b176ebeb3adc841ba367a3fa0c4db", size = 14448556, upload-time = "2025-10-21T20:30:50.104Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fc/7b/dce396a3f7078e0432d40a9778602cbf0785ca91e7bcb64e05f19dfb5662/botocore-1.40.49-py3-none-any.whl", hash = "sha256:bf1089d0e77e4fc2e195d81c519b194ab62a4d4dd3e7113ee4e2bf903b0b75ab", size = 14085172, upload-time = "2025-10-09T19:21:32.721Z" },
+    { url = "https://files.pythonhosted.org/packages/c2/1d/b9e8f8fa7dae2e2d51c0c23bd5bcbd94c930241de7a6fa215ffac0dfaf16/botocore-1.40.56-py3-none-any.whl", hash = "sha256:0962dfc9bfb0afa1855042a88a72cc722cc7f9c08f51d2c5c88181d525a59a27", size = 14120124, upload-time = "2025-10-21T20:30:46.978Z" },
 ]
 
 [[package]]
@@ -296,7 +296,7 @@ requires-dist = [
     { name = "flask", specifier = "==3.1.2" },
     { name = "flask-wtf", specifier = ">=1.2.2" },
     { name = "gunicorn", specifier = ">=23.0.0" },
-    { name = "nhsuk-frontend-jinja", specifier = "==0.4.1" },
+    { name = "nhsuk-frontend-jinja", specifier = "==0.5.0" },
     { name = "py-healthcheck", specifier = ">=1.10.1" },
     { name = "pyjwt", specifier = ">=2.10.1" },
     { name = "requests", specifier = ">=2.32.5" },
@@ -305,7 +305,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "boto3", specifier = "==1.40.49" },
+    { name = "boto3", specifier = "==1.40.56" },
     { name = "coverage", specifier = ">=7.10.6" },
     { name = "coverage-badge", specifier = ">=1.1.2" },
     { name = "pyright", specifier = ">=1.1.405" },
@@ -344,14 +344,14 @@ wheels = [
 
 [[package]]
 name = "nhsuk-frontend-jinja"
-version = "0.4.1"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c6/d7/9f8f1168f1c63858f4c24798d0d5561bea539742524a161fd2e6ad67e52e/nhsuk_frontend_jinja-0.4.1.tar.gz", hash = "sha256:fbab2bfa143c6f0245af85ccdc5bcceb05b398088c91b09796ebc50fda17f697", size = 20991, upload-time = "2025-09-02T10:40:56.503Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/08/de/de1ae5d8fda5235060dc10f7d076c6fd625b1d596e8aadba6f9a98a2a6c6/nhsuk_frontend_jinja-0.5.0.tar.gz", hash = "sha256:a4ac7e90cd4c59205475e6b61a4052c3ba2e03fb32b795ca4c9e68814e586c37", size = 23940, upload-time = "2025-10-23T15:21:28.792Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a9/8b/dfc0cfc3db073e2a32719528e83a89eb841820bd32f778b6742a448d5c43/nhsuk_frontend_jinja-0.4.1-py3-none-any.whl", hash = "sha256:ce34d28f43f9fb87012177731f2e463ab8fb44c7b847555342089096b8b1334c", size = 49181, upload-time = "2025-09-02T10:40:55.065Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/76/20e44adada90c311d47f0465eebcd36aa91e4e41dd6b45d3f3ee95eca6e4/nhsuk_frontend_jinja-0.5.0-py3-none-any.whl", hash = "sha256:2e9ac54eb5c88ddb44310f6f9d2abc3f540fd95ab9d8cd2cf478e845397ecaf8", size = 53321, upload-time = "2025-10-23T15:21:27.69Z" },
 ]
 
 [[package]]

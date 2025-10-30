@@ -37,7 +37,7 @@ def login_required(f):
             # either they're not logged in, or gave an invalid response
             current_app.logger.info("no code given")
             return_url = url_helper.externalise_current_url(current_app, request)
-            target_url = mavis_helper.mavis_url(
+            target_url = mavis_helper.mavis_public_url(
                 current_app,
                 "/start?redirect_uri=" + quote(return_url),
             )

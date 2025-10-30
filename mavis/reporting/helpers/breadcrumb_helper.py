@@ -1,11 +1,13 @@
 from flask import current_app, url_for
 
+from mavis.reporting.helpers.mavis_helper import mavis_public_url
+
 
 def generate_breadcrumb_items():
     return [
         {
             "text": "Home",
-            "href": current_app.config["MAVIS_ROOT_URL"],
+            "href": mavis_public_url(current_app, "/"),
         },
         {
             "text": "Reports",

@@ -10,20 +10,20 @@ from mavis.reporting.helpers.mavis_helper import MavisApiError
 from tests.conftest import MockResponse
 
 
-def test_mavis_url_with_just_path():
-    url = mavis_helper.mavis_url(current_app, "/some/path.json")
+def test_mavis_api_url_with_just_path():
+    url = mavis_helper.mavis_api_url(current_app, "/some/path.json")
     assert url == "http://mavis.test/some/path.json"
 
 
-def test_mavis_url_with_params():
-    url = mavis_helper.mavis_url(
+def test_mavis_api_url_with_params():
+    url = mavis_helper.mavis_api_url(
         current_app, "/some/path.json", {"param1": "param 1 value"}
     )
     assert url == "http://mavis.test/some/path.json?param1=param+1+value"
 
 
-def test_mavis_url_with_multiple_params():
-    url = mavis_helper.mavis_url(
+def test_mavis_api_url_with_multiple_params():
+    url = mavis_helper.mavis_api_url(
         current_app,
         "/some/path.json",
         {"param1": "param 1 value", "param2": 123, "param3": "something else"},
@@ -34,8 +34,8 @@ def test_mavis_url_with_multiple_params():
     )
 
 
-def test_mavis_url_encodes_params():
-    url = mavis_helper.mavis_url(
+def test_mavis_api_url_encodes_params():
+    url = mavis_helper.mavis_api_url(
         current_app,
         "/some/path.json",
         {"return_url": "https://some.other.domain/login?token=123"},
@@ -46,12 +46,43 @@ def test_mavis_url_encodes_params():
     )
 
 
-def test_mavis_url_with_list_params():
-    url = mavis_helper.mavis_url(
+def test_mavis_api_url_with_list_params():
+    url = mavis_helper.mavis_api_url(
         current_app, "/some/path.json", {"year_group": ["8", "9"]}
     )
     assert (
         url == "http://mavis.test/some/path.json?year_group%5B%5D=8&year_group%5B%5D=9"
+    )
+
+
+def test_mavis_public_url_removes_reports_with_trailing_slash(app):
+    app.config["ROOT_URL"] = "https://example.com/reports/"
+    url = mavis_helper.mavis_public_url(app, "/start")
+    assert url == "https://example.com/start"
+
+
+def test_mavis_public_url_falls_back_to_mavis_root_url(app):
+    app.config["ROOT_URL"] = "http://localhost:5000/"
+    url = mavis_helper.mavis_public_url(app, "/start")
+    assert url == "http://mavis.test/start"
+
+
+def test_mavis_public_url_with_params(app):
+    app.config["ROOT_URL"] = "https://example.com/reports/"
+    url = mavis_helper.mavis_public_url(
+        app, "/some/path.json", {"param1": "param 1 value"}
+    )
+    assert url == "https://example.com/some/path.json?param1=param+1+value"
+
+
+def test_mavis_public_url_with_list_params(app):
+    app.config["ROOT_URL"] = "https://example.com/reports/"
+    url = mavis_helper.mavis_public_url(
+        app, "/some/path.json", {"year_group": ["8", "9"]}
+    )
+    assert (
+        url
+        == "https://example.com/some/path.json?year_group%5B%5D=8&year_group%5B%5D=9"
     )
 
 

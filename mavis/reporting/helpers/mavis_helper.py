@@ -15,8 +15,8 @@ class MavisApiError(Exception):
         super().__init__(self.message)
 
 
-def mavis_url(current_app, path, params={}):
-    url = urllib.parse.urljoin(current_app.config["MAVIS_ROOT_URL"], path)
+def _build_url(base_url, path, params={}) -> str:
+    url = urllib.parse.urljoin(base_url, path)
     if params != {}:
         parsed_url = urllib.parse.urlsplit(url)
 
@@ -30,9 +30,23 @@ def mavis_url(current_app, path, params={}):
 
         query_string = urllib.parse.urlencode(encoded_params)
         url_with_params = parsed_url._replace(query=query_string)
-        url = urllib.parse.urlunsplit(url_with_params)
+        url = str(urllib.parse.urlunsplit(url_with_params))
 
     return url
+
+
+def mavis_api_url(current_app, path, params={}):
+    return _build_url(current_app.config["MAVIS_ROOT_URL"], path, params)
+
+
+def mavis_public_url(current_app, path, params={}):
+    root_url = current_app.config["ROOT_URL"]
+    base_url = root_url.removesuffix("/reports/")
+
+    if base_url == root_url:
+        base_url = current_app.config["MAVIS_ROOT_URL"]
+
+    return _build_url(base_url, path, params)
 
 
 def parse_json_response(response, context="API response"):
@@ -70,7 +84,7 @@ def validate_http_response(response, session=None, context="API response"):
 
 
 def verify_auth_code(code, current_app):
-    url = mavis_url(current_app, "/api/reporting/authorize")
+    url = mavis_api_url(current_app, "/api/reporting/authorize")
     body = {
         "client_id": current_app.config["CLIENT_ID"],
         "code": code,
@@ -111,7 +125,7 @@ def verify_auth_code(code, current_app):
 
 
 def api_call(current_app, session, path, params={}):
-    url = mavis_url(current_app, path, params)
+    url = mavis_api_url(current_app, path, params)
     headers = {
         "Authorization": "Bearer " + session["jwt"],
         "Accept": "application/json; charset=utf-8",

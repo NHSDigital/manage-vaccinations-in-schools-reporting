@@ -3,9 +3,10 @@ import os
 from jinja2 import ChainableUndefined, ChoiceLoader, FileSystemLoader, PackageLoader
 
 from mavis.reporting.helpers.date_helper import format_date_string
-from mavis.reporting.helpers.mavis_helper import mavis_url
+from mavis.reporting.helpers.mavis_helper import mavis_public_url
 from mavis.reporting.helpers.number_helper import percentage, thousands
 from mavis.reporting.helpers.static_file_helper import static
+from mavis.reporting.helpers.text_helper import humanize
 
 
 def configure_jinja2(app):
@@ -31,11 +32,12 @@ def configure_jinja2(app):
     # Add functions for cache busting of static files
     # and for generating Mavis URLs
     app.jinja_env.globals["static"] = static
-    app.jinja_env.globals["mavis_url"] = lambda path: mavis_url(app, path)
+    app.jinja_env.globals["mavis_url"] = lambda path: mavis_public_url(app, path)
 
     # Add custom filters
     app.jinja_env.filters["thousands"] = thousands
     app.jinja_env.filters["percentage"] = percentage
     app.jinja_env.filters["date"] = format_date_string
+    app.jinja_env.filters["humanize"] = humanize
 
     return app
