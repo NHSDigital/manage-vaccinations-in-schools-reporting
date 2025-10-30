@@ -53,7 +53,7 @@ jobs:
           SECRET_KEY: "${{ secrets.SECRET_KEY_FOR_TESTS }}"
           COVERAGE_THRESHOLD: 80
         run: mise test:coverage
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         id: upload-html-report-artifact-step
         if: always()
         with:
@@ -61,7 +61,7 @@ jobs:
           path: htmlcov
           retention-days: 10
           compression-level: 0
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         id: upload-coverage-badge-artifact-step
         if: always()
         with:
