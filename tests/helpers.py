@@ -30,6 +30,7 @@ def mock_user_info():
                 "role_code": "S8000:G8000:R8001",
                 "role_name": "",
                 "team_workgroup": "r1l",
+                "team": {"name": "SAIS Team 1"},
                 "workgroups": ["r1l"],
             },
         },
