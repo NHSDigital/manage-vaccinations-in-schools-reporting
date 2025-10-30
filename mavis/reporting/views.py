@@ -25,7 +25,7 @@ from mavis.reporting.helpers.date_helper import (
 from mavis.reporting.helpers.environment_helper import Environment
 from mavis.reporting.helpers.navigation_helper import build_navigation_items
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
-from mavis.reporting.models.organisation import Organisation
+from mavis.reporting.models.team import Team
 
 logger = logging.getLogger(__name__)
 
@@ -54,16 +54,16 @@ def inject_mavis_data():
 @main.route("/dashboard")
 @auth_helper.login_required
 def dashboard():
-    organisation = Organisation.get_from_session(session)
-    return redirect(url_for("main.vaccinations", code=organisation.code))
+    team = Team.get_from_session(session)
+    return redirect(url_for("main.vaccinations", workgroup=team.workgroup))
 
 
-@main.route("/organisation/<code>/start-download", methods=["GET", "POST"])
+@main.route("/team/<workgroup>/start-download", methods=["GET", "POST"])
 @auth_helper.login_required
-def start_download(code):
-    organisation = Organisation.get_from_session(session)
-    if organisation.code != code:
-        return redirect(url_for("main.start_download", code=organisation.code))
+def start_download(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.start_download", workgroup=team.workgroup))
 
     form = DataTypeForm()
 
@@ -71,7 +71,7 @@ def start_download(code):
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
             return redirect(mavis_helper.mavis_public_url(current_app, "/programmes"))
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
-            return redirect(url_for("main.download", code=organisation.code))
+            return redirect(url_for("main.download", workgroup=team.workgroup))
         else:
             raise ValueError("Invalid data type")
 
@@ -79,13 +79,13 @@ def start_download(code):
 
     selected_item_text = "Download"
     secondary_navigation_items = generate_secondary_nav_items(
-        organisation.code,
+        team.workgroup,
         current_page="download",
     )
 
     return render_template(
         "start-download.jinja",
-        organisation=organisation,
+        team=team,
         academic_year=get_current_academic_year_range(),
         breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
@@ -94,12 +94,12 @@ def start_download(code):
     )
 
 
-@main.route("/organisation/<code>/download", methods=["GET", "POST"])
+@main.route("/team/<workgroup>/download", methods=["GET", "POST"])
 @auth_helper.login_required
-def download(code):
-    organisation = Organisation.get_from_session(session)
-    if organisation.code != code:
-        return redirect(url_for("main.download", code=organisation.code))
+def download(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.download", workgroup=team.workgroup))
 
     form = DownloadForm(
         g.api_client.get_programmes(),
@@ -108,7 +108,7 @@ def download(code):
 
     if request.method == "POST" and form.validate_on_submit():
         api_response = g.api_client.download_totals_csv(
-            form.programme.data, form.variables.data
+            form.programme.data, team.workgroup, form.variables.data
         )
 
         headers = {}
@@ -120,30 +120,31 @@ def download(code):
 
     return render_template(
         "download.jinja",
-        organisation=organisation,
+        team=team,
         academic_year=get_current_academic_year_range(),
         last_updated_time=get_last_updated_time(),
         form=form,
     )
 
 
-@main.route("/organisation/<code>/vaccinations")
+@main.route("/team/<workgroup>/vaccinations")
 @auth_helper.login_required
-def vaccinations(code):
-    organisation = Organisation.get_from_session(session)
-    if organisation.code != code:
-        return redirect(url_for("main.vaccinations", code=organisation.code))
+def vaccinations(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.vaccinations", workgroup=team.workgroup))
 
     breadcrumb_items = generate_breadcrumb_items()
 
     selected_item_text = "Vaccinations"
     secondary_navigation_items = generate_secondary_nav_items(
-        organisation.code,
+        team.workgroup,
         current_page="vaccinations",
     )
 
     filters = {}
 
+    filters["team_workgroup"] = team.workgroup
     filters["programme"] = request.args.get("programme") or "hpv"
 
     gender_values = request.args.getlist("gender")
@@ -158,7 +159,7 @@ def vaccinations(code):
 
     return render_template(
         "vaccinations.jinja",
-        organisation=organisation,
+        team=team,
         programmes=g.api_client.get_programmes(),
         year_groups=g.api_client.get_year_groups(),
         genders=g.api_client.get_genders(),

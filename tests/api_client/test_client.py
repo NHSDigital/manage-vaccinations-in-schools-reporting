@@ -7,7 +7,15 @@ from tests.conftest import MockResponse
 
 @pytest.fixture()
 def api_client(app):
-    return MavisApiClient(app=app, session={"jwt": "myjwt"})
+    return MavisApiClient(
+        app=app,
+        session={
+            "jwt": "myjwt",
+            "cis2_info": {
+                "team_workgroup": "r1l",
+            },
+        },
+    )
 
 
 def test_missing_cohort_field_raises_error(api_client, mock_mavis_get_request):
