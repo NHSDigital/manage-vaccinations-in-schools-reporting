@@ -39,7 +39,7 @@ class MavisApiClient:
                 "gender",
                 "year_group",
                 "academic_year",
-                "team_id",
+                "team_workgroup",
                 "local_authority",
                 "school_local_authority",
             ]
@@ -62,8 +62,8 @@ class MavisApiClient:
 
         return self.add_percentages(data)
 
-    def download_totals_csv(self, programme, variables=None):
-        params = {"programme": programme}
+    def download_totals_csv(self, programme, team_workgroup, variables=None):
+        params = {"programme": programme, "team_workgroup": team_workgroup}
 
         if variables:
             params["group"] = ",".join(variables)

@@ -17,7 +17,7 @@
 
 {% block dashboard_content %}
 
-<form action="{{ url_for('main.start_download', code=organisation.code) }}" method="post">
+<form action="{{ url_for('main.start_download', workgroup=team.workgroup) }}" method="post">
 
 {{ form.csrf_token }}
 
