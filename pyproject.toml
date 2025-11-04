@@ -21,7 +21,7 @@ dev = [
     "pytest>=8.4.1",
     "coverage>=7.10.6",
     "coverage-badge>=1.1.2",
-    "boto3==1.40.64",
+    "boto3==1.40.65",
     "pyyaml>=6.0.2",
     "pyright>=1.1.405",
 ]
