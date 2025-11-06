@@ -107,8 +107,8 @@ class MavisApiClient:
     # https://www.datadictionary.nhs.uk/attributes/person_gender_code.html
     def get_genders(self) -> list[dict]:
         return [
-            {"value": "2", "text": "Female"},
-            {"value": "1", "text": "Male"},
-            {"value": "9", "text": "Other"},
-            {"value": "0", "text": "Unknown"},
+            {"value": "female", "text": "Female"},
+            {"value": "male", "text": "Male"},
+            {"value": "not specified", "text": "Not specified"},
+            {"value": "not known", "text": "Not known"},
         ]
