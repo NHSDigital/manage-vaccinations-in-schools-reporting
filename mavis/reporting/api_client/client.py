@@ -85,7 +85,7 @@ class MavisApiClient:
             {"value": "flu", "text": "Flu"},
             {"value": "hpv", "text": "HPV"},
             {"value": "menacwy", "text": "MenACWY"},
-            {"value": "td-ipv", "text": "Td/IPV"},
+            {"value": "td_ipv", "text": "Td/IPV"},
         ]
 
     def get_year_groups(self) -> list[dict]:
