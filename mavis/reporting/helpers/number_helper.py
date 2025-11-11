@@ -1,3 +1,15 @@
+def format_child_count(value: int | None) -> str:
+    """
+    Format an integer as a count of children.
+    """
+    if value is None:
+        return ""
+    elif value == 1:
+        return f"{value} child"
+    else:
+        return f"{thousands(value)} children"
+
+
 def thousands(value: int | None) -> str:
     """
     Format an integer with thousands separators.
