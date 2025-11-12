@@ -24,12 +24,13 @@
 
     <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
       <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
+        {% set child_or_children = "child" if data.cohort == 1 else "children" %}
         {{ card({
           "classes": "app-card app-card--blue",
           "heading": "Cohort",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.cohort | thousands ~ "<span class='nhsuk-card__caption'>children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.cohort | thousands ~ "<span class='nhsuk-card__caption'>" ~ child_or_children ~ " </span></p>",
         }) }}
       </div>
 
@@ -39,7 +40,7 @@
           "heading": "Not vaccinated",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["not_vaccinated_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["not_vaccinated"] | thousands ~ " children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["not_vaccinated_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["not_vaccinated"] | format_child_count ~ "</span></p>",
         }) }}
       </div>
 
@@ -49,7 +50,7 @@
           "heading": "Vaccinated",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated"] | thousands ~ " children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated"] | format_child_count ~ "</span></p>",
         }) }}
       </div>
       <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
@@ -58,7 +59,7 @@
           "heading": "Vaccinated by SAIS in " ~ academic_year,
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_by_sais_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_by_sais"] | thousands ~ " children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_by_sais_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_by_sais"] | format_child_count ~ "</span></p>",
         }) }}
       </div>
 
@@ -68,7 +69,7 @@
           "heading": "Vaccinated in a previous academic year",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_previously_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_previously"] | thousands ~ " children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_previously_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_previously"] | format_child_count ~ "</span></p>",
         }) }}
       </div>
 
@@ -78,7 +79,7 @@
           "heading": "Vaccinated elsewhere (self-reported)",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_declared_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_declared"] | thousands ~ " children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_declared_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_declared"] | format_child_count ~ "</span></p>",
         }) }}
       </div>
 
@@ -88,7 +89,7 @@
           "heading": "Vaccinated elsewhere (recorded)",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_recorded_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_recorded"] | thousands ~ " children</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_elsewhere_recorded_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_elsewhere_recorded"] | format_child_count ~ "</span></p>",
         }) }}
       </div>
     </div>
