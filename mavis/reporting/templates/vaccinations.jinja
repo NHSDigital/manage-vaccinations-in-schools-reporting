@@ -64,12 +64,15 @@
       </div>
 
       <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
+        {% set isFlu = current_filters.programme == "flu" %}
+        {% set percentage = "N/A" if isFlu else data["vaccinated_previously_percentage"] | percentage %}
+        {% set child_count = "N/A" if isFlu else data["vaccinated_previously"] | format_child_count %}
         {{ card({
           "classes": "app-card",
           "heading": "Vaccinated in a previous academic year",
           "headingClasses": "nhsuk-heading-xs",
           "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data["vaccinated_previously_percentage"] | percentage ~ "<span class='nhsuk-card__caption'>" ~ data["vaccinated_previously"] | format_child_count ~ "</span></p>",
+          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ percentage ~ "<span class='nhsuk-card__caption'>" ~ child_count ~ "</span></p>",
         }) }}
       </div>
 
