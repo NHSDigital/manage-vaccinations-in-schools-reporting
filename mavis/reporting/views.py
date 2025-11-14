@@ -3,6 +3,7 @@ import logging
 from flask import (
     Blueprint,
     Response,
+    abort,
     current_app,
     g,
     redirect,
@@ -71,7 +72,8 @@ def start_download(workgroup):
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
             return redirect(mavis_helper.mavis_public_url(current_app, "/programmes"))
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
-            return redirect(url_for("main.download", workgroup=team.workgroup))
+            raise ValueError("Invalid data type")
+            # return redirect(url_for("main.download", workgroup=team.workgroup))
         else:
             raise ValueError("Invalid data type")
 
@@ -97,6 +99,8 @@ def start_download(workgroup):
 @main.route("/team/<workgroup>/download", methods=["GET", "POST"])
 @auth_helper.login_required
 def download(workgroup):
+    abort(404)
+
     team = Team.get_from_session(session)
     if team.workgroup != workgroup:
         return redirect(url_for("main.download", workgroup=team.workgroup))

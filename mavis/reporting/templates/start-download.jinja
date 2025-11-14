@@ -28,6 +28,7 @@
       {% set _ = items.append({
         "value": choice[0],
         "text": choice[1],
+        "checked": choice[0] == "child-records",
       }) %}
     {% endfor %}
 
