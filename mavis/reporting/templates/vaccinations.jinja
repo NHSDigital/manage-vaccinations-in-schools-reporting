@@ -92,26 +92,27 @@
       </div>
     </div>
 
-    {{ heading({
-      "text": "Vaccinated before this school year",
-      "level": 2,
-      "size": "s"
-    }) }}
+    {% if current_filters.programme != "flu" %}
+      {{ heading({
+        "text": "Vaccinated before this school year",
+        "level": 2,
+        "size": "s"
+      }) }}
 
-    <div class="nhsuk-grid-row app-card-group nhsuk-card-group">
-      <div class="nhsuk-grid-column-full nhsuk-card-group__item app-card-group__item">
-        {% set isFlu = current_filters.programme == "flu" %}
-        {% set percentage = "N/A" if isFlu else data["vaccinated_previously_percentage"] | percentage %}
-        {% set child_count = "N/A" if isFlu else data["vaccinated_previously"] | format_child_count %}
-        {{ card({
-          "classes": "app-card",
-          "heading": "Vaccinated in all settings",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ percentage ~ "<span class='nhsuk-card__caption'>" ~ child_count ~ "</span></p>",
-        }) }}
+      <div class="nhsuk-grid-row app-card-group nhsuk-card-group">
+        <div class="nhsuk-grid-column-full nhsuk-card-group__item app-card-group__item">
+          {% set percentage = data["vaccinated_previously_percentage"] | percentage %}
+          {% set child_count = data["vaccinated_previously"] | format_child_count %}
+          {{ card({
+            "classes": "app-card",
+            "heading": "Vaccinated in all settings",
+            "headingClasses": "nhsuk-heading-xs",
+            "headingLevel": 3,
+            "descriptionHtml": "<p class='nhsuk-card__description'>" ~ percentage ~ "<span class='nhsuk-card__caption'>" ~ child_count ~ "</span></p>",
+          }) }}
+        </div>
       </div>
-    </div>
+    {% endif %}
 
     {% set rows = [] %}
     {% for row in data.monthly_vaccinations_given %}
