@@ -109,6 +109,6 @@ class MavisApiClient:
         return [
             {"value": "female", "text": "Female"},
             {"value": "male", "text": "Male"},
-            {"value": "not specified", "text": "Not specified"},
             {"value": "not known", "text": "Not known"},
+            {"value": "not specified", "text": "Not specified"},
         ]
