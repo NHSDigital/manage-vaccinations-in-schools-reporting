@@ -16,8 +16,7 @@ concurrency:
   group: build-and-push-image-${{ inputs.git-sha || github.sha }}
 
 env:
-#  PUSH_IMAGE_TO_PRODUCTION: ${{ github.ref_name == 'main' }} TODO: Enable this when we are ready to push images to production
-  PUSH_IMAGE_TO_PRODUCTION: false
+  PUSH_IMAGE_TO_PRODUCTION: ${{ github.ref_name == 'main' }}
 
 permissions: {}
 
