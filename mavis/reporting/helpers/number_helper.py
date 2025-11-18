@@ -33,9 +33,16 @@ def thousands(value: int | None) -> str:
 
 def percentage(value: float | None) -> str:
     """
-    Format a decimal proportion as a percentage.
+    Format a decimal proportion as a percentage to one decimal place.
+
+    Where the proportion rounds to exactly 1, it returns "100%".
     """
     if value is None:
         return ""
-    percentage = round(value * 100, 1)
-    return f"{percentage}%"
+
+    max = 100
+    percentage = round(value * max, 1)
+    if percentage == max:
+        return "100%"
+
+    return f"{percentage:.1f}%"
