@@ -7,6 +7,7 @@
 
 {% macro filters(params) %}
 <form method="get"
+      data-module="app-filters"
       action="{{ params.form_action }}"
       hx-get="{{ params.form_action }}"
       hx-trigger="change from:input"
@@ -74,7 +75,7 @@
       }) }}
     </div>
 
-    <div class="filter">
+    <div class="filter filter--year-group">
       {% set year_group_items = [] %}
       {% for year_group in params.year_groups %}
         {% set checked = year_group.value in (params.current_filters.get('year_group') or []) %}

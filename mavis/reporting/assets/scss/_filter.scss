@@ -18,4 +18,10 @@
       @include nhsuk-typography-weight-bold;
     }
   }
+
+  &--year-group {
+    .nhsuk-checkboxes__item--hidden {
+      display: none;
+    }
+  }
 }

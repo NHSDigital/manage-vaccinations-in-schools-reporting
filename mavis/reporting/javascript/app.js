@@ -1,7 +1,12 @@
-import { createAll, Header } from "nhsuk-frontend";
 import "htmx.org";
+import { createAll, Header } from "nhsuk-frontend";
 
-createAll(Header);
+import { AppFiltersComponent } from "./components/AppFiltersComponent";
+
+document.addEventListener("DOMContentLoaded", () => {
+  createAll(Header);
+  createAll(AppFiltersComponent);
+});
 
 document.addEventListener("htmx:afterRequest", (event) => {
   const url = new URL(event.detail.xhr.responseURL);
