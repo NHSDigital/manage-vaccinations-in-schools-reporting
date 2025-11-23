@@ -6,14 +6,19 @@
     "build:scss": "sass --load-path=node_modules mavis/reporting/assets/scss/app.scss:mavis/reporting/static/css/app.css --style=compressed --no-source-map",
     "build:scss:dev": "sass --load-path=node_modules --watch mavis/reporting/assets/scss:mavis/reporting/static/css --style=expanded --source-map",
     "build:js": "esbuild mavis/reporting/javascript/app.js --bundle --outfile=mavis/reporting/static/js/app.js --minify",
-    "build:js:dev": "esbuild mavis/reporting/javascript/app.js --bundle --outfile=mavis/reporting/static/js/app.js --sourcemap --minify --watch=forever"
+    "build:js:dev": "esbuild mavis/reporting/javascript/app.js --bundle --outfile=mavis/reporting/static/js/app.js --sourcemap --minify --watch=forever",
+    "test:js": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:js:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
   },
   "dependencies": {
     "htmx.org": "^2.0.8",
     "nhsuk-frontend": "^10.1.0"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "esbuild": "^0.27.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "sass": "^1.93.2"
   }
 }

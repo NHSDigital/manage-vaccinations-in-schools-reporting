@@ -24,6 +24,7 @@ mavis/reporting/static/js/*
 mavis/reporting/static/favicons/*
 !mavis/reporting/static/favicons/.keep
 
+coverage/
 .coverage
 htmlcov
 coverage.svg

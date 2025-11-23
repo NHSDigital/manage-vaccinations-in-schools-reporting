@@ -100,8 +100,13 @@ run = "mise dev:scss ::: dev:js ::: dev:flask"
 
 [tasks.test]
 description = "Run all tests"
-depends = ["uv:sync"]
-run = ["uv run pytest tests"]
+depends = ["uv:sync", "npm:install"]
+run = ["uv run pytest tests", "npm run test:js"]
+
+[tasks."test:js"]
+description = "Run JavaScript tests"
+depends = ["npm:install"]
+run = "npm run test:js"
 
 [tasks."test:coverage"]
 description = "Run tests with coverage reporting"
@@ -139,7 +144,7 @@ run = "MISE_SOPS_AGE_KEY=$(cat config/credentials/staging.key) mise docker:run"
 
 [tasks.ci]
 description = "Run CI checks in parallel"
-depends = ["gitleaks", "lint", "test", "typecheck"]
+depends = ["gitleaks", "lint", "test", "typecheck", "test:js"]
 
 [tasks."credentials:show"]
 description = "Show credentials"
