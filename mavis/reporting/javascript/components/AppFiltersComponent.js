@@ -19,28 +19,38 @@ export class AppFiltersComponent extends Component {
    */
   constructor(formElement) {
     super(formElement);
-    this.yearGroupCheckboxElements = formElement.querySelectorAll(".filter--year-group input[type='checkbox']");
+    this.formElement = formElement;
 
-    formElement.addEventListener("change", this.hideYearGroupCheckboxes.bind(this));
+    this.setupYearGroupCheckboxElements();
+
+    this.formElement.addEventListener("change", this.handleProgrammeChange.bind(this));
     document.addEventListener("htmx:configRequest", this.validateYearGroupParams.bind(this));
   }
 
-  hideYearGroupCheckboxes(event) {
-    if (event.target.name === "programme") {
-      const programme = event.target.value;
-      const validYearGroups = YEAR_GROUPS_BY_PROGRAMME[programme];
+  setupYearGroupCheckboxElements() {
+    this.yearGroupCheckboxElements = this.formElement.querySelectorAll(".filter--year-group input[type='checkbox']");
+    let selectedProgramme = this.formElement.querySelector("input[name='programme']:checked").value;
+    this.hideYearGroupCheckboxes(selectedProgramme);
+  }
 
-      this.yearGroupCheckboxElements.forEach((element) => {
-        if (validYearGroups.includes(element.value)) {
-          element.parentElement.classList.remove("nhsuk-checkboxes__item--hidden");
-        } else {
-          element.parentElement.classList.add("nhsuk-checkboxes__item--hidden");
-          if (element.checked) {
-            element.checked = false;
-          }
+  handleProgrammeChange(event) {
+    if (event.target.name !== "programme") return;
+    let selectedProgramme = event.target.value;
+    this.hideYearGroupCheckboxes(selectedProgramme);
+  }
+
+  hideYearGroupCheckboxes(programme) {
+    const validYearGroups = YEAR_GROUPS_BY_PROGRAMME[programme];
+    this.yearGroupCheckboxElements.forEach((element) => {
+      if (validYearGroups.includes(element.value)) {
+        element.parentElement.classList.remove("nhsuk-checkboxes__item--hidden");
+      } else {
+        element.parentElement.classList.add("nhsuk-checkboxes__item--hidden");
+        if (element.checked) {
+          element.checked = false;
         }
-      });
-    }
+      }
+    });
   }
 
   validateYearGroupParams(event) {
