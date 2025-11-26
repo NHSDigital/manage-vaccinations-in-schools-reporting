@@ -1,6 +1,6 @@
 {% from "tables/macro.jinja" import table %}
 {% from "components/filters.jinja" import filters %}
-{% from "card/macro.jinja" import card %}
+{% from "components/app_dashboard_card.jinja" import app_dashboard_card %}
 
 
 {% extends 'layouts/dashboard.jinja' %}
@@ -23,85 +23,64 @@
   <div id="dashboard" class="app-grid-column-content">
 
     <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
-      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card app-card--blue",
-          "heading": "Cohort",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.cohort | thousands ~ "<span class='nhsuk-card__caption'>children</span></p>",
-        }) }}
-      </div>
+      {{ app_dashboard_card({
+        "classes": "nhsuk-grid-column-one-third",
+        "card_classes": "app-card--blue",
+        "heading": "Cohort",
+        "description": data.cohort | thousands,
+        "caption": "child" if data.cohort == 1 else "children",
+      }) }}
 
-      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card app-card--red",
-          "heading": "No consent",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.no_consent_percentage | percentage ~ "<span class='nhsuk-card__caption'>" ~ data.no_consent | thousands ~ " children</span></p>",
-        }) }}
-      </div>
+      {{ app_dashboard_card({
+        "classes": "nhsuk-grid-column-one-third",
+        "card_classes": "app-card--red",
+        "heading": "No consent",
+        "description": data.no_consent_percentage | percentage,
+        "caption": data.no_consent | format_child_count,
+      }) }}
 
-      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card app-card--green",
-          "heading": "Consent given",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.consent_given_percentage | percentage ~ "<span class='nhsuk-card__caption'>" ~ data.consent_given | thousands ~ " children</span></p>",
-        }) }}
-      </div>
+      {{ app_dashboard_card({
+        "classes": "nhsuk-grid-column-one-third",
+        "card_classes": "app-card--green",
+        "heading": "Consent given",
+        "description": data.consent_given_percentage | percentage,
+        "caption": data.consent_given | format_child_count,
+      }) }}
 
-      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card",
-          "heading": "Consent requested",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.consent_requested_percentage | percentage ~ "<span class='nhsuk-card__caption'>" ~ data.consent_requested | thousands ~ " children</span></p>",
-        }) }}
-      </div>
+      {{ app_dashboard_card({
+        "classes": "nhsuk-grid-column-one-half",
+        "heading": "Consent requested",
+        "description": data.consent_requested_percentage | percentage,
+        "caption": data.consent_requested | format_child_count,
+      }) }}
 
-      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card",
-          "heading": "No response",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.consent_no_response_percentage | percentage ~ "<span class='nhsuk-card__caption'>" ~ data.consent_no_response | thousands ~ " children</span></p>",
-        }) }}
-      </div>
+      {{ app_dashboard_card({
+        "classes": "nhsuk-grid-column-one-half",
+        "heading": "No response",
+        "description": data.consent_no_response_percentage | percentage,
+        "caption": data.consent_no_response | format_child_count,
+      }) }}
 
-      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card",
-          "heading": "Parent refused",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.parent_refused_consent_percentage | percentage ~ "<span class='nhsuk-card__caption'>" ~ data.parent_refused_consent | thousands ~ " children</span></p>",
-        }) }}
-      </div>
+      {{ app_dashboard_card({
+        "classes": "nhsuk-grid-column-one-third",
+        "heading": "Parent refused",
+        "description": data.parent_refused_consent_percentage | percentage,
+        "caption": data.parent_refused_consent | format_child_count,
+      }) }}
 
-      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card",
-          "heading": "Child refused",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.child_refused_vaccination_percentage | percentage ~ "<span class='nhsuk-card__caption'>" ~ data.child_refused_vaccination | thousands ~ " children</span></p>",
-        }) }}
-      </div>
+      {{ app_dashboard_card({
+        "classes": "nhsuk-grid-column-one-third",
+        "heading": "Child refused",
+        "description": data.child_refused_vaccination_percentage | percentage,
+        "caption": data.child_refused_vaccination | format_child_count,
+      }) }}
 
-      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item app-card-group__item">
-        {{ card({
-          "classes": "app-card",
-          "heading": "Conflicting consent",
-          "headingClasses": "nhsuk-heading-xs",
-          "headingLevel": 3,
-          "descriptionHtml": "<p class='nhsuk-card__description'>" ~ data.consent_conflicts_percentage | percentage ~ "<span class='nhsuk-card__caption'>" ~ data.consent_conflicts | thousands ~ " children</span></p>",
-        }) }}
-      </div>
+      {{ app_dashboard_card({
+        "classes": "nhsuk-grid-column-one-third",
+        "heading": "Conflicting consent",
+        "description": data.consent_conflicts_percentage | percentage,
+        "caption": data.consent_conflicts | format_child_count,
+      }) }}
     </div>
 
     {% set refusal_rows = [] %}
