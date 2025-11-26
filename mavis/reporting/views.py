@@ -149,13 +149,18 @@ def vaccinations(workgroup):
     filters = {}
 
     filters["team_workgroup"] = team.workgroup
-    filters["programme"] = request.args.get("programme") or "hpv"
+    filters["programme"] = request.args.get("programme") or "flu"
 
     gender_values = request.args.getlist("gender")
     if gender_values:
         filters["gender"] = gender_values
 
-    year_group_values = request.args.getlist("year-group")
+    year_groups = g.api_client.get_year_groups_for_programme(filters["programme"])
+    valid_year_group_values = {yg["value"] for yg in year_groups}
+
+    year_group_values = [
+        v for v in request.args.getlist("year-group") if v in valid_year_group_values
+    ]
     if year_group_values:
         filters["year_group"] = year_group_values
 
@@ -165,7 +170,7 @@ def vaccinations(workgroup):
         "vaccinations.jinja",
         team=team,
         programmes=g.api_client.get_programmes(),
-        year_groups=g.api_client.get_year_groups(),
+        year_groups=year_groups,
         genders=g.api_client.get_genders(),
         academic_year=get_current_academic_year_range(),
         data=data,

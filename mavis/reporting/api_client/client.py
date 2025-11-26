@@ -1,6 +1,13 @@
 from mavis.reporting.helpers import mavis_helper
 from mavis.reporting.helpers.mavis_helper import MavisApiError, parse_json_response
 
+PROGRAMME_YEAR_GROUPS = {
+    "flu": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"],
+    "hpv": ["8", "9", "10", "11"],
+    "menacwy": ["9", "10", "11"],
+    "td_ipv": ["9", "10", "11"],
+}
+
 
 class MavisApiClient:
     def __init__(self, app=None, session=None):
@@ -103,6 +110,11 @@ class MavisApiClient:
             {"value": "10", "text": "Year 10"},
             {"value": "11", "text": "Year 11"},
         ]
+
+    def get_year_groups_for_programme(self, programme: str) -> list[dict]:
+        all_year_groups = self.get_year_groups()
+        eligible_values = PROGRAMME_YEAR_GROUPS.get(programme, [])
+        return [yg for yg in all_year_groups if yg["value"] in eligible_values]
 
     # https://www.datadictionary.nhs.uk/attributes/person_gender_code.html
     def get_genders(self) -> list[dict]:

@@ -6,15 +6,16 @@
 {% from "button/macro.jinja" import button %}
 
 {% macro filters(params) %}
-<form method="get"
+<form id="filters-form"
+      method="get"
       action="{{ params.form_action }}"
       hx-get="{{ params.form_action }}"
       hx-trigger="change from:input"
       hx-target="#dashboard"
       hx-select="#dashboard"
+      hx-select-oob="#filters-form:outerHTML"
       hx-swap="outerHTML"
-      hx-replace-url="true"
-      hx-sync="this:replace">
+      hx-replace-url="true">
   {% call fieldset({
     "legend": {
       "text": "Filter data",
