@@ -51,7 +51,22 @@ class TestGetYearGroupsForProgramme:
     def test_flu_returns_all_year_groups(self, api_client):
         result = api_client.get_year_groups_for_programme("flu")
         values = [yg["value"] for yg in result]
-        assert values == ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
+        assert values == [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+        ]
 
     def test_hpv_returns_years_8_to_11(self, api_client):
         result = api_client.get_year_groups_for_programme("hpv")

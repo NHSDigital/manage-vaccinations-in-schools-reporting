@@ -109,6 +109,8 @@ class MavisApiClient:
             {"value": "9", "text": "Year 9"},
             {"value": "10", "text": "Year 10"},
             {"value": "11", "text": "Year 11"},
+            {"value": "12", "text": "Year 12"},
+            {"value": "13", "text": "Year 13"},
         ]
 
     def get_year_groups_for_programme(self, programme: str) -> list[dict]:
