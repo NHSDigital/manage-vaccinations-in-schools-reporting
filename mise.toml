@@ -95,7 +95,6 @@ run = "uv run flask run --debug -p {{vars.port}}"
 [tasks.dev]
 description = "Start development servers"
 env.MISE_ENV = "development"
-depends = ["bundle"]
 run = "mise dev:scss ::: dev:js ::: dev:flask"
 
 [tasks.test]
