@@ -10,6 +10,7 @@ from mavis.reporting.helpers.number_helper import (
     thousands,
 )
 from mavis.reporting.helpers.static_file_helper import static
+from mavis.reporting.helpers.text_helper import humanize
 
 
 def configure_jinja2(app):
@@ -42,5 +43,6 @@ def configure_jinja2(app):
     app.jinja_env.filters["percentage"] = percentage
     app.jinja_env.filters["format_child_count"] = format_child_count
     app.jinja_env.filters["date"] = format_date_string
+    app.jinja_env.filters["humanize"] = humanize
 
     return app

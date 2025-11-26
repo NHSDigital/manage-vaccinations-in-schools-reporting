@@ -18,23 +18,55 @@ class MavisApiClient:
         n = data["cohort"]
 
         if n > 0:
-            data["vaccinated_percentage"] = data["vaccinated"] / n
-            data["not_vaccinated_percentage"] = data["not_vaccinated"] / n
-            data["vaccinated_by_sais_percentage"] = data["vaccinated_by_sais"] / n
-            data["vaccinated_elsewhere_declared_percentage"] = (
-                data["vaccinated_elsewhere_declared"] / n
-            )
-            data["vaccinated_elsewhere_recorded_percentage"] = (
-                data["vaccinated_elsewhere_recorded"] / n
-            )
-            data["vaccinated_previously_percentage"] = data["vaccinated_previously"] / n
+            if "vaccinated" in data:
+                data["vaccinated_percentage"] = data["vaccinated"] / n
+                data["not_vaccinated_percentage"] = data["not_vaccinated"] / n
+                data["vaccinated_by_sais_percentage"] = data["vaccinated_by_sais"] / n
+                data["vaccinated_elsewhere_declared_percentage"] = (
+                    data["vaccinated_elsewhere_declared"] / n
+                )
+                data["vaccinated_elsewhere_recorded_percentage"] = (
+                    data["vaccinated_elsewhere_recorded"] / n
+                )
+                data["vaccinated_previously_percentage"] = (
+                    data["vaccinated_previously"] / n
+                )
+
+            if "consent_given" in data:
+                data["consent_given_percentage"] = data["consent_given"] / n
+                data["consent_no_response_percentage"] = (
+                    data["consent_no_response"] / n
+                )
+                data["consent_conflicts_percentage"] = data["consent_conflicts"] / n
+                data["parent_refused_consent_percentage"] = (
+                    data["parent_refused_consent"] / n
+                )
+                data["child_refused_vaccination_percentage"] = (
+                    data["child_refused_vaccination"] / n
+                )
+                if "no_consent" in data:
+                    data["no_consent_percentage"] = data["no_consent"] / n
+                if "consent_requested" in data:
+                    data["consent_requested_percentage"] = data["consent_requested"] / n
         else:
-            data["vaccinated_percentage"] = 0
-            data["not_vaccinated_percentage"] = 0
-            data["vaccinated_by_sais_percentage"] = 0
-            data["vaccinated_elsewhere_declared_percentage"] = 0
-            data["vaccinated_elsewhere_recorded_percentage"] = 0
-            data["vaccinated_previously_percentage"] = 0
+            if "vaccinated" in data:
+                data["vaccinated_percentage"] = 0
+                data["not_vaccinated_percentage"] = 0
+                data["vaccinated_by_sais_percentage"] = 0
+                data["vaccinated_elsewhere_declared_percentage"] = 0
+                data["vaccinated_elsewhere_recorded_percentage"] = 0
+                data["vaccinated_previously_percentage"] = 0
+
+            if "consent_given" in data:
+                data["consent_given_percentage"] = 0
+                data["consent_no_response_percentage"] = 0
+                data["consent_conflicts_percentage"] = 0
+                data["parent_refused_consent_percentage"] = 0
+                data["child_refused_vaccination_percentage"] = 0
+                if "no_consent" in data:
+                    data["no_consent_percentage"] = 0
+                if "consent_requested" in data:
+                    data["consent_requested_percentage"] = 0
         return data
 
     def get_vaccination_data(self, filters=None):
@@ -66,6 +98,41 @@ class MavisApiClient:
                 status_code=response.status_code,
                 response_body=str(data),
             )
+
+        return self.add_percentages(data)
+
+    def get_consent_data(self, filters=None):
+        params = {}
+
+        if filters:
+            filter_keys = [
+                "programme",
+                "gender",
+                "year_group",
+                "academic_year",
+                "team_workgroup",
+                "local_authority",
+                "school_local_authority",
+            ]
+
+            for key in filter_keys:
+                if key in filters:
+                    params[key] = filters[key]
+
+        response = mavis_helper.api_call(
+            self.app, self.session, "/api/reporting/totals", params=params
+        )
+        data = parse_json_response(response, "Consent data")
+
+        if "cohort" not in data:
+            raise MavisApiError(
+                "Consent data response missing 'cohort' field",
+                status_code=response.status_code,
+                response_body=str(data),
+            )
+
+        data["no_consent"] = data["cohort"] - data["consent_given"]
+        data["consent_requested"] = data["cohort"] - data["consent_no_response"]
 
         return self.add_percentages(data)
 

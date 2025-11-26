@@ -182,6 +182,52 @@ def vaccinations(workgroup):
     )
 
 
+@main.route("/team/<workgroup>/consents")
+@auth_helper.login_required
+def consents(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.consents", workgroup=team.workgroup))
+
+    breadcrumb_items = generate_breadcrumb_items()
+
+    selected_item_text = "Consents"
+    secondary_navigation_items = generate_secondary_nav_items(
+        team.workgroup,
+        current_page="consents",
+    )
+
+    filters = {}
+
+    filters["programme"] = request.args.get("programme") or "hpv"
+    filters["team_workgroup"] = team.workgroup
+
+    gender_values = request.args.getlist("gender")
+    if gender_values:
+        filters["gender"] = gender_values
+
+    year_group_values = request.args.getlist("year-group")
+    if year_group_values:
+        filters["year_group"] = year_group_values
+
+    data = g.api_client.get_consent_data(filters)
+
+    return render_template(
+        "consents.jinja",
+        team=team,
+        programmes=g.api_client.get_programmes(),
+        year_groups=g.api_client.get_year_groups(),
+        genders=g.api_client.get_genders(),
+        academic_year=get_current_academic_year_range(),
+        data=data,
+        current_filters=filters,
+        breadcrumb_items=breadcrumb_items,
+        selected_item_text=selected_item_text,
+        secondary_navigation_items=secondary_navigation_items,
+        last_updated_time=get_last_updated_time(),
+    )
+
+
 @main.errorhandler(404)
 def page_not_found(_error):
     return render_template("errors/404.html"), 404
