@@ -1,4 +1,4 @@
-FROM python:3.14.0-alpine AS base
+FROM python:3.14.1-alpine AS base
 WORKDIR /app
 
 ARG MISE_ENV=production
