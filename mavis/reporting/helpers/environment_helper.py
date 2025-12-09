@@ -1,48 +1,49 @@
-from enum import Enum
+import os
 
+ENVIRONMENT_COLOUR = {
+    "production": "blue",
+    "development": "white",
+    "review": "purple",
+    "test": "red",
+    "qa": "orange",
+    "preview": "yellow",
+}
 
-class EnvType(Enum):
-    PROD = "production"
-    DEV = "development"
-    REVIEW = "review"
-    STAGING = "staging"
-    TEST = "test"
-    QA = "qa"
-    PREVIEW = "preview"
-
-    def __str__(self):
-        return str(self.value)
-
-
-ENV_COLOUR = {
-    EnvType.PROD: "blue",
-    EnvType.DEV: "white",
-    EnvType.REVIEW: "purple",
-    EnvType.STAGING: "purple",
-    EnvType.TEST: "red",
-    EnvType.QA: "orange",
-    EnvType.PREVIEW: "yellow",
+ENVIRONMENT_THEME_COLOUR = {
+    "production": "#005eb8",
+    "development": "#fff",
+    "review": "#d6cce3",
+    "test": "#f7d4d1",
+    "qa": "#ffdc8e",
+    "preview": "#fff59d",
 }
 
 
-class Environment:
-    def __init__(self, type: EnvType):
-        self.type = type
+class HostingEnvironment:
+    @classmethod
+    def name(cls) -> str:
+        return os.environ["SENTRY_ENVIRONMENT"]
 
-    def is_production(self):
-        return self.type == EnvType.PROD
+    @classmethod
+    def colour(cls) -> str:
+        return ENVIRONMENT_COLOUR.get(cls.name(), "white")
 
-    @property
-    def colour(self):
-        return ENV_COLOUR[self.type]
+    @classmethod
+    def theme_colour(cls) -> str:
+        return ENVIRONMENT_THEME_COLOUR.get(cls.name(), "#fff")
 
-    @property
-    def title(self):
-        return str(self.type).capitalize()
+    @classmethod
+    def title(cls) -> str:
+        if cls.name() == "qa":
+            return "QA"
+        return cls.name().capitalize()
 
-    @property
-    def title_in_sentence(self):
-        return (
-            f"This is a {self.type} environment."
-            + " Do not use it to make clinical decisions."
-        )
+    @classmethod
+    def title_in_sentence(cls) -> str:
+        if cls.name() == "qa":
+            return "QA"
+        return cls.name()
+
+    @classmethod
+    def is_production(cls) -> bool:
+        return cls.name() == "production"
