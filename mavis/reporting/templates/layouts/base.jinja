@@ -17,9 +17,9 @@
 
 {% block header %}
 {{ environment({
-  "colour": app_environment.colour,
-  "title": app_environment.title,
-  "title_in_sentence": app_environment.title_in_sentence,
+  "colour": app_environment.colour(),
+  "title": app_environment.title(),
+  "title_in_sentence": app_environment.title_in_sentence(),
 }) if not app_environment.is_production() }}
 
 {{ header({

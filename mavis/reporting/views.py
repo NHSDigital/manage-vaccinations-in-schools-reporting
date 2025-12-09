@@ -23,7 +23,7 @@ from mavis.reporting.helpers.date_helper import (
     get_current_academic_year_range,
     get_last_updated_time,
 )
-from mavis.reporting.helpers.environment_helper import Environment
+from mavis.reporting.helpers.environment_helper import HostingEnvironment
 from mavis.reporting.helpers.navigation_helper import build_navigation_items
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
 from mavis.reporting.models.team import Team
@@ -41,11 +41,9 @@ def stub_mavis_data():
 @main.context_processor
 def inject_mavis_data():
     """Inject common data into the template context."""
-    env = Environment(current_app.config["ENVIRONMENT"])
-
     return {
         "app_title": "Manage vaccinations in schools",
-        "app_environment": env,
+        "app_environment": HostingEnvironment,
         "navigation_items": build_navigation_items(request),
         "service_guide_url": "https://guide.manage-vaccinations-in-schools.nhs.uk",
     }

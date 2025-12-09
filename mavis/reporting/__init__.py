@@ -6,7 +6,6 @@ from flask import Flask, redirect, request
 from werkzeug.exceptions import Unauthorized
 
 from mavis.reporting.helpers import mavis_helper, url_helper
-from mavis.reporting.helpers.environment_helper import EnvType
 from mavis.reporting.jinja2_config import configure_jinja2
 
 if dsn := os.environ.get("SENTRY_DSN"):
@@ -43,7 +42,6 @@ def create_app(config_name=None):
     app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
     app.config["DEBUG"] = False
-    app.config["ENVIRONMENT"] = EnvType.PROD
     app.config["LOG_LEVEL"] = "INFO"
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 31536000
     app.config["SESSION_TTL_SECONDS"] = 600
@@ -52,16 +50,12 @@ def create_app(config_name=None):
 
     if config_name == "development":
         app.config["DEBUG"] = True
-        app.config["ENVIRONMENT"] = EnvType.DEV
         app.config["LOG_LEVEL"] = "DEBUG"
         app.config["MAVIS_BACKEND_URL"] = os.environ["MAVIS_BACKEND_URL"]
     elif config_name == "test":
         app.config["DEBUG"] = True
-        app.config["ENVIRONMENT"] = EnvType.TEST
         app.config["LOG_LEVEL"] = "DEBUG"
         app.config["TESTING"] = True
-    elif config_name == "staging":
-        app.config["ENVIRONMENT"] = EnvType.STAGING
 
     configure_jinja2(app)
 
