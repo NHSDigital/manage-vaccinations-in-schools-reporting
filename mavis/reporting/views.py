@@ -68,7 +68,9 @@ def start_download(workgroup):
 
     if form.validate_on_submit():
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
-            return redirect(mavis_helper.mavis_public_url(current_app, "/programmes"))
+            return redirect(
+                mavis_helper.mavis_public_url(current_app, "/vaccination-report/new")
+            )
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
             raise ValueError("Invalid data type")
             # return redirect(url_for("main.download", workgroup=team.workgroup))
