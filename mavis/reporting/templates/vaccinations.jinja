@@ -48,52 +48,6 @@
       }) }}
     </div>
 
-    {{ heading({
-      "text": "Vaccinated in the current school year",
-      "level": 2,
-      "size": "s"
-    }) }}
-
-    <div class="nhsuk-grid-row app-card-group nhsuk-card-group">
-      {{ app_dashboard_card({
-        "classes": "nhsuk-grid-column-one-third",
-        "heading": "Vaccinated by " ~ team.name,
-        "description": data["vaccinated_by_sais_percentage"] | percentage,
-        "caption": data["vaccinated_by_sais"] | format_child_count,
-      }) }}
-
-      {{ app_dashboard_card({
-        "classes": "nhsuk-grid-column-one-third",
-        "heading": "Vaccinated elsewhere (self-reported)",
-        "description": data["vaccinated_elsewhere_declared_percentage"] | percentage,
-        "caption": data["vaccinated_elsewhere_declared"] | format_child_count,
-      }) }}
-
-      {{ app_dashboard_card({
-        "classes": "nhsuk-grid-column-one-third",
-        "heading": "Vaccinated elsewhere (confirmed)",
-        "description": data["vaccinated_elsewhere_recorded_percentage"] | percentage,
-        "caption": data["vaccinated_elsewhere_recorded"] | format_child_count,
-      }) }}
-    </div>
-
-    {% if current_filters.programme != "flu" %}
-      {{ heading({
-        "text": "Vaccinated before this school year",
-        "level": 2,
-        "size": "s"
-      }) }}
-
-      <div class="nhsuk-grid-row app-card-group nhsuk-card-group">
-        {{ app_dashboard_card({
-          "classes": "nhsuk-grid-column-full",
-          "heading": "Vaccinated in all settings",
-          "description": data["vaccinated_previously_percentage"] | percentage,
-          "caption": data["vaccinated_previously"] | format_child_count,
-        }) }}
-      </div>
-    {% endif %}
-
     {% set rows = [] %}
     {% for row in data.monthly_vaccinations_given %}
       {% set _ = rows.append([
