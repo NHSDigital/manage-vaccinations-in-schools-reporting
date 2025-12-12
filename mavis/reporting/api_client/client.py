@@ -95,8 +95,7 @@ class MavisApiClient:
             {"value": "td_ipv", "text": "Td/IPV"},
         ]
 
-        cis2_info = (self.session or {}).get("cis2_info", {})
-        programme_types = cis2_info.get("programme_types", [])
+        programme_types = (self.session or {}).get("programme_types", [])
 
         if not programme_types:
             return all_programmes
