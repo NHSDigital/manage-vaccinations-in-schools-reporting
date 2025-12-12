@@ -88,12 +88,20 @@ class MavisApiClient:
         ]
 
     def get_programmes(self) -> list[dict]:
-        return [
+        all_programmes = [
             {"value": "flu", "text": "Flu"},
             {"value": "hpv", "text": "HPV"},
             {"value": "menacwy", "text": "MenACWY"},
             {"value": "td_ipv", "text": "Td/IPV"},
         ]
+
+        cis2_info = (self.session or {}).get("cis2_info", {})
+        programme_types = cis2_info.get("programme_types", [])
+
+        if not programme_types:
+            return all_programmes
+
+        return [p for p in all_programmes if p["value"] in programme_types]
 
     def get_year_groups(self) -> list[dict]:
         return [

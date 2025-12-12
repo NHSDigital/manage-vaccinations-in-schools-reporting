@@ -86,3 +86,26 @@ class TestGetYearGroupsForProgramme:
     def test_unknown_programme_returns_empty_list(self, api_client):
         result = api_client.get_year_groups_for_programme("unknown")
         assert result == []
+
+
+class TestGetProgrammes:
+    def test_returns_all_when_no_programme_types(self, app):
+        client = MavisApiClient(app=app, session={"jwt": "x", "cis2_info": {}})
+        result = client.get_programmes()
+        values = [p["value"] for p in result]
+        assert values == ["flu", "hpv", "menacwy", "td_ipv"]
+
+    def test_filters_by_programme_types(self, app):
+        client = MavisApiClient(
+            app=app,
+            session={"jwt": "x", "cis2_info": {"programme_types": ["flu", "hpv"]}},
+        )
+        result = client.get_programmes()
+        values = [p["value"] for p in result]
+        assert values == ["flu", "hpv"]
+
+    def test_returns_all_when_cis2_info_missing(self, app):
+        client = MavisApiClient(app=app, session={"jwt": "x"})
+        result = client.get_programmes()
+        values = [p["value"] for p in result]
+        assert values == ["flu", "hpv", "menacwy", "td_ipv"]
