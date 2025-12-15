@@ -33,6 +33,7 @@ def mock_user_info():
                 "team": {"name": "SAIS Team 1"},
                 "workgroups": ["r1l"],
             },
+            "programme_types": ["flu", "hpv"],
         },
         "user_nav": {
             "items": [

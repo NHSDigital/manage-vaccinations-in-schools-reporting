@@ -45,3 +45,9 @@ def test_log_user_in_sets_jwt(logged_in_session, user_data):
         == user_data["jwt_data"]["user"]["reporting_api_session_token"]
     )
     assert jwt_payload["data"]["cis2_info"] == user_data["jwt_data"]["cis2_info"]
+
+
+def test_log_user_in_sets_programme_types(logged_in_session, user_data):
+    assert (
+        logged_in_session["programme_types"] == user_data["jwt_data"]["programme_types"]
+    )
