@@ -16,6 +16,7 @@ on:
           - production
           - sandbox-alpha
           - sandbox-beta
+          - performance
       git_sha_to_deploy:
         description: The git commit SHA to deploy.
         required: false
