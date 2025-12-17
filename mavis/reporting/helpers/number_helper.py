@@ -1,3 +1,15 @@
+def format_child_count(value: int | None) -> str:
+    """
+    Format an integer as a count of children.
+    """
+    if value is None:
+        return ""
+    elif value == 1:
+        return f"{value} child"
+    else:
+        return f"{thousands(value)} children"
+
+
 def thousands(value: int | None) -> str:
     """
     Format an integer with thousands separators.
@@ -21,9 +33,16 @@ def thousands(value: int | None) -> str:
 
 def percentage(value: float | None) -> str:
     """
-    Format a decimal proportion as a percentage.
+    Format a decimal proportion as a percentage to one decimal place.
+
+    Where the proportion rounds to exactly 1, it returns "100%".
     """
     if value is None:
         return ""
-    percentage = round(value * 100, 1)
-    return f"{percentage}%"
+
+    max = 100
+    percentage = round(value * max, 1)
+    if percentage == max:
+        return "100%"
+
+    return f"{percentage:.1f}%"

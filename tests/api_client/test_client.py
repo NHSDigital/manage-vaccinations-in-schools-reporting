@@ -7,7 +7,15 @@ from tests.conftest import MockResponse
 
 @pytest.fixture()
 def api_client(app):
-    return MavisApiClient(app=app, session={"jwt": "myjwt"})
+    return MavisApiClient(
+        app=app,
+        session={
+            "jwt": "myjwt",
+            "cis2_info": {
+                "team_workgroup": "r1l",
+            },
+        },
+    )
 
 
 def test_missing_cohort_field_raises_error(api_client, mock_mavis_get_request):
@@ -37,3 +45,69 @@ def test_valid_vaccination_data(api_client, mock_mavis_get_request):
 
     assert result["cohort"] == expected_cohort
     assert "vaccinated_percentage" in result
+
+
+class TestGetYearGroupsForProgramme:
+    def test_flu_returns_all_year_groups(self, api_client):
+        result = api_client.get_year_groups_for_programme("flu")
+        values = [yg["value"] for yg in result]
+        assert values == [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+        ]
+
+    def test_hpv_returns_years_8_to_11(self, api_client):
+        result = api_client.get_year_groups_for_programme("hpv")
+        values = [yg["value"] for yg in result]
+        assert values == ["8", "9", "10", "11"]
+
+    def test_menacwy_returns_years_9_to_11(self, api_client):
+        result = api_client.get_year_groups_for_programme("menacwy")
+        values = [yg["value"] for yg in result]
+        assert values == ["9", "10", "11"]
+
+    def test_td_ipv_returns_years_9_to_11(self, api_client):
+        result = api_client.get_year_groups_for_programme("td_ipv")
+        values = [yg["value"] for yg in result]
+        assert values == ["9", "10", "11"]
+
+    def test_unknown_programme_returns_empty_list(self, api_client):
+        result = api_client.get_year_groups_for_programme("unknown")
+        assert result == []
+
+
+class TestGetProgrammes:
+    def test_returns_all_when_no_programme_types(self, app):
+        client = MavisApiClient(
+            app=app, session={"jwt": "x", "cis2_info": {}, "programme_types": []}
+        )
+        result = client.get_programmes()
+        values = [p["value"] for p in result]
+        assert values == ["flu", "hpv", "menacwy", "td_ipv"]
+
+    def test_filters_by_programme_types(self, app):
+        client = MavisApiClient(
+            app=app,
+            session={"jwt": "x", "programme_types": ["flu", "hpv"]},
+        )
+        result = client.get_programmes()
+        values = [p["value"] for p in result]
+        assert values == ["flu", "hpv"]
+
+    def test_returns_all_when_cis2_info_missing(self, app):
+        client = MavisApiClient(app=app, session={"jwt": "x"})
+        result = client.get_programmes()
+        values = [p["value"] for p in result]
+        assert values == ["flu", "hpv", "menacwy", "td_ipv"]

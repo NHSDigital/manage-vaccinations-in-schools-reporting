@@ -1,7 +1,7 @@
-FROM python:3.14.0-alpine AS base
+FROM python:3.14.2-alpine AS base
 WORKDIR /app
 
-ARG MISE_ENV=staging
+ARG MISE_ENV=production
 ENV MISE_ENV=${MISE_ENV} \
     MISE_CACHE_DIR=/tmp/.cache/mise \
     MISE_STATE_DIR=/tmp/.local/state/mise \

@@ -7,11 +7,11 @@
 
 {% extends 'layouts/base.jinja' %}
 
-{% block pageTitle %}{{ organisation.name }} | {{ app_title }}{% endblock %}
+{% block pageTitle %}{{ team.name }} | {{ app_title }}{% endblock %}
 
 {% block beforeContent %}
   {{ backLink({
-    "href": url_for("main.start_download", code=organisation.code),
+    "href": url_for("main.start_download", workgroup=team.workgroup),
     "text": "Back"
   }) }}
 {% endblock %}
@@ -44,7 +44,7 @@
     This data was last updated on {{ last_updated_time }}.
   </p>
 
-  <form action="{{ url_for('main.download', code=organisation.code) }}" method="post">
+  <form action="{{ url_for('main.download', workgroup=team.workgroup) }}" method="post">
 
     {{ form.csrf_token }}
 

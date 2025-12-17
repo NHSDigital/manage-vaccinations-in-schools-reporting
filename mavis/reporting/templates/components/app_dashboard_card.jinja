@@ -1,0 +1,21 @@
+{% from "card/macro.jinja" import card %}
+
+{% macro app_dashboard_card(params) %}
+
+<div class="{{ params.classes }} nhsuk-card-group__item app-card-group__item">
+  {{ card({
+    "classes": "app-card " ~ params.card_classes,
+    "heading": params.heading | escape,
+    "headingClasses": "nhsuk-heading-xs",
+    "headingLevel": 3,
+    "descriptionHtml": "
+      <p class='nhsuk-card__description'>" ~
+        params.description | escape ~
+        "<span class='nhsuk-card__caption'>" ~
+          params.caption | escape ~
+        "</span>" ~
+      "</p>",
+  }) }}
+</div>
+
+{% endmacro %}

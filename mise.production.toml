@@ -1,6 +1,6 @@
 [vars]
-credentials_file = "config/credentials/staging.enc.yaml"
-secret_file = "config/credentials/staging.key"
+credentials_file = "config/credentials/production.enc.yaml"
+secret_file = "config/credentials/production.key"
 uv_sync_args = "--frozen --no-dev"
 
 [settings]
@@ -10,7 +10,6 @@ sops.age_key_file = "{{vars.secret_file}}"
 SOPS_AGE_KEY_FILE = "{{vars.secret_file}}"
 _.file = "{{vars.credentials_file}}"
 
-FLASK_ENV = "staging"
-# SENTRY_ENVIRONMENT = "configured by terraform/app/variables.tf in the mavis repo"
+FLASK_ENV = "production"
 MAVIS_ROOT_URL = "http://web:4000/"
 # ROOT_URL = "configured by terraform/app/variables.tf in the mavis repo"

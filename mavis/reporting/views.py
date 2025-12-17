@@ -3,6 +3,7 @@ import logging
 from flask import (
     Blueprint,
     Response,
+    abort,
     current_app,
     g,
     redirect,
@@ -22,10 +23,10 @@ from mavis.reporting.helpers.date_helper import (
     get_current_academic_year_range,
     get_last_updated_time,
 )
-from mavis.reporting.helpers.environment_helper import Environment
+from mavis.reporting.helpers.environment_helper import HostingEnvironment
 from mavis.reporting.helpers.navigation_helper import build_navigation_items
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
-from mavis.reporting.models.organisation import Organisation
+from mavis.reporting.models.team import Team
 
 logger = logging.getLogger(__name__)
 
@@ -40,11 +41,9 @@ def stub_mavis_data():
 @main.context_processor
 def inject_mavis_data():
     """Inject common data into the template context."""
-    env = Environment(current_app.config["ENVIRONMENT"])
-
     return {
         "app_title": "Manage vaccinations in schools",
-        "app_environment": env,
+        "app_environment": HostingEnvironment,
         "navigation_items": build_navigation_items(request),
         "service_guide_url": "https://guide.manage-vaccinations-in-schools.nhs.uk",
     }
@@ -54,24 +53,27 @@ def inject_mavis_data():
 @main.route("/dashboard")
 @auth_helper.login_required
 def dashboard():
-    organisation = Organisation.get_from_session(session)
-    return redirect(url_for("main.vaccinations", code=organisation.code))
+    team = Team.get_from_session(session)
+    return redirect(url_for("main.vaccinations", workgroup=team.workgroup))
 
 
-@main.route("/organisation/<code>/start-download", methods=["GET", "POST"])
+@main.route("/team/<workgroup>/start-download", methods=["GET", "POST"])
 @auth_helper.login_required
-def start_download(code):
-    organisation = Organisation.get_from_session(session)
-    if organisation.code != code:
-        return redirect(url_for("main.start_download", code=organisation.code))
+def start_download(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.start_download", workgroup=team.workgroup))
 
     form = DataTypeForm()
 
     if form.validate_on_submit():
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
-            return redirect(mavis_helper.mavis_url(current_app, "/programmes"))
+            return redirect(
+                mavis_helper.mavis_public_url(current_app, "/vaccination-report/new")
+            )
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
-            return redirect(url_for("main.download", code=organisation.code))
+            raise ValueError("Invalid data type")
+            # return redirect(url_for("main.download", workgroup=team.workgroup))
         else:
             raise ValueError("Invalid data type")
 
@@ -79,13 +81,13 @@ def start_download(code):
 
     selected_item_text = "Download"
     secondary_navigation_items = generate_secondary_nav_items(
-        organisation.code,
+        team.workgroup,
         current_page="download",
     )
 
     return render_template(
         "start-download.jinja",
-        organisation=organisation,
+        team=team,
         academic_year=get_current_academic_year_range(),
         breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
@@ -94,12 +96,14 @@ def start_download(code):
     )
 
 
-@main.route("/organisation/<code>/download", methods=["GET", "POST"])
+@main.route("/team/<workgroup>/download", methods=["GET", "POST"])
 @auth_helper.login_required
-def download(code):
-    organisation = Organisation.get_from_session(session)
-    if organisation.code != code:
-        return redirect(url_for("main.download", code=organisation.code))
+def download(workgroup):
+    abort(404)
+
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.download", workgroup=team.workgroup))
 
     form = DownloadForm(
         g.api_client.get_programmes(),
@@ -108,7 +112,7 @@ def download(code):
 
     if request.method == "POST" and form.validate_on_submit():
         api_response = g.api_client.download_totals_csv(
-            form.programme.data, form.variables.data
+            form.programme.data, team.workgroup, form.variables.data
         )
 
         headers = {}
@@ -120,37 +124,43 @@ def download(code):
 
     return render_template(
         "download.jinja",
-        organisation=organisation,
+        team=team,
         academic_year=get_current_academic_year_range(),
         last_updated_time=get_last_updated_time(),
         form=form,
     )
 
 
-@main.route("/organisation/<code>/vaccinations")
+@main.route("/team/<workgroup>/vaccinations")
 @auth_helper.login_required
-def vaccinations(code):
-    organisation = Organisation.get_from_session(session)
-    if organisation.code != code:
-        return redirect(url_for("main.vaccinations", code=organisation.code))
+def vaccinations(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.vaccinations", workgroup=team.workgroup))
 
     breadcrumb_items = generate_breadcrumb_items()
 
     selected_item_text = "Vaccinations"
     secondary_navigation_items = generate_secondary_nav_items(
-        organisation.code,
+        team.workgroup,
         current_page="vaccinations",
     )
 
     filters = {}
 
-    filters["programme"] = request.args.get("programme") or "hpv"
+    filters["team_workgroup"] = team.workgroup
+    filters["programme"] = request.args.get("programme") or "flu"
 
     gender_values = request.args.getlist("gender")
     if gender_values:
         filters["gender"] = gender_values
 
-    year_group_values = request.args.getlist("year-group")
+    year_groups = g.api_client.get_year_groups_for_programme(filters["programme"])
+    valid_year_group_values = {yg["value"] for yg in year_groups}
+
+    year_group_values = [
+        v for v in request.args.getlist("year-group") if v in valid_year_group_values
+    ]
     if year_group_values:
         filters["year_group"] = year_group_values
 
@@ -158,9 +168,9 @@ def vaccinations(code):
 
     return render_template(
         "vaccinations.jinja",
-        organisation=organisation,
+        team=team,
         programmes=g.api_client.get_programmes(),
-        year_groups=g.api_client.get_year_groups(),
+        year_groups=year_groups,
         genders=g.api_client.get_genders(),
         academic_year=get_current_academic_year_range(),
         data=data,

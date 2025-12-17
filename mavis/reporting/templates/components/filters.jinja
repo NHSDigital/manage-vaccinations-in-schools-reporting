@@ -6,15 +6,17 @@
 {% from "button/macro.jinja" import button %}
 
 {% macro filters(params) %}
-<form method="get"
+<form id="filters-form"
+      method="get"
       action="{{ params.form_action }}"
       hx-get="{{ params.form_action }}"
       hx-trigger="change from:input"
       hx-target="#dashboard"
       hx-select="#dashboard"
+      hx-select-oob="#filters-form:outerHTML"
       hx-swap="outerHTML"
-      hx-replace-url="true"
-      hx-sync="this:replace">
+      hx-disabled-elt="#filters-form input"
+      hx-replace-url="true">
   {% call fieldset({
     "legend": {
       "text": "Filter data",
@@ -38,6 +40,7 @@
       {{ radios({
         "idPrefix": "programme",
         "name": "programme",
+        "classes": "nhsuk-radios--small",
         "fieldset": {
           "legend": {
             "text": "Programme",
@@ -62,6 +65,7 @@
       {{ checkboxes({
         "idPrefix": "gender",
         "name": "gender",
+        "classes": "nhsuk-checkboxes--small",
         "fieldset": {
           "legend": {
             "text": "Gender",
@@ -86,6 +90,7 @@
       {{ checkboxes({
         "idPrefix": "year-group",
         "name": "year-group",
+        "classes": "nhsuk-checkboxes--small",
         "fieldset": {
           "legend": {
             "text": "Year group",

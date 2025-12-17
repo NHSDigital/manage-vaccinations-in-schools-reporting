@@ -11,7 +11,7 @@ SOPS_AGE_KEY_FILE = "{{vars.secret_file}}"
 _.file = "{{vars.credentials_file}}"
 
 FLASK_ENV = "development"
+SENTRY_ENVIRONMENT = "development"
 MAVIS_BACKEND_URL = "http://localhost:4000"
 MAVIS_ROOT_URL = "http://localhost:4001/"
 ROOT_URL = "http://localhost:{{vars.port}}/"
-SESSION_TTL_SECONDS = "600"

@@ -37,7 +37,7 @@ def login_required(f):
             # either they're not logged in, or gave an invalid response
             current_app.logger.info("no code given")
             return_url = url_helper.externalise_current_url(current_app, request)
-            target_url = mavis_helper.mavis_url(
+            target_url = mavis_helper.mavis_public_url(
                 current_app,
                 "/start?redirect_uri=" + quote(return_url),
             )
@@ -89,6 +89,7 @@ def log_user_in(data: dict[str, Any], session: SessionMixin):
     session["user_id"] = jwt_data["user"]["id"]
     session["jwt"] = minimal_jwt(jwt_data)
     session["user_nav"] = data["user_nav"]
+    session["programme_types"] = jwt_data["programme_types"]
 
 
 def minimal_jwt(data):

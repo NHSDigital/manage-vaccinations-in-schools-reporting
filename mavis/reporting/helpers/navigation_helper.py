@@ -1,71 +1,49 @@
 import json
-from urllib.parse import unquote
+from urllib.parse import unquote_plus
 
-from flask import current_app, url_for
+from flask import current_app
 from markupsafe import Markup
 
-from mavis.reporting.helpers.mavis_helper import mavis_url
-
-
-def parse_navigation_counts_cookie(request):
-    nav_counts = {}
-    if cookie_value := request.cookies.get("mavis_navigation_counts"):
-        try:
-            decoded_value = unquote(cookie_value)
-            nav_counts = json.loads(decoded_value)
-            current_app.logger.info(f"Navigation counts from cookie: {nav_counts}")
-        except (json.JSONDecodeError, ValueError):
-            current_app.logger.warning(
-                f"Failed to parse navigation counts cookie: {cookie_value}"
-            )
-    else:
-        current_app.logger.info("No mavis_navigation_counts cookie found")
-    return nav_counts
-
-
-def build_nav_item(href, text, nav_counts, active=False, count_key=None):
-    item = {"href": href, "active": active}
-
-    if count_key and (count := nav_counts.get(count_key)) is not None:
-        badge = (
-            '<span class="app-count">'
-            '<span class="nhsuk-u-visually-hidden"> (</span>'
-            f"{count}"
-            '<span class="nhsuk-u-visually-hidden">)</span>'
-            "</span>"
-        )
-        item["html"] = Markup(f"{text}{badge}")
-        item["classes"] = "app-header__navigation-item--with-count"
-    else:
-        item["text"] = text
-
-    return item
+FALLBACK_ITEMS = [
+    {"path": "/programmes", "title": "Programmes"},
+    {"path": "/patients", "title": "Children"},
+    {"path": "/sessions", "title": "Sessions"},
+    {"path": "/vaccines", "title": "Vaccines"},
+    {"path": "/consent-forms", "title": "Unmatched responses"},
+    {"path": "/school-moves", "title": "School moves"},
+    {"path": "/imports", "title": "Imports"},
+    {"path": "/team", "title": "Your team"},
+]
 
 
 def build_navigation_items(request):
-    nav_counts = parse_navigation_counts_cookie(request)
-    return [
-        build_nav_item(url_for("main.dashboard"), "Reports", nav_counts, active=True),
-        build_nav_item(mavis_url(current_app, "/sessions"), "Sessions", nav_counts),
-        build_nav_item(mavis_url(current_app, "/patients"), "Children", nav_counts),
-        build_nav_item(
-            mavis_url(current_app, "/consent-forms"),
-            "Unmatched responses",
-            nav_counts,
-            count_key="unmatched_consent_responses",
-        ),
-        build_nav_item(
-            mavis_url(current_app, "/school-moves"),
-            "School moves",
-            nav_counts,
-            count_key="school_moves",
-        ),
-        build_nav_item(mavis_url(current_app, "/vaccines"), "Vaccines", nav_counts),
-        build_nav_item(
-            mavis_url(current_app, "/imports"),
-            "Imports",
-            nav_counts,
-            count_key="imports",
-        ),
-        build_nav_item(mavis_url(current_app, "/team"), "Your team", nav_counts),
-    ]
+    items = FALLBACK_ITEMS
+    if cookie_value := request.cookies.get("mavis_navigation_items"):
+        try:
+            decoded_value = unquote_plus(cookie_value)
+            if parsed := json.loads(decoded_value):
+                items = parsed
+        except (json.JSONDecodeError, ValueError):
+            current_app.logger.warning(
+                f"Failed to parse navigation items cookie: {cookie_value}"
+            )
+
+    nav_items = []
+    for item in items:
+        nav_item = {"href": item["path"], "text": item["title"]}
+
+        if (count := item.get("count")) is not None:
+            badge = (
+                '<span class="app-count">'
+                '<span class="nhsuk-u-visually-hidden"> (</span>'
+                f"{count}"
+                '<span class="nhsuk-u-visually-hidden">)</span>'
+                "</span>"
+            )
+            nav_item["html"] = Markup(f"{item['title']}{badge}")
+            nav_item["classes"] = "app-header__navigation-item--with-count"
+            del nav_item["text"]
+
+        nav_items.append(nav_item)
+
+    return nav_items

@@ -16,6 +16,6 @@ class DataTypeForm(FlaskForm):
         validators=[InputRequired(message="Select which data you want to download")],
         choices=[
             (CHILD_RECORDS, "Child-level vaccination data"),
-            (AGGREGATE_DATA, "Aggregate vaccination data"),
+            # (AGGREGATE_DATA, "Aggregate vaccination data"),
         ],
     )
