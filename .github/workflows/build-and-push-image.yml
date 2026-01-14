@@ -107,7 +107,7 @@ jobs:
         aws-role: ${{ fromJSON(needs.define-matrix.outputs.aws-roles) }}
     steps:
       - name: Download Docker image
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: image
       - name: Configure AWS Credentials
