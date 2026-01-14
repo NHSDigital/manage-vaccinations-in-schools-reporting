@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "htmx.org": "^2.0.8",
-    "nhsuk-frontend": "^10.2.2"
+    "nhsuk-frontend": "^10.3.0"
   },
   "devDependencies": {
     "esbuild": "^0.27.2",
