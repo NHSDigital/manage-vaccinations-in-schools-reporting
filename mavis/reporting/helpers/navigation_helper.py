@@ -5,12 +5,13 @@ from flask import current_app
 from markupsafe import Markup
 
 FALLBACK_ITEMS = [
-    {"path": "/programmes", "title": "Programmes"},
+    {"path": "/schools", "title": "Schools"},
     {"path": "/patients", "title": "Children"},
     {"path": "/sessions", "title": "Sessions"},
     {"path": "/vaccines", "title": "Vaccines"},
     {"path": "/consent-forms", "title": "Unmatched responses"},
     {"path": "/school-moves", "title": "School moves"},
+    {"path": "/reports", "title": "Reports"},
     {"path": "/imports", "title": "Imports"},
     {"path": "/team", "title": "Your team"},
 ]
@@ -28,9 +29,12 @@ def build_navigation_items(request):
                 f"Failed to parse navigation items cookie: {cookie_value}"
             )
 
-    nav_items = []
+    nav_items: list[dict] = []
     for item in items:
-        nav_item = {"href": item["path"], "text": item["title"]}
+        nav_item: dict = {"href": item["path"], "text": item["title"]}
+
+        if item["path"] == "/reports":
+            nav_item["current"] = True
 
         if (count := item.get("count")) is not None:
             badge = (
