@@ -178,6 +178,56 @@ def vaccinations(workgroup):
     )
 
 
+@main.route("/team/<workgroup>/schools")
+@auth_helper.login_required
+def schools(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.schools", workgroup=team.workgroup))
+
+    breadcrumb_items = generate_breadcrumb_items()
+
+    selected_item_text = "Schools"
+    secondary_navigation_items = generate_secondary_nav_items(
+        team.workgroup,
+        current_page="schools",
+    )
+
+    filters = {}
+    filters["team_workgroup"] = team.workgroup
+    filters["programme"] = request.args.get("programme") or "flu"
+
+    gender_values = request.args.getlist("gender")
+    if gender_values:
+        filters["gender"] = gender_values
+
+    year_groups = g.api_client.get_year_groups_for_programme(filters["programme"])
+    valid_year_group_values = {yg["value"] for yg in year_groups}
+
+    year_group_values = [
+        v for v in request.args.getlist("year-group") if v in valid_year_group_values
+    ]
+    if year_group_values:
+        filters["year_group"] = year_group_values
+
+    schools_data = g.api_client.get_schools_data(filters)
+
+    return render_template(
+        "schools.jinja",
+        team=team,
+        programmes=g.api_client.get_programmes(),
+        year_groups=year_groups,
+        genders=g.api_client.get_genders(),
+        academic_year=get_current_academic_year_range(),
+        schools_data=schools_data,
+        current_filters=filters,
+        breadcrumb_items=breadcrumb_items,
+        selected_item_text=selected_item_text,
+        secondary_navigation_items=secondary_navigation_items,
+        last_updated_time=get_last_updated_time(),
+    )
+
+
 @main.errorhandler(404)
 def page_not_found(_error):
     return render_template("errors/404.html"), 404
