@@ -88,6 +88,34 @@ class TestGetYearGroupsForProgramme:
         assert result == []
 
 
+class TestGetSchoolsData:
+    def test_valid_schools_data(self, api_client, mock_mavis_get_request):
+        mock_mavis_get_request(
+            MockResponse(
+                json_obj=[
+                    {
+                        "school_urn": "100000",
+                        "school_name": "Test School",
+                        "cohort": 100,
+                        "vaccinated": 80,
+                        "not_vaccinated": 20,
+                    }
+                ]
+            )
+        )
+
+        result = api_client.get_schools_data()
+
+        assert len(result) == 1
+        assert result[0]["school_name"] == "Test School"
+
+    def test_non_list_response_raises_error(self, api_client, mock_mavis_get_request):
+        mock_mavis_get_request(MockResponse(json_obj={"some_field": "value"}))
+
+        with pytest.raises(MavisApiError, match="must be a list"):
+            api_client.get_schools_data()
+
+
 class TestGetProgrammes:
     def test_returns_all_when_no_programme_types(self, app):
         client = MavisApiClient(
