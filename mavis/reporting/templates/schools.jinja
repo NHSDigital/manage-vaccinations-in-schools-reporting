@@ -22,6 +22,7 @@
     {% set rows = [] %}
     {% for school in schools_data %}
       {% set _ = rows.append([
+        { "text": school.school_urn },
         { "text": school.school_name },
         { "text": school.cohort | thousands, "format": "numeric" },
         { "text": school.vaccinated | thousands, "format": "numeric" },
@@ -34,6 +35,7 @@
       "tableClasses": "nhsuk-table--data",
       "panel": true,
       "head": [
+        { "text": "URN" },
         { "text": "School" },
         { "text": "Cohort", "format": "numeric" },
         { "text": "Vaccinated", "format": "numeric" },
