@@ -40,6 +40,11 @@ def test_when_session_has_a_user_id_and_is_not_expired_it_does_not_redirect(
             "vaccinated_elsewhere_recorded": 20,
             "vaccinated_previously": 0,
             "vaccinations_given": 402,
+            "consent_given": 400,
+            "no_consent": 146,
+            "consent_no_response": 100,
+            "consent_refused": 30,
+            "consent_conflicts": 16,
             "monthly_vaccinations_given": [
                 {
                     "month": "September",
