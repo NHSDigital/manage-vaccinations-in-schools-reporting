@@ -19,3 +19,8 @@ class DataTypeForm(FlaskForm):
             (AGGREGATE_DATA, "Aggregate vaccination data"),
         ],
     )
+
+    hints = {
+        CHILD_RECORDS: "Vaccinations given by your team",
+        AGGREGATE_DATA: "Vaccination status for all children in your cohort",
+    }

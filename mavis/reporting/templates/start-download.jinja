@@ -29,6 +29,9 @@
         "value": choice[0],
         "text": choice[1],
         "checked": choice[0] == "child-records",
+        "hint": {
+          "text": form.hints[choice[0]],
+        },
       }) %}
     {% endfor %}
 
