@@ -25,8 +25,9 @@
         { "text": school.school_urn },
         { "text": school.school_name },
         { "text": school.cohort | thousands, "format": "numeric" },
+        { "text": school.consent_no_response | thousands, "format": "numeric" },
+        { "text": school.consent_given | thousands, "format": "numeric" },
         { "text": school.vaccinated | thousands, "format": "numeric" },
-        { "text": school.not_vaccinated | thousands, "format": "numeric" }
       ]) %}
     {% endfor %}
 
@@ -38,8 +39,9 @@
         { "text": "URN" },
         { "text": "School" },
         { "text": "Cohort", "format": "numeric" },
+        { "text": "No response", "format": "numeric" },
+        { "text": "Consent given", "format": "numeric" },
         { "text": "Vaccinated", "format": "numeric" },
-        { "text": "Not vaccinated", "format": "numeric" }
       ],
       "rows": rows
     }) }}
