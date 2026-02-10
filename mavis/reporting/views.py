@@ -23,6 +23,7 @@ from mavis.reporting.helpers.date_helper import (
     get_last_updated_time,
 )
 from mavis.reporting.helpers.environment_helper import HostingEnvironment
+from mavis.reporting.helpers.filter_helper import build_report_filters
 from mavis.reporting.helpers.navigation_helper import build_navigation_items
 from mavis.reporting.helpers.secondary_nav_helper import generate_secondary_nav_items
 from mavis.reporting.models.team import Team
@@ -142,28 +143,45 @@ def vaccinations(workgroup):
         current_page="vaccinations",
     )
 
-    filters = {}
-
-    filters["team_workgroup"] = team.workgroup
-    filters["programme"] = request.args.get("programme") or "flu"
-
-    gender_values = request.args.getlist("gender")
-    if gender_values:
-        filters["gender"] = gender_values
-
-    year_groups = g.api_client.get_year_groups_for_programme(filters["programme"])
-    valid_year_group_values = {yg["value"] for yg in year_groups}
-
-    year_group_values = [
-        v for v in request.args.getlist("year-group") if v in valid_year_group_values
-    ]
-    if year_group_values:
-        filters["year_group"] = year_group_values
-
+    filters, year_groups = build_report_filters(team, g.api_client)
     data = g.api_client.get_vaccination_data(filters)
 
     return render_template(
         "vaccinations.jinja",
+        team=team,
+        programmes=g.api_client.get_programmes(),
+        year_groups=year_groups,
+        genders=g.api_client.get_genders(),
+        academic_year=get_current_academic_year_range(),
+        data=data,
+        current_filters=filters,
+        breadcrumb_items=breadcrumb_items,
+        selected_item_text=selected_item_text,
+        secondary_navigation_items=secondary_navigation_items,
+        last_updated_time=get_last_updated_time(),
+    )
+
+
+@main.route("/team/<workgroup>/consent")
+@auth_helper.login_required
+def consent(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.consent", workgroup=team.workgroup))
+
+    breadcrumb_items = generate_breadcrumb_items()
+
+    selected_item_text = "Consent"
+    secondary_navigation_items = generate_secondary_nav_items(
+        team.workgroup,
+        current_page="consent",
+    )
+
+    filters, year_groups = build_report_filters(team, g.api_client)
+    data = g.api_client.get_vaccination_data(filters)
+
+    return render_template(
+        "consents.jinja",
         team=team,
         programmes=g.api_client.get_programmes(),
         year_groups=year_groups,
@@ -193,23 +211,7 @@ def schools(workgroup):
         current_page="schools",
     )
 
-    filters = {}
-    filters["team_workgroup"] = team.workgroup
-    filters["programme"] = request.args.get("programme") or "flu"
-
-    gender_values = request.args.getlist("gender")
-    if gender_values:
-        filters["gender"] = gender_values
-
-    year_groups = g.api_client.get_year_groups_for_programme(filters["programme"])
-    valid_year_group_values = {yg["value"] for yg in year_groups}
-
-    year_group_values = [
-        v for v in request.args.getlist("year-group") if v in valid_year_group_values
-    ]
-    if year_group_values:
-        filters["year_group"] = year_group_values
-
+    filters, year_groups = build_report_filters(team, g.api_client)
     schools_data = g.api_client.get_schools_data(filters)
 
     return render_template(

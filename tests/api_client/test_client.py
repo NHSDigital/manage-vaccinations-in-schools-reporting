@@ -37,6 +37,11 @@ def test_valid_vaccination_data(api_client, mock_mavis_get_request):
                 "vaccinated_elsewhere_declared": 5,
                 "vaccinated_elsewhere_recorded": 3,
                 "vaccinated_previously": 2,
+                "consent_given": 60,
+                "no_consent": 40,
+                "consent_no_response": 30,
+                "consent_refused": 8,
+                "consent_conflicts": 2,
             }
         )
     )
@@ -45,6 +50,8 @@ def test_valid_vaccination_data(api_client, mock_mavis_get_request):
 
     assert result["cohort"] == expected_cohort
     assert "vaccinated_percentage" in result
+    assert "consent_refused_percentage" in result
+    assert "consent_conflicts_percentage" in result
 
 
 class TestGetYearGroupsForProgramme:
