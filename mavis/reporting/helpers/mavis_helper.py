@@ -137,9 +137,9 @@ def api_call(current_app, session, path, params={}):
     return response
 
 
-def get_request(url, headers={}):
-    return requests.get(url, headers=headers)
+def get_request(url, headers={}, timeout=30):
+    return requests.get(url, headers=headers, timeout=timeout)
 
 
-def post_request(url, body={}, headers={}):
-    return requests.post(url, json=body, headers=headers)
+def post_request(url, body={}, headers={}, timeout=30):
+    return requests.post(url, json=body, headers=headers, timeout=timeout)
