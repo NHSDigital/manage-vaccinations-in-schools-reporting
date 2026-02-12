@@ -9,7 +9,7 @@ ENV MISE_ENV=${MISE_ENV} \
     PATH="/root/.local/share/mise/shims:$PATH" \
     UV_CACHE_DIR=/tmp/.cache/uv
 
-RUN apk add --no-cache mise sops uv openssl
+RUN apk add --no-cache mise sops uv
 
 # Builder image
 FROM base AS builder
@@ -45,5 +45,4 @@ RUN mise trust --all
 VOLUME ["/tmp", "/var/lib/amazon/ssm"]
 
 ENV PORT=5000
-COPY mavis/startup.sh /app/
-CMD ["/app/startup.sh"]
+CMD ["sh", "-c", "mise exec -- uv run --no-sync gunicorn --bind 0.0.0.0:${PORT} 'mavis.reporting:create_app()'"]
