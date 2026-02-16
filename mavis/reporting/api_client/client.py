@@ -28,6 +28,13 @@ class MavisApiClient:
                 data["vaccinated_elsewhere_recorded"] / n
             )
             data["vaccinated_previously_percentage"] = data["vaccinated_previously"] / n
+            data["consent_given_percentage"] = data.get("consent_given", 0) / n
+            data["no_consent_percentage"] = data.get("no_consent", 0) / n
+            data["consent_no_response_percentage"] = (
+                data.get("consent_no_response", 0) / n
+            )
+            data["consent_refused_percentage"] = data.get("consent_refused", 0) / n
+            data["consent_conflicts_percentage"] = data.get("consent_conflicts", 0) / n
         else:
             data["vaccinated_percentage"] = 0
             data["not_vaccinated_percentage"] = 0
@@ -35,6 +42,11 @@ class MavisApiClient:
             data["vaccinated_elsewhere_declared_percentage"] = 0
             data["vaccinated_elsewhere_recorded_percentage"] = 0
             data["vaccinated_previously_percentage"] = 0
+            data["consent_given_percentage"] = 0
+            data["no_consent_percentage"] = 0
+            data["consent_no_response_percentage"] = 0
+            data["consent_refused_percentage"] = 0
+            data["consent_conflicts_percentage"] = 0
         return data
 
     def get_vaccination_data(self, filters=None):
