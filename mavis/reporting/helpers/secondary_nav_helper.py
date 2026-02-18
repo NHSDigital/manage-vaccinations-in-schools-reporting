@@ -9,7 +9,7 @@ def generate_secondary_nav_items(team_workgroup: str, current_page: str):
             "current": current_page == "vaccinations",
         },
         {
-            "text": "Consents",
+            "text": "Consent",
             "href": url_for("main.consent", workgroup=team_workgroup),
             "current": current_page == "consent",
         },

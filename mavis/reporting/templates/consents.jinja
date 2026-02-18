@@ -34,7 +34,7 @@
       {{ app_dashboard_card({
         "classes": "nhsuk-grid-column-one-third",
         "card_classes": "app-card--red",
-        "heading": "No consent",
+        "heading": "No consent recorded",
         "description": data["no_consent_percentage"] | percentage,
         "caption": data["no_consent"] | format_child_count,
       }) }}
@@ -48,10 +48,16 @@
       }) }}
     </div>
 
+    {{ heading({
+      "text": "Breakdown of children with no consent recorded",
+      "level": 3,
+      "size": "s",
+    }) }}
+
     <div class="nhsuk-card-group nhsuk-grid-row app-card-group">
       {{ app_dashboard_card({
         "classes": "nhsuk-grid-column-one-third",
-        "heading": "No consent response",
+        "heading": "No consent response or not yet invited",
         "description": data["consent_no_response_percentage"] | percentage,
         "caption": data["consent_no_response"] | format_child_count,
       }) }}
