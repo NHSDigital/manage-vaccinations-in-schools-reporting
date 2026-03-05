@@ -35,7 +35,7 @@ def proxy_to_mavis(path):
         "connection",
     ]
     response_headers = [
-        (k, v)
+        (k, v.replace(backend_url, proxy_url) if k.lower() == "location" else v)
         for k, v in resp.raw.headers.items()
         if k.lower() not in excluded_headers
     ]
