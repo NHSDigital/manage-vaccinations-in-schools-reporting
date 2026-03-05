@@ -19,6 +19,11 @@ def generate_secondary_nav_items(team_workgroup: str, current_page: str):
             "current": current_page == "schools",
         },
         {
+            "text": "Local authorities",
+            "href": url_for("main.local_authorities", workgroup=team_workgroup),
+            "current": current_page == "local_authorities",
+        },
+        {
             "text": "Download data",
             "href": url_for("main.start_download", workgroup=team_workgroup),
             "current": current_page == "download",
