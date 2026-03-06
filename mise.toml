@@ -1,4 +1,5 @@
 [tools]
+actionlint = "latest"
 age = "latest"
 awscli = "2.27.46"
 gitleaks = "latest"
