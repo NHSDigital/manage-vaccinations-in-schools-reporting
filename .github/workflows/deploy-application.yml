@@ -71,7 +71,7 @@ jobs:
           ref: ${{ inputs.git_sha_to_deploy || github.sha }}
       - name: Get git sha
         id: get-git-sha
-        run: echo "git-sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        run: echo "git-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   build-and-push-image:
     permissions:
@@ -105,7 +105,7 @@ jobs:
             --image-ids imageTag=${{ inputs.git_sha_to_deploy || github.sha }} \
             --query 'imageDetails[0].imageDigest' \
             --output text)
-          echo "digest=$digest" >> $GITHUB_OUTPUT
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
       - name: Populate reporting task definition
         id: create-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -143,7 +143,7 @@ jobs:
         run: |
           file_path="${{ runner.temp }}/reporting-task-definition.json"
           family_name="mavis-reporting-task-definition-${{ inputs.environment }}"
-          echo "$(jq --arg f "$family_name" '.family = $f' "$file_path")" > "$file_path"
+          jq --arg f "$family_name" '.family = $f' "$file_path" > tmpfile && mv tmpfile "$file_path"
       - name: Deploy reporting service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
