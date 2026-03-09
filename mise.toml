@@ -124,6 +124,10 @@ run = "gitleaks detect --verbose --redact"
 description = "Run GitHub Actions linter"
 run = "actionlint"
 
+[tasks.yamllint]
+description = "Run Yamllint linter"
+run = "uv run yamllint ."
+
 [tasks."docker:build"]
 description = "Build Docker image"
 run = "docker build --platform linux/amd64 -t ${DOCKER_IMAGE} ."
@@ -145,7 +149,7 @@ run = "MISE_SOPS_AGE_KEY=$(cat config/credentials/staging.key) mise docker:run"
 
 [tasks.ci]
 description = "Run CI checks in parallel"
-depends = ["gitleaks", "actionlint", "lint", "test", "typecheck"]
+depends = ["gitleaks", "actionlint", "lint", "yamllint", "test", "typecheck"]
 
 [tasks."credentials:show"]
 description = "Show credentials"
