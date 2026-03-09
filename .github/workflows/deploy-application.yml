@@ -17,8 +17,8 @@ on:
           - sandbox-alpha
           - sandbox-beta
           - performance
-      git_sha_to_deploy:
-        description: The git commit SHA to deploy.
+      git_ref_to_deploy:
+        description: The git ref to deploy.
         required: false
         type: string
   workflow_call:
@@ -26,8 +26,8 @@ on:
       environment:
         required: true
         type: string
-      git_sha_to_deploy:
-        description: The git commit SHA to deploy.
+      git_ref_to_deploy:
+        description: The git ref to deploy.
         required: true
         type: string
 
@@ -52,8 +52,8 @@ jobs:
       - name: Validate inputs
         run: |
           if [[ "${{ inputs.environment }}" == "preview" || "${{ inputs.environment }}" == "production" ]]; then
-            if [[ -z "${{ inputs.git_sha_to_deploy }}" ]]; then
-              echo "Error: git_sha_to_deploy is required for preview and production environments."
+            if [[ -z "${{ inputs.git_ref_to_deploy }}" ]]; then
+              echo "Error: git_ref_to_deploy is required for preview and production environments."
               exit 1
             fi
           fi
@@ -68,7 +68,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ inputs.git_sha_to_deploy || github.sha }}
+          ref: ${{ inputs.git_ref_to_deploy || github.sha }}
       - name: Get git sha
         id: get-git-sha
         run: echo "git-sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
@@ -84,14 +84,14 @@ jobs:
   prepare-deployment:
     name: Prepare deployment
     runs-on: ubuntu-latest
-    needs: build-and-push-image
+    needs: [ determine-git-sha, build-and-push-image ]
     permissions:
       id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ inputs.git_sha_to_deploy || github.sha }}
+          ref: ${{ needs.determine-git-sha.outputs.git-sha }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -102,7 +102,7 @@ jobs:
         run: |
           digest=$(aws ecr describe-images \
             --repository-name mavis/reporting \
-            --image-ids imageTag=${{ inputs.git_sha_to_deploy || github.sha }} \
+            --image-ids imageTag=${{ needs.determine-git-sha.outputs.git-sha }} \
             --query 'imageDetails[0].imageDigest' \
             --output text)
           echo "digest=$digest" >> $GITHUB_OUTPUT
