@@ -8,6 +8,15 @@ env:
   MISE_ENV: development
 
 jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v3
+        with:
+          cache: true
+      - run: mise actionlint
+
   gitleaks:
     runs-on: ubuntu-latest
     steps:
