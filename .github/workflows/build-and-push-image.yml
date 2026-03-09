@@ -130,9 +130,9 @@ jobs:
       - name: Tag Docker image
         run: >-
           docker tag mavis-reporting:latest
-            "${{ steps.login-ecr.outputs.registry }}/mavis/reporting":"${{ inputs.git-sha || github.sha }}"
+          "${{ steps.login-ecr.outputs.registry }}/mavis/reporting":"${{ inputs.git-sha || github.sha }}"
       - name: Push Docker image
         run: >-
           docker push
-            "${{ steps.login-ecr.outputs.registry }}/mavis/reporting":"${{ inputs.git-sha || github.sha }}"
+          "${{ steps.login-ecr.outputs.registry }}/mavis/reporting":"${{ inputs.git-sha || github.sha }}"
       # yamllint enable rule:line-length
