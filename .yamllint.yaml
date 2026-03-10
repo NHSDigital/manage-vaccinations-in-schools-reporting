@@ -1,0 +1,12 @@
+---
+extends: default
+
+ignore-from-file: .gitignore
+
+rules:
+  document-start: disable
+  line-length:
+    max: 100
+    ignore: config/credentials/*
+  truthy:
+    ignore: .github/workflows/*

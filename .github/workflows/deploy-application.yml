@@ -17,8 +17,8 @@ on:
           - sandbox-alpha
           - sandbox-beta
           - performance
-      git_sha_to_deploy:
-        description: The git commit SHA to deploy.
+      git_ref_to_deploy:
+        description: The git ref to deploy.
         required: false
         type: string
   workflow_call:
@@ -26,8 +26,8 @@ on:
       environment:
         required: true
         type: string
-      git_sha_to_deploy:
-        description: The git commit SHA to deploy.
+      git_ref_to_deploy:
+        description: The git ref to deploy.
         required: true
         type: string
 
@@ -50,13 +50,15 @@ jobs:
     permissions: {}
     steps:
       - name: Validate inputs
+        # yamllint disable rule:line-length
         run: |
           if [[ "${{ inputs.environment }}" == "preview" || "${{ inputs.environment }}" == "production" ]]; then
-            if [[ -z "${{ inputs.git_sha_to_deploy }}" ]]; then
-              echo "Error: git_sha_to_deploy is required for preview and production environments."
+            if [[ -z "${{ inputs.git_ref_to_deploy }}" ]]; then
+              echo "Error: git_ref_to_deploy is required for preview and production environments."
               exit 1
             fi
           fi
+        # yamllint enable rule:line-length
 
   determine-git-sha:
     runs-on: ubuntu-latest
@@ -68,10 +70,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ inputs.git_sha_to_deploy || github.sha }}
+          ref: ${{ inputs.git_ref_to_deploy || github.sha }}
       - name: Get git sha
         id: get-git-sha
-        run: echo "git-sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        run: echo "git-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   build-and-push-image:
     permissions:
@@ -84,14 +86,14 @@ jobs:
   prepare-deployment:
     name: Prepare deployment
     runs-on: ubuntu-latest
-    needs: build-and-push-image
+    needs: [determine-git-sha, build-and-push-image]
     permissions:
       id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ inputs.git_sha_to_deploy || github.sha }}
+          ref: ${{ needs.determine-git-sha.outputs.git-sha }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -102,19 +104,22 @@ jobs:
         run: |
           digest=$(aws ecr describe-images \
             --repository-name mavis/reporting \
-            --image-ids imageTag=${{ inputs.git_sha_to_deploy || github.sha }} \
+            --image-ids imageTag=${{ needs.determine-git-sha.outputs.git-sha }} \
             --query 'imageDetails[0].imageDigest' \
             --output text)
-          echo "digest=$digest" >> $GITHUB_OUTPUT
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
       - name: Populate reporting task definition
         id: create-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition-family: "mavis-reporting-task-definition-${{ inputs.environment }}-template"
-          container-name: "application"
-          image: "${{ env.aws_account_id }}.dkr.ecr.eu-west-2.amazonaws.com/mavis/reporting@${{ steps.get-image-digest.outputs.digest }}"
+          task-definition-family: mavis-reporting-task-definition-${{ inputs.environment }}-template
+          container-name: application
+          # yamllint disable-line rule:line-length
+          image: ${{ env.aws_account_id }}.dkr.ecr.eu-west-2.amazonaws.com/mavis/reporting@${{ steps.get-image-digest.outputs.digest }}
       - name: Rename task definition file
-        run: mv ${{ steps.create-task-definition.outputs.task-definition }} ${{ runner.temp }}/reporting-task-definition.json
+        run: >-
+          mv ${{ steps.create-task-definition.outputs.task-definition }}
+          ${{ runner.temp }}/reporting-task-definition.json
       - name: Upload artifact for reporting task definition
         uses: actions/upload-artifact@v7
         with:
@@ -143,7 +148,7 @@ jobs:
         run: |
           file_path="${{ runner.temp }}/reporting-task-definition.json"
           family_name="mavis-reporting-task-definition-${{ inputs.environment }}"
-          echo "$(jq --arg f "$family_name" '.family = $f' "$file_path")" > "$file_path"
+          jq --arg f "$family_name" '.family = $f' "$file_path" > tmpfile && mv tmpfile "$file_path"
       - name: Deploy reporting service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:

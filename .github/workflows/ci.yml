@@ -8,12 +8,21 @@ env:
   MISE_ENV: development
 
 jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v3
+        with:
+          cache: true
+      - run: mise actionlint
+
   gitleaks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # Full history is needed to scan all commits
+          fetch-depth: 0  # Full history is needed to scan all commits
       - uses: jdx/mise-action@v3
         with:
           cache: true
@@ -38,6 +47,15 @@ jobs:
         with:
           cache: true
       - run: mise lint
+
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v3
+        with:
+          cache: true
+      - run: mise yamllint
 
   coverage:
     needs: [pytest]

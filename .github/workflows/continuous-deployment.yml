@@ -21,4 +21,4 @@ jobs:
     uses: ./.github/workflows/deploy-application.yml
     with:
       environment: ${{ matrix.environment }}
-      git_sha_to_deploy: ${{ github.sha }}
+      git_ref_to_deploy: ${{ github.sha }}
