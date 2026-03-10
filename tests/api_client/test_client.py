@@ -146,3 +146,86 @@ class TestGetProgrammes:
         result = client.get_programmes()
         values = [p["value"] for p in result]
         assert values == ["flu", "hpv", "menacwy", "td_ipv"]
+
+
+class TestGetFormOptions:
+    def test_returns_file_formats(self, api_client, mock_mavis_get_request):
+        mock_mavis_get_request(
+            MockResponse(json_obj={"file_formats": ["mavis", "systm_one"]})
+        )
+
+        result = api_client.get_form_options("r1l")
+
+        assert result["file_formats"] == ["mavis", "systm_one"]
+
+
+class TestCreateExport:
+    def test_creates_export_and_returns_id(
+        self, api_client, mock_mavis_post_request
+    ):
+        mock_mavis_post_request(
+            MockResponse(
+                status_code=201,
+                json_obj={"id": "abc-123", "status": "pending"},
+            )
+        )
+
+        result = api_client.create_export(
+            workgroup="r1l",
+            programme_type="flu",
+            file_format="mavis",
+            academic_year=2024,
+        )
+
+        assert result["id"] == "abc-123"
+        assert result["status"] == "pending"
+
+    def test_creates_export_with_date_range(
+        self, api_client, mock_mavis_post_request
+    ):
+        mock_mavis_post_request(
+            MockResponse(
+                status_code=201,
+                json_obj={"id": "abc-456", "status": "pending"},
+            )
+        )
+
+        result = api_client.create_export(
+            workgroup="r1l",
+            programme_type="flu",
+            file_format="mavis",
+            academic_year=2024,
+            date_from="2024-09-01",
+            date_to="2025-03-31",
+        )
+
+        assert result["id"] == "abc-456"
+
+
+class TestGetExportStatus:
+    def test_returns_pending_status(self, api_client, mock_mavis_get_request):
+        mock_mavis_get_request(
+            MockResponse(json_obj={"status": "pending", "expires_at": None})
+        )
+
+        result = api_client.get_export_status("abc-123")
+
+        assert result["status"] == "pending"
+
+    def test_returns_ready_status_with_download_url(
+        self, api_client, mock_mavis_get_request
+    ):
+        mock_mavis_get_request(
+            MockResponse(
+                json_obj={
+                    "status": "ready",
+                    "download_url": "http://rails.test/api/reporting/exports/abc-123/download",
+                    "expires_at": "2025-03-17T04:00:00Z",
+                }
+            )
+        )
+
+        result = api_client.get_export_status("abc-123")
+
+        assert result["status"] == "ready"
+        assert "download_url" in result

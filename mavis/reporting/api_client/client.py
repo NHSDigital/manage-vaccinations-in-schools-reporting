@@ -175,3 +175,50 @@ class MavisApiClient:
             {"value": "not known", "text": "Not known"},
             {"value": "not specified", "text": "Not specified"},
         ]
+
+    def get_form_options(self, workgroup: str) -> dict:
+        response = mavis_helper.api_call(
+            self.app,
+            self.session,
+            "/api/reporting/exports/form_options",
+            params={"workgroup": workgroup},
+        )
+        return mavis_helper.parse_json_response(response, "Form options")
+
+    def create_export(
+        self,
+        workgroup: str,
+        programme_type: str,
+        file_format: str,
+        academic_year: int,
+        date_from: str | None = None,
+        date_to: str | None = None,
+    ) -> dict:
+        body: dict = {
+            "workgroup": workgroup,
+            "programme_type": programme_type,
+            "file_format": file_format,
+            "academic_year": academic_year,
+        }
+        if date_from:
+            body["date_from"] = date_from
+        if date_to:
+            body["date_to"] = date_to
+
+        url = mavis_helper.mavis_api_url(self.app, "/api/reporting/exports")
+        headers = {
+            "Authorization": "Bearer " + self.session["jwt"],
+            "Accept": "application/json; charset=utf-8",
+            "Content-type": "application/json; charset=utf-8",
+        }
+        response = mavis_helper.post_request(url, body=body, headers=headers)
+        mavis_helper.validate_http_response(response, session=self.session, context="Create export")
+        return mavis_helper.parse_json_response(response, "Create export")
+
+    def get_export_status(self, export_id: str) -> dict:
+        response = mavis_helper.api_call(
+            self.app,
+            self.session,
+            f"/api/reporting/exports/{export_id}",
+        )
+        return mavis_helper.parse_json_response(response, "Export status")
