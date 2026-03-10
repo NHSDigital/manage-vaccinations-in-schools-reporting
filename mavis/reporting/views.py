@@ -16,9 +16,11 @@ from healthcheck import HealthCheck
 from mavis.reporting.api_client.client import MavisApiClient
 from mavis.reporting.forms.data_type_form import DataTypeForm
 from mavis.reporting.forms.download_form import DownloadForm
+from mavis.reporting.forms.export_form import ExportForm
 from mavis.reporting.helpers import auth_helper, mavis_helper
 from mavis.reporting.helpers.breadcrumb_helper import generate_breadcrumb_items
 from mavis.reporting.helpers.date_helper import (
+    get_current_academic_year,
     get_current_academic_year_range,
     get_last_updated_time,
 )
@@ -68,9 +70,7 @@ def start_download(workgroup):
 
     if form.validate_on_submit():
         if form.data_type.data == DataTypeForm.CHILD_RECORDS:
-            return redirect(
-                mavis_helper.mavis_public_url(current_app, "/vaccination-report/new")
-            )
+            return redirect(url_for("main.exports_new", workgroup=team.workgroup))
         elif form.data_type.data == DataTypeForm.AGGREGATE_DATA:
             return redirect(url_for("main.download", workgroup=team.workgroup))
         else:
@@ -227,6 +227,95 @@ def schools(workgroup):
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
         last_updated_time=get_last_updated_time(),
+    )
+
+
+@main.route("/team/<workgroup>/exports/new", methods=["GET", "POST"])
+@auth_helper.login_required
+def exports_new(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.exports_new", workgroup=team.workgroup))
+
+    form_options = g.api_client.get_form_options(team.workgroup)
+    programmes = g.api_client.get_programmes()
+    start_year = get_current_academic_year()
+    academic_years = list(range(start_year, start_year - 3, -1))
+
+    form = ExportForm(
+        programmes=programmes,
+        file_formats=form_options.get("file_formats", ["mavis", "systm_one"]),
+        academic_years=academic_years,
+    )
+
+    if form.validate_on_submit():
+        result = g.api_client.create_export(
+            workgroup=team.workgroup,
+            programme_type=form.programme_type.data,
+            file_format=form.file_format.data,
+            academic_year=form.academic_year.data,
+            date_from=form.date_from.data.isoformat() if form.date_from.data else None,
+            date_to=form.date_to.data.isoformat() if form.date_to.data else None,
+        )
+        return redirect(
+            url_for("main.export_status", workgroup=team.workgroup, export_id=result["id"])
+        )
+
+    return render_template(
+        "exports-new.jinja",
+        team=team,
+        form=form,
+    )
+
+
+@main.route("/team/<workgroup>/exports/<export_id>")
+@auth_helper.login_required
+def export_status(workgroup, export_id):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.export_status", workgroup=team.workgroup, export_id=export_id))
+
+    export = g.api_client.get_export_status(export_id)
+
+    download_url = (
+        url_for("main.export_download", workgroup=workgroup, export_id=export_id)
+        if export.get("download_url")
+        else None
+    )
+
+    return render_template(
+        "export-status.jinja",
+        team=team,
+        workgroup=team.workgroup,
+        export_id=export_id,
+        export_status=export.get("status"),
+        download_url=download_url,
+        expires_at=export.get("expires_at"),
+    )
+
+
+@main.route("/team/<workgroup>/exports/<export_id>/download")
+@auth_helper.login_required
+def export_download(workgroup, export_id):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(
+            url_for("main.export_download", workgroup=team.workgroup, export_id=export_id)
+        )
+
+    url = mavis_helper.mavis_api_url(current_app, f"/api/reporting/exports/{export_id}/download")
+    headers = {"Authorization": "Bearer " + session["jwt"]}
+    response = mavis_helper.get_request(url, headers=headers)
+
+    if response.is_redirect or response.status_code in (301, 302, 303, 307, 308):
+        return redirect(response.headers["Location"])
+
+    mavis_helper.validate_http_response(response, session=session)
+    return Response(
+        response.content,
+        status=response.status_code,
+        content_type=response.headers.get("Content-Type", "application/octet-stream"),
+        headers={"Content-Disposition": response.headers.get("Content-Disposition", "attachment")},
     )
 
 

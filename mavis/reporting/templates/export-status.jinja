@@ -1,0 +1,79 @@
+{% from "components/heading.jinja" import heading %}
+{% from "back-link/macro.jinja" import backLink %}
+{% from "button/macro.jinja" import button %}
+
+{% extends 'layouts/base.jinja' %}
+
+{% block pageTitle %}Export status | {{ app_title }}{% endblock %}
+
+{% if export_status == "pending" %}
+<meta http-equiv="refresh" content="3">
+{% endif %}
+
+{% block beforeContent %}
+  {{ backLink({
+    "href": url_for("main.exports_new", workgroup=workgroup),
+    "text": "Back"
+  }) }}
+{% endblock %}
+
+{% block page_heading %}
+  {{ heading({
+    "text": "Export status",
+    "level": "1",
+  }) }}
+{% endblock %}
+
+{% block page_content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {% if export_status == "pending" %}
+      <p class="nhsuk-body">Your export is being prepared. Refresh this page to check whether it is ready.</p>
+      <div class="nhsuk-warning-callout">
+        <h3 class="nhsuk-warning-callout__label">
+          <span role="text">
+            <span class="nhsuk-u-visually-hidden">Important: </span>
+            Preparing
+          </span>
+        </h3>
+        <p>Your export is queued and will be ready shortly.</p>
+      </div>
+
+    {% elif export_status == "ready" %}
+      <p class="nhsuk-body">Your export is ready to download.</p>
+      <a href="{{ download_url }}" class="nhsuk-button" data-module="nhsuk-button">
+        Download
+      </a>
+      {% if expires_at %}
+        <p class="nhsuk-body nhsuk-u-secondary-text-color nhsuk-u-margin-top-3">
+          Available until {{ expires_at }}
+        </p>
+      {% endif %}
+
+    {% elif export_status == "failed" %}
+      <div class="nhsuk-error-summary" aria-labelledby="error-summary-title" role="alert">
+        <h2 class="nhsuk-error-summary__title" id="error-summary-title">
+          Export failed
+        </h2>
+        <p class="nhsuk-body">There was a problem generating your export. Please try again.</p>
+        <a href="{{ url_for('main.exports_new', workgroup=workgroup) }}" class="nhsuk-button nhsuk-button--secondary">
+          Try again
+        </a>
+      </div>
+
+    {% elif export_status == "expired" %}
+      <p class="nhsuk-body">This export has expired.</p>
+      <a href="{{ url_for('main.exports_new', workgroup=workgroup) }}" class="nhsuk-button nhsuk-button--secondary">
+        Request a new export
+      </a>
+
+    {% else %}
+      <p class="nhsuk-body">Unknown status: {{ export_status }}</p>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,120 @@
+{% from "components/heading.jinja" import heading %}
+{% from "back-link/macro.jinja" import backLink %}
+{% from "radios/macro.jinja" import radios %}
+{% from "select/macro.jinja" import select %}
+{% from "button/macro.jinja" import button %}
+{% from "components/form_error_summary.jinja" import formErrorSummary %}
+
+{% extends 'layouts/base.jinja' %}
+
+{% block pageTitle %}Request vaccination export | {{ app_title }}{% endblock %}
+
+{% block beforeContent %}
+  {{ backLink({
+    "href": url_for("main.start_download", workgroup=team.workgroup),
+    "text": "Back"
+  }) }}
+{% endblock %}
+
+{% block before_page_heading %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+      {{ formErrorSummary(form) }}
+    </div>
+  </div>
+{% endblock %}
+
+{% block page_heading %}
+  {{ heading({
+    "text": "Request vaccination export",
+    "level": "1",
+  }) }}
+{% endblock %}
+
+{% block page_content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">
+
+  <form action="{{ url_for('main.exports_new', workgroup=team.workgroup) }}" method="post">
+
+    {{ form.csrf_token }}
+
+    {% set programme_items = [] %}
+    {% for choice in form.programme_type.choices %}
+      {% set _ = programme_items.append({
+        "value": choice[0],
+        "text": choice[1],
+      }) %}
+    {% endfor %}
+
+    {{ radios({
+      "idPrefix": form.programme_type.id,
+      "name": form.programme_type.name,
+      "fieldset": {
+        "legend": {
+          "text": form.programme_type.label.text,
+          "classes": "nhsuk-fieldset__legend--s"
+        }
+      },
+      "errorMessage": {
+        "text": form.programme_type.errors[0],
+      } if form.programme_type.errors else "",
+      "items": programme_items,
+    }) }}
+
+    {% set format_items = [] %}
+    {% for choice in form.file_format.choices %}
+      {% set _ = format_items.append({
+        "value": choice[0],
+        "text": choice[1],
+      }) %}
+    {% endfor %}
+
+    {{ radios({
+      "idPrefix": form.file_format.id,
+      "name": form.file_format.name,
+      "fieldset": {
+        "legend": {
+          "text": form.file_format.label.text,
+          "classes": "nhsuk-fieldset__legend--s"
+        }
+      },
+      "errorMessage": {
+        "text": form.file_format.errors[0],
+      } if form.file_format.errors else "",
+      "items": format_items,
+    }) }}
+
+    {% set year_items = [] %}
+    {% for choice in form.academic_year.choices %}
+      {% set _ = year_items.append({
+        "value": choice[0],
+        "text": choice[1],
+        "selected": choice[0] == form.academic_year.data,
+      }) %}
+    {% endfor %}
+
+    {{ select({
+      "id": form.academic_year.id,
+      "name": form.academic_year.name,
+      "label": {
+        "text": form.academic_year.label.text,
+      },
+      "errorMessage": {
+        "text": form.academic_year.errors[0],
+      } if form.academic_year.errors else "",
+      "items": year_items,
+    }) }}
+
+    {{ button({
+      "text": "Request export",
+      "type": "submit",
+    }) }}
+
+  </form>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from mavis.reporting.forms.data_type_form import DataTypeForm
-from mavis.reporting.helpers import auth_helper, mavis_helper
+from mavis.reporting.helpers import auth_helper
 from tests.helpers import mock_user_info
 
 
@@ -19,9 +19,5 @@ def test_start_download_redirects_to_new_child_record_form(app, client):
             follow_redirects=False,
         )
 
-        expected_location = mavis_helper.mavis_public_url(
-            app, "/vaccination-report/new"
-        )
-
         assert response.status_code == HTTPStatus.FOUND
-        assert response.headers["Location"] == expected_location
+        assert "/exports/new" in response.headers["Location"]

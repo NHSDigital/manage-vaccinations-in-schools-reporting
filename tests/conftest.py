@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import unittest.mock
 from http import HTTPStatus
 
 from requests.exceptions import JSONDecodeError as RequestsJSONDecodeError
@@ -15,16 +16,20 @@ from tests.helpers import create_random_token
 
 @pytest.fixture()
 def app():
-    app = create_app()
-    app.config.update(
-        {
-            "MAVIS_ROOT_URL": "http://mavis.test/",
-            "TESTING": True,
-            "CLIENT_ID": create_random_token(),
-            "CLIENT_SECRET": create_random_token(),
-        }
-    )
-    yield app
+    token = create_random_token()
+    env_overrides = {
+        "FLASK_ENV": "test",
+        "CLIENT_ID": token,
+        "CLIENT_SECRET": token,
+        "MAVIS_ROOT_URL": "http://mavis.test/",
+        "ROOT_URL": "http://mavis.test/reports/",
+        "SECRET_KEY": token,
+        "SENTRY_ENVIRONMENT": "test",
+    }
+    with unittest.mock.patch.dict(os.environ, env_overrides):
+        app = create_app()
+        app.config.update({"TESTING": True})
+        yield app
 
 
 @pytest.fixture()

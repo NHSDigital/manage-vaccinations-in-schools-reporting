@@ -1,3 +1,6 @@
+import os
+import unittest.mock
+
 import pytest
 from bs4 import BeautifulSoup
 
@@ -32,16 +35,19 @@ def card_soup(render_macro, params):
 
 @pytest.fixture()
 def app():
-    app = create_app()
-    app.config.update(
-        {
-            "MAVIS_ROOT_URL": "http://mavis.test/",
-            "TESTING": True,
-            "CLIENT_ID": "test_client_id",
-            "CLIENT_SECRET": "test_client_secret",
-        }
-    )
-    return app
+    env_overrides = {
+        "FLASK_ENV": "test",
+        "CLIENT_ID": "test_client_id",
+        "CLIENT_SECRET": "test_client_secret",
+        "MAVIS_ROOT_URL": "http://mavis.test/",
+        "ROOT_URL": "http://mavis.test/reports/",
+        "SECRET_KEY": "test_secret_key",
+        "SENTRY_ENVIRONMENT": "test",
+    }
+    with unittest.mock.patch.dict(os.environ, env_overrides):
+        app = create_app()
+        app.config.update({"TESTING": True})
+        yield app
 
 
 @pytest.fixture()
