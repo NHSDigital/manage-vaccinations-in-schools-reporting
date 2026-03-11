@@ -1,0 +1,54 @@
+{% from "components/filters.jinja" import filters %}
+{% from "tables/macro.jinja" import table %}
+
+{% extends 'layouts/dashboard.jinja' %}
+
+{% block pageTitle %}Local authorities report | {{ app_title }}{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="nhsuk-grid-row">
+  <div class="app-grid-column-filters">
+    {{ filters({
+      "programmes": programmes,
+      "year_groups": year_groups,
+      "genders": genders,
+      "current_filters": current_filters or {},
+      "form_action": url_for('main.local_authorities', workgroup=team.workgroup)
+    }) }}
+  </div>
+
+  <div id="dashboard" class="app-grid-column-content">
+    {% set rows = [] %}
+    {% for la in local_authorities_data %}
+      {% set _ = rows.append([
+        { "text": la.local_authority_official_name },
+        { "text": la.cohort | thousands, "format": "numeric" },
+        { "text": la.consent_no_response | thousands, "format": "numeric" },
+        { "text": la.consent_given | thousands, "format": "numeric" },
+        { "text": la.vaccinated | thousands, "format": "numeric" },
+      ]) %}
+    {% endfor %}
+
+    {{ table({
+      "heading": "Local authorities",
+      "tableClasses": "nhsuk-table--data",
+      "panel": true,
+      "head": [
+        { "text": "Local authority" },
+        { "text": "Cohort", "format": "numeric" },
+        { "text": "No response", "format": "numeric" },
+        { "text": "Consent given", "format": "numeric" },
+        { "text": "Vaccinated", "format": "numeric" },
+      ],
+      "rows": rows
+    }) }}
+
+    <p class="nhsuk-body-m nhsuk-u-margin-bottom-6">
+      This data was last updated on <strong>{{ last_updated_time }}</strong>.
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

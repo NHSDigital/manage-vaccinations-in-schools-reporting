@@ -111,6 +111,36 @@ class MavisApiClient:
 
         return data
 
+    def get_local_authorities_data(self, filters=None):
+        params = {"group": "local_authority"}
+
+        if filters:
+            filter_keys = [
+                "programme",
+                "gender",
+                "year_group",
+                "academic_year",
+                "team_workgroup",
+            ]
+
+            for key in filter_keys:
+                if key in filters:
+                    params[key] = filters[key]
+
+        response = mavis_helper.api_call(
+            self.app, self.session, "/api/reporting/totals", params=params
+        )
+        data = parse_json_response(response, "Local authorities data")
+
+        if not isinstance(data, list):
+            raise MavisApiError(
+                "Local authorities data response must be a list",
+                status_code=response.status_code,
+                response_body=str(data),
+            )
+
+        return data
+
     def download_totals_csv(self, programme, team_workgroup, variables=None):
         params = {"programme": programme, "team_workgroup": team_workgroup}
 
