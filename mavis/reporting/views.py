@@ -230,6 +230,40 @@ def schools(workgroup):
     )
 
 
+@main.route("/team/<workgroup>/local-authorities")
+@auth_helper.login_required
+def local_authorities(workgroup):
+    team = Team.get_from_session(session)
+    if team.workgroup != workgroup:
+        return redirect(url_for("main.local_authorities", workgroup=team.workgroup))
+
+    breadcrumb_items = generate_breadcrumb_items()
+
+    selected_item_text = "Local authorities"
+    secondary_navigation_items = generate_secondary_nav_items(
+        team.workgroup,
+        current_page="local_authorities",
+    )
+
+    filters, year_groups = build_report_filters(team, g.api_client)
+    local_authorities_data = g.api_client.get_local_authorities_data(filters)
+
+    return render_template(
+        "local_authorities.jinja",
+        team=team,
+        programmes=g.api_client.get_programmes(),
+        year_groups=year_groups,
+        genders=g.api_client.get_genders(),
+        academic_year=get_current_academic_year_range(),
+        local_authorities_data=local_authorities_data,
+        current_filters=filters,
+        breadcrumb_items=breadcrumb_items,
+        selected_item_text=selected_item_text,
+        secondary_navigation_items=secondary_navigation_items,
+        last_updated_time=get_last_updated_time(),
+    )
+
+
 @main.errorhandler(404)
 def page_not_found(_error):
     return render_template("errors/404.html"), 404
