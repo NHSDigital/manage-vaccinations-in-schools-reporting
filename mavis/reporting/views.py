@@ -17,7 +17,6 @@ from mavis.reporting.api_client.client import MavisApiClient
 from mavis.reporting.forms.data_type_form import DataTypeForm
 from mavis.reporting.forms.download_form import DownloadForm
 from mavis.reporting.helpers import auth_helper, mavis_helper
-from mavis.reporting.helpers.breadcrumb_helper import generate_breadcrumb_items
 from mavis.reporting.helpers.date_helper import (
     get_current_academic_year_range,
     get_last_updated_time,
@@ -76,8 +75,6 @@ def start_download(workgroup):
         else:
             raise ValueError("Invalid data type")
 
-    breadcrumb_items = generate_breadcrumb_items()
-
     selected_item_text = "Download"
     secondary_navigation_items = generate_secondary_nav_items(
         team.workgroup,
@@ -88,7 +85,6 @@ def start_download(workgroup):
         "start-download.jinja",
         team=team,
         academic_year=get_current_academic_year_range(),
-        breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
         form=form,
@@ -135,8 +131,6 @@ def vaccinations(workgroup):
     if team.workgroup != workgroup:
         return redirect(url_for("main.vaccinations", workgroup=team.workgroup))
 
-    breadcrumb_items = generate_breadcrumb_items()
-
     selected_item_text = "Vaccinations"
     secondary_navigation_items = generate_secondary_nav_items(
         team.workgroup,
@@ -155,7 +149,6 @@ def vaccinations(workgroup):
         academic_year=get_current_academic_year_range(),
         data=data,
         current_filters=filters,
-        breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
         last_updated_time=get_last_updated_time(),
@@ -168,8 +161,6 @@ def consent(workgroup):
     team = Team.get_from_session(session)
     if team.workgroup != workgroup:
         return redirect(url_for("main.consent", workgroup=team.workgroup))
-
-    breadcrumb_items = generate_breadcrumb_items()
 
     selected_item_text = "Consent"
     secondary_navigation_items = generate_secondary_nav_items(
@@ -189,7 +180,6 @@ def consent(workgroup):
         academic_year=get_current_academic_year_range(),
         data=data,
         current_filters=filters,
-        breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
         last_updated_time=get_last_updated_time(),
@@ -202,8 +192,6 @@ def schools(workgroup):
     team = Team.get_from_session(session)
     if team.workgroup != workgroup:
         return redirect(url_for("main.schools", workgroup=team.workgroup))
-
-    breadcrumb_items = generate_breadcrumb_items()
 
     selected_item_text = "Schools"
     secondary_navigation_items = generate_secondary_nav_items(
@@ -223,7 +211,6 @@ def schools(workgroup):
         academic_year=get_current_academic_year_range(),
         schools_data=schools_data,
         current_filters=filters,
-        breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
         last_updated_time=get_last_updated_time(),
@@ -236,8 +223,6 @@ def local_authorities(workgroup):
     team = Team.get_from_session(session)
     if team.workgroup != workgroup:
         return redirect(url_for("main.local_authorities", workgroup=team.workgroup))
-
-    breadcrumb_items = generate_breadcrumb_items()
 
     selected_item_text = "Local authorities"
     secondary_navigation_items = generate_secondary_nav_items(
@@ -257,7 +242,6 @@ def local_authorities(workgroup):
         academic_year=get_current_academic_year_range(),
         local_authorities_data=local_authorities_data,
         current_filters=filters,
-        breadcrumb_items=breadcrumb_items,
         selected_item_text=selected_item_text,
         secondary_navigation_items=secondary_navigation_items,
         last_updated_time=get_last_updated_time(),
