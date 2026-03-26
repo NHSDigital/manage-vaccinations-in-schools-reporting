@@ -131,6 +131,7 @@ def api_call(current_app, session, path, params={}):
         "Authorization": "Bearer " + session["jwt"],
         "Accept": "application/json; charset=utf-8",
         "Content-type": "application/json; charset=utf-8",
+        "User-Agent": "Mavis Reporting",
     }
     response = get_request(url, headers=headers)
     validate_http_response(response, session=session)
