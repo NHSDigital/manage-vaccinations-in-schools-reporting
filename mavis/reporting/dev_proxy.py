@@ -1,4 +1,4 @@
-import requests
+import httpx
 from flask import Response, current_app, request
 
 
@@ -18,7 +18,7 @@ def proxy_to_mavis(path):
     if "Referer" in headers:
         headers["Referer"] = headers["Referer"].replace(proxy_url, backend_url)
 
-    resp = requests.request(
+    resp = httpx.request(
         method=request.method,
         url=url,
         headers=headers,
