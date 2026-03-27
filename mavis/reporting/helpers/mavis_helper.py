@@ -1,7 +1,8 @@
+import json
 import urllib.parse
 from http import HTTPStatus
 
-import requests
+import httpx
 from werkzeug.exceptions import Unauthorized
 
 from mavis.reporting.helpers import auth_helper
@@ -59,7 +60,7 @@ def parse_json_response(response, context="API response"):
 
     try:
         return response.json()
-    except requests.exceptions.JSONDecodeError as e:
+    except json.JSONDecodeError as e:
         raise MavisApiError(
             f"{context}: Invalid JSON - {str(e)}",
             status_code=response.status_code,
@@ -130,6 +131,7 @@ def api_call(current_app, session, path, params={}):
         "Authorization": "Bearer " + session["jwt"],
         "Accept": "application/json; charset=utf-8",
         "Content-type": "application/json; charset=utf-8",
+        "User-Agent": "Mavis Reporting",
     }
     response = get_request(url, headers=headers)
     validate_http_response(response, session=session)
@@ -138,8 +140,8 @@ def api_call(current_app, session, path, params={}):
 
 
 def get_request(url, headers={}, timeout=30):
-    return requests.get(url, headers=headers, timeout=timeout)
+    return httpx.get(url, headers=headers, timeout=timeout)
 
 
 def post_request(url, body={}, headers={}, timeout=30):
-    return requests.post(url, json=body, headers=headers, timeout=timeout)
+    return httpx.post(url, json=body, headers=headers, timeout=timeout)

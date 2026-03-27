@@ -51,15 +51,11 @@ class TestTeam:
     def test_get_from_session_empty_team_workgroup(self):
         session = {"cis2_info": {"team_workgroup": ""}}
 
-        with pytest.raises(
-            ValueError, match="Empty value received for team workgroup"
-        ):
+        with pytest.raises(ValueError, match="Empty value received for team workgroup"):
             Team.get_from_session(cast(SessionMixin, session))
 
     def test_get_from_session_with_whitespace_team_workgroup(self):
         session = {"cis2_info": {"team_workgroup": "   "}}
 
-        with pytest.raises(
-            ValueError, match="Empty value received for team workgroup"
-        ):
+        with pytest.raises(ValueError, match="Empty value received for team workgroup"):
             Team.get_from_session(cast(SessionMixin, session))

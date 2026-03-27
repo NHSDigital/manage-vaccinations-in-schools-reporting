@@ -3,8 +3,6 @@ import os
 import sys
 from http import HTTPStatus
 
-from requests.exceptions import JSONDecodeError as RequestsJSONDecodeError
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
@@ -91,10 +89,7 @@ class MockResponse:
             return self.json_obj
         if not self.text:
             return {}
-        try:
-            return json.loads(self.text)
-        except json.JSONDecodeError as e:
-            raise RequestsJSONDecodeError(str(e), "", 0)
+        return json.loads(self.text)
 
 
 class MockRequest:
