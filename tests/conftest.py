@@ -77,7 +77,7 @@ class MockResponse:
             self.content = self.text.encode()
         else:
             self.content = b""
-        self.ok = (
+        self.is_success = (
             self.status_code >= HTTPStatus.OK
             and self.status_code < HTTPStatus.MULTIPLE_CHOICES
             if self.status_code
