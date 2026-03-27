@@ -98,7 +98,7 @@ def test_when_api_returns_401_with_stale_session_it_redirects_to_mavis_start(
 
         mock_response = MagicMock()
         mock_response.status_code = HTTPStatus.UNAUTHORIZED
-        mock_response.ok = False
+        mock_response.is_success = False
 
         with patch(
             "mavis.reporting.helpers.mavis_helper.get_request",

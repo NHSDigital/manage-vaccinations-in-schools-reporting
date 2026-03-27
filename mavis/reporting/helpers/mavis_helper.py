@@ -74,7 +74,7 @@ def validate_http_response(response, session=None, context="API response"):
             session.clear()
         raise Unauthorized()
 
-    if not response.ok:
+    if not response.is_success:
         raise MavisApiError(
             f"{context}: {response.status_code}",
             status_code=response.status_code,
